@@ -1,3 +1,5 @@
+import logging
+
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 from Enums import DBStep
 
@@ -9,7 +11,15 @@ class DBPipelineController:
         self.test_connection()
 
     def run(self):
-        self._run_fill()
+        db = self.factory.create_connection()
+        current_step = get_db_step(db)
+        logging.info("Current DB step: {}".format(current_step))
+        if current_step is None:
+            logging.info("Starting initial fill...")
+            self._run_fill()
+        elif current_step == DBStep.INITIAL_FILL:
+            logging.info("Continuing with initial fill...")
+            self._run_fill()
         self._run_extra_fill()
         self._run_indexes()
         self._run_constraints()
@@ -34,16 +44,26 @@ class DBPipelineController:
     def test_connection(self):
         try:
             db = self.factory.create_connection()
-            print(f"✅ Successfully connected to database: {db.name}. Interact with it at http://localhost:8529")
+            logging.info(f"✅ Successfully connected to database: {db.name}. Interact with it at http://localhost:8529")
         except Exception as e:
-            print(f"❌ Failed to connect to database: {e}")
+            logging.info(f"❌ Failed to connect to database: {e}")
             raise
 
 
 def set_db_step(db, step: DBStep):
     params = db.collection('params')
     params.insert({"_key": "db_step", "value": step.name}, overwrite=True)
-    print(f"🔄 db_step updated to: {step.name}")
+    logging.info(f"🔄 db_step updated to: {step.name}")
+
+
+def get_db_step(db) -> DBStep | None:
+    params = db.collection('params')
+    if not params.has("db_step"):
+        return None
+    doc = params.get("db_step")
+    if doc:
+        return DBStep[doc['value']]
+    return None
 
 
 class InitialFillStep:
@@ -55,19 +75,19 @@ class InitialFillStep:
 
         # 🔍 Check if 'params' exists
         if not db.has_collection("params"):
-            print("⚠️ 'params' collection not found. Resetting database...")
+            logging.info("⚠️ 'params' collection not found. Resetting database...")
 
             # 🧹 Drop all non-system collections
             for col in db.collections():
                 name = col["name"]
                 if not name.startswith("_"):
                     db.delete_collection(name, ignore_missing=True)
-                    print(f"🗑️ Dropped collection: {name}")
+                    logging.info(f"🗑️ Dropped collection: {name}")
 
             # 🆕 Create required collections
             for name in ["params", "assets", "assettypes"]:
                 db.create_collection(name)
-                print(f"✅ Created collection: {name}")
+                logging.info(f"✅ Created collection: {name}")
 
             params = db.collection('params')
 
@@ -83,7 +103,7 @@ class InitialFillStep:
             # Insert documents
             for doc in default_docs:
                 params.insert(doc)
-                print(f"✅ Inserted default for '{doc['_key']}'")
+                logging.info(f"✅ Inserted default for '{doc['_key']}'")
 
         else:
-            print("✅ 'params' collection exists. No changes made.")
+            logging.info("✅ 'params' collection exists. No changes made.")
