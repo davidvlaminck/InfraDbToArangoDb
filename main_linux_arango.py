@@ -1,4 +1,9 @@
 import logging
+from pathlib import Path
+
+from API.EMInfraClient import EMInfraClient
+from API.EMSONClient import EMSONClient
+from API.Enums import Environment, AuthType
 from DBPipelineController import DBPipelineController
 
 logging.basicConfig(
@@ -6,21 +11,12 @@ logging.basicConfig(
     level=logging.INFO,
     datefmt='%Y-%m-%d %H:%M:%S')
 
-def load_settings(file_path: str) -> dict:
-    import json
-    with open(file_path, 'r') as file:
-        return json.load(file)
-
 
 if __name__ == '__main__':
-    settings = load_settings('settings.json')
-    db_settings = settings['databases']['prd']
-
-    # 🔐 Connection details
-    DB_NAME = db_settings['database']
-    USERNAME = db_settings['user']
-    PASSWORD = db_settings['password']
+    settings_path = Path('/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json')
+    eminfra_client = EMInfraClient(env=Environment.PRD, auth_type=AuthType.JWT, settings_path=settings_path)
+    emson_client = EMSONClient(env=Environment.PRD, auth_type=AuthType.JWT, settings_path=settings_path)
 
     # 🚀 Connect to ArangoDB using DBPipelineController
-    controller = DBPipelineController(DB_NAME, USERNAME, PASSWORD)
+    controller = DBPipelineController(settings_path=settings_path, auth_type=AuthType.JWT, env=Environment.PRD)
     controller.run()

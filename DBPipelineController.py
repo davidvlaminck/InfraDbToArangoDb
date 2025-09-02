@@ -1,14 +1,45 @@
 import logging
+from pathlib import Path
 
+from API.EMInfraClient import EMInfraClient
+from API.EMSONClient import EMSONClient
+from API.Enums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 from Enums import DBStep
 
 
+
+
 class DBPipelineController:
     """Manages the linear DB pipeline from initial fill to final syncing process."""
-    def __init__(self, db_name, username, password):
-        self.factory = ArangoDBConnectionFactory(db_name, username, password)
+    def __init__(self, settings_path: Path, auth_type=AuthType.JWT, env=Environment.PRD):
+        factory, em_infra_client, emson_client = self.settings_to_clients(settings_path=settings_path, auth_type=auth_type, env=env)
+
+        self.factory = factory
         self.test_connection()
+
+    @classmethod
+    def settings_to_clients(cls, settings_path, auth_type, env) -> tuple[ArangoDBConnectionFactory, EMInfraClient, EMSONClient]:
+        settings = cls.load_settings(settings_path)
+        db_settings = settings['databases'][str(env.value[0])]
+
+        settings_path = Path('/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json')
+        eminfra_client = EMInfraClient(env=env, auth_type=auth_type, settings_path=settings_path)
+        emson_client = EMSONClient(env=Environment.PRD, auth_type=auth_type, settings_path=settings_path)
+
+        # 🔐 Connection details
+        db_name = db_settings['database']
+        username = db_settings['user']
+        password = db_settings['password']
+        factory = ArangoDBConnectionFactory(db_name, username, password)
+
+        return factory, eminfra_client, emson_client
+
+    @staticmethod
+    def load_settings(settings_path: Path) -> dict:
+        import json
+        with open(settings_path, 'r') as file:
+            return json.load(file)
 
     def run(self):
         db = self.factory.create_connection()

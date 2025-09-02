@@ -36,21 +36,6 @@
                 "key_path" : "path_to_key_dev_private.key"
             }
         }
-    },
-    "databases" : {
-         "prd" : {
-             "database" : "",
-             "user": "",
-             "password": ""
-         },
-        "unittest" : {
-             "database" : "unittest",
-             "user": "unittest",
-             "password": "unittest"
-         }
-    },
-     "time" : {
-         "start" : "06:00:00",
-         "end" : "23:50:00"
-     }
+    }
 }
+
