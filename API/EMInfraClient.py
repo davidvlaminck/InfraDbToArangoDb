@@ -39,6 +39,17 @@ class EMInfraClient:
                                                            cookie=cookie)
         self.requester.first_part_url += 'eminfra/'
 
+    def get_last_feedproxy_page(self, feed_name: str) -> dict:
+        url = f"feedproxy/feed/{feed_name}"
+        json_dict = self.requester.get(url).json()
+        print(json_dict)
+        return json_dict
+
+    def get_feedproxy_page(self, feed_name: str, page_num: int, page_size: int = 1):
+        url = f"feedproxy/feed/{feed_name}/{page_num}/{page_size}"
+        json_dict = self.requester.get(url).json()
+        return json_dict
+
     #
     #     self.SCHADEBEHEERDER_UUID = 'd911dc02-f214-4f64-9c46-720dbdeb0d02'
     #

@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timezone
 from pathlib import Path
 
 from API.EMInfraClient import EMInfraClient
@@ -12,9 +13,11 @@ class DBPipelineController:
     """Manages the linear DB pipeline from initial fill to final syncing process."""
     def __init__(self, settings_path: Path, auth_type=AuthType.JWT, env=Environment.PRD):
         self.settings = self.load_settings(settings_path)
-        factory, em_infra_client, emson_client = self.settings_to_clients(auth_type=auth_type, env=env)
+        factory, eminfra_client, emson_client = self.settings_to_clients(auth_type=auth_type, env=env)
 
         self.factory = factory
+        self.eminfra_client = eminfra_client
+        self.emson_client = emson_client
         self.test_connection()
 
         self.feed_resources = {ResourceEnum.assets, ResourceEnum.assetrelaties,
@@ -60,7 +63,7 @@ class DBPipelineController:
         step_runner.execute()
 
     def _run_fill(self):
-        step_runner = InitialFillStep(self.factory)
+        step_runner = InitialFillStep(self.factory, self.eminfra_client)
         step_runner.execute()
 
     def _run_extra_fill(self):
@@ -99,11 +102,34 @@ def get_db_step(db) -> DBStep | None:
 
 
 class InitialFillStep:
-    def __init__(self, factory):
+    def __init__(self, factory, eminfra_client: EMInfraClient):
         self.factory = factory
+        self.eminfra_client = eminfra_client
 
     def execute(self):
-        pass
+        # AQL-query: filter direct op de server
+        db = self.factory.create_connection()
+        cursor = db.aql.execute("""
+            FOR doc IN params
+                FILTER doc.page == -1
+                RETURN doc
+        """)
+
+        # Resultaten ophalen
+        docs = list(cursor)
+        if any(docs):
+            pass
+            # save the last feedpage to the params collection
+        print(docs)
+
+        assets_page = self.eminfra_client.get_last_feedproxy_page('assets')
+        self_page = next(p for p in assets_page['links'] if p['rel'] == 'self')
+        page_number = self_page['href'].split('/')[1]
+        last_entry = sorted(
+            iter(assets_page['entries']),
+            key=lambda p: datetime.fromisoformat(p['updated']).astimezone(
+                timezone.utc))[-1]
+        print(last_entry['id'])
 
 class CreateDBStep:
     def __init__(self, factory):
@@ -137,7 +163,6 @@ class CreateDBStep:
                 {"_key": "feed_agents", "page": -1, "event_uuid": None},
                 {"_key": "feed_assets", "page": -1, "event_uuid": None},
             ]
-            set_db_step(db, DBStep.INITIAL_FILL)
 
             # Insert documents
             for doc in default_docs:

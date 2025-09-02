@@ -1,0 +1,6 @@
+requests
+pyjwt
+cryptography
+colorama
+pytz
+python-arango
