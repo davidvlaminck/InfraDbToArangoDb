@@ -165,6 +165,7 @@ class CreateDBStep:
             params = db.collection('params')
 
             # Define default documents
+            # TODO refactor to use the feed set
             default_docs = [
                 {"_key": "feed_assetrelaties", "page": -1, "event_uuid": None},
                 {"_key": "feed_betrokkenerelaties", "page": -1, "event_uuid": None},
