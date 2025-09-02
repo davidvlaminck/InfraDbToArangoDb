@@ -95,6 +95,11 @@ class InitialFillStep:
                 db.aql.execute("""UPDATE @key WITH { from: @start_from, fill: @fill} IN params""",
                                bind_vars={"key": f"fill_{resource}", "start_from": None, "fill": False})
                 break
+        if cursor is None:
+            logging.info(f"{color}No more data for {resource}. Marking as filled.")
+            db.aql.execute("""UPDATE @key WITH { from: @start_from, fill: @fill} IN params""",
+                           bind_vars={"key": f"fill_{resource}", "start_from": None, "fill": False})
+
 
 
     def _fill_resource_using_em_infra(self, resource: str):
@@ -112,22 +117,23 @@ class InitialFillStep:
         start_from = params_resource.get('from')
         while params_resource['fill']:
             page_size = self.default_page_size
-            cursor, dicts = self.eminfra_client.get_resource_page(resource, page_size, start_from)
-            if dicts:
-                self._insert_resource_data(db, resource, dicts)
-                start_from = cursor
-                db.aql.execute("""UPDATE @key WITH { from: @start_from } IN params""",
-                               bind_vars={"key": f"fill_{resource}", "start_from": start_from})
-                result = db.aql.execute("""RETURN LENGTH(assettypes)""")
-                count = list(result)[0]
-                logging.info(f"{color}Total records in {resource} collection: {count}")
+            for cursor, dicts in self.eminfra_client.get_resource_page(resource, page_size, start_from):
+                if dicts:
+                    self._insert_resource_data(db, resource, dicts)
+                    start_from = cursor
+                    db.aql.execute("""UPDATE @key WITH { from: @start_from } IN params""",
+                                   bind_vars={"key": f"fill_{resource}", "start_from": start_from})
+                    # TODO remove after done
+                    result = db.aql.execute(f"""RETURN LENGTH({resource})""")
+                    count = list(result)[0]
+                    logging.debug(f"{color}Total records in {resource} collection: {count}")
 
-                logging.info(f"{color}Inserted {len(dicts)} records for {resource}. Next cursor: {cursor}")
-            if cursor is None:
-                logging.info(f"{color}No more data for {resource}. Marking as filled.")
-                db.aql.execute("""UPDATE @key WITH { from: @start_from, fill: @fill} IN params""",
-                               bind_vars={"key": f"fill_{resource}", "start_from": None, "fill": False})
-                break
+                    logging.info(f"{color}Inserted {len(dicts)} records for {resource}. Next cursor: {cursor}")
+                if cursor is None:
+                    logging.info(f"{color}No more data for {resource}. Marking as filled.")
+                    db.aql.execute("""UPDATE @key WITH { from: @start_from, fill: @fill} IN params""",
+                                   bind_vars={"key": f"fill_{resource}", "start_from": None, "fill": False})
+                    return
 
 
     def _insert_resource_data(self, db, resource, dicts):
@@ -148,4 +154,37 @@ class InitialFillStep:
 
             # Bulk insert with overwrite (optional)
             collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+
+        # for assets:
+        # make ns a seperate nested field and remove it from the attributes
+        # replace "." with "_"
+
+    @staticmethod
+    def _transform_keys(data):
+        def process(obj):
+            if isinstance(obj, dict):
+                result = {}
+                for key, value in obj.items():
+                    # Recursively process the value
+                    value = process(value)
+
+                    # Split namespace if present
+                    if ":" in key:
+                        ns, field = key.split(":", 1)
+                        field = field.replace(".", "_")
+                        if ns not in result:
+                            result[ns] = {}
+                        result[ns][field] = value
+                    else:
+                        clean_key = key.replace(".", "_")
+                        result[clean_key] = value
+                return result
+
+            elif isinstance(obj, list):
+                return [process(item) for item in obj]
+
+            else:
+                return obj
+
+        return process(data)
 

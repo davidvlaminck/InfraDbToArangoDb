@@ -45,24 +45,25 @@ class EMInfraClient:
         print(json_dict)
         return json_dict
 
-    def get_feedproxy_page(self, feed_name: str, page_num: int, page_size: int = 1):
+    def get_feedproxy_page(self, feed_name: str, page_num: int, page_size: int = 1) -> dict:
         url = f"feedproxy/feed/{feed_name}/{page_num}/{page_size}"
         json_dict = self.requester.get(url).json()
         return json_dict
 
-    def get_resource_page(self, resource, page_size, start_from):
-        url = f"core/api/{resource}"
+    def get_resource_page(self, resource: str, page_size: int, start_from: int):
         if not start_from:
             start_from = 0
 
-        url += f"?from={start_from}&pagingMode=OFFSET&size={page_size}"
+        while True:
+            url = f"core/api/{resource}?from={start_from}&pagingMode=OFFSET&size={page_size}"
+            json_dict = self.requester.get(url).json()
+            start_from = json_dict['from'] + json_dict['size']
+            if start_from >= json_dict['totalCount']:
+                yield None, json_dict['data']
+                break
+            else:
+                yield start_from, json_dict['data']
 
-
-        json_dict = self.requester.get(url).json()
-        if json_dict['from'] + json_dict['size'] >= json_dict['totalCount']:
-            return None, json_dict['data']
-        else:
-            return json_dict['from'] + json_dict['size'], json_dict['data']
 
 
 
