@@ -46,18 +46,19 @@ class DBPipelineController:
     def run(self):
         # TODO make this a while True loop when everything else is written
         db = self.factory.create_connection()
-        current_step = get_db_step(db)
-        logging.info(f"Current DB step: {current_step}")
-        if current_step is None or current_step == DBStep.CREATE_DB:
-            logging.info("Creating the database...")
-            self._create_db()
-        elif current_step == DBStep.INITIAL_FILL:
-            logging.info("Filling the database...")
-            self._run_fill()
-        self._run_extra_fill()
-        self._run_indexes()
-        self._run_constraints()
-        self._run_syncing()
+        for i in range(10):
+            current_step = get_db_step(db)
+            logging.info(f"Current DB step: {current_step}")
+            if current_step is None or current_step == DBStep.CREATE_DB:
+                logging.info("Creating the database...")
+                self._create_db()
+            elif current_step == DBStep.INITIAL_FILL:
+                logging.info("Filling the database...")
+                self._run_fill()
+            self._run_extra_fill()
+            self._run_indexes()
+            self._run_constraints()
+            self._run_syncing()
 
     def _create_db(self):
         step_runner = CreateDBStep(self.factory)
@@ -136,8 +137,6 @@ class InitialFillStep:
             # save the last feedpage to the params collection
 
             db.collection("params").update_many(docs_to_update)
-        print(docs)
-
 
 
 class CreateDBStep:
