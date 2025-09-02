@@ -22,11 +22,11 @@ echo "deb [signed-by=/etc/apt/keyrings/arangodb.gpg] https://download.arangodb.c
   | sudo tee /etc/apt/sources.list.d/arangodb.list
 sudo apt-get install apt-transport-https
 sudo apt-get update
-sudo apt-get install arangodb3e=3.12.5.2-1
+sudo apt-get install arangodb3
 ```
 To install the debug symbols package (optional):
 ```
-sudo apt-get install arangodb3e-dbg=3.12.5.2-1
+sudo apt-get install arangodb3-dbg
 ```
 ### 3. Start and enable the database service
 ```
