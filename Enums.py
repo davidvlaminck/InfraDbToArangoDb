@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class DBStep(Enum):
+    CREATE_DB          = "0_create_db"           # Set up the initial database
     INITIAL_FILL       = "1_initial_fill"        # Populate the DB with base data
     EXTRA_DATA_FILL    = "2_extra_data_fill"     # Add supplementary/derived data
     CREATE_INDEXES     = "3_create_indexes"      # Build indexes for performance

@@ -8,8 +8,6 @@ from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 from Enums import DBStep
 
 
-
-
 class DBPipelineController:
     """Manages the linear DB pipeline from initial fill to final syncing process."""
     def __init__(self, settings_path: Path, auth_type=AuthType.JWT, env=Environment.PRD):
@@ -41,17 +39,21 @@ class DBPipelineController:
     def run(self):
         db = self.factory.create_connection()
         current_step = get_db_step(db)
-        logging.info("Current DB step: {}".format(current_step))
-        if current_step is None:
-            logging.info("Starting initial fill...")
-            self._run_fill()
+        logging.info(f"Current DB step: {current_step}")
+        if current_step is None or current_step == DBStep.CREATE_DB:
+            logging.info("Creating the database...")
+            self._create_db()
         elif current_step == DBStep.INITIAL_FILL:
-            logging.info("Continuing with initial fill...")
+            logging.info("Filling the database...")
             self._run_fill()
         self._run_extra_fill()
         self._run_indexes()
         self._run_constraints()
         self._run_syncing()
+
+    def _create_db(self):
+        step_runner = CreateDBStep(self.factory)
+        step_runner.execute()
 
     def _run_fill(self):
         step_runner = InitialFillStep(self.factory)
@@ -89,12 +91,17 @@ def get_db_step(db) -> DBStep | None:
     if not params.has("db_step"):
         return None
     doc = params.get("db_step")
-    if doc:
-        return DBStep[doc['value']]
-    return None
+    return DBStep[doc['value']] if doc else None
 
 
 class InitialFillStep:
+    def __init__(self, factory):
+        self.factory = factory
+
+    def execute(self):
+        pass
+
+class CreateDBStep:
     def __init__(self, factory):
         self.factory = factory
 
@@ -135,3 +142,6 @@ class InitialFillStep:
 
         else:
             logging.info("✅ 'params' collection exists. No changes made.")
+
+        logging.info("✅ Database setup complete. Setting step to INITIAL_FILL.")
+        set_db_step(db, DBStep.INITIAL_FILL)
