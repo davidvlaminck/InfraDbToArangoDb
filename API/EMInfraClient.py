@@ -50,6 +50,22 @@ class EMInfraClient:
         json_dict = self.requester.get(url).json()
         return json_dict
 
+    def get_resource_page(self, resource, page_size, start_from):
+        url = f"core/api/{resource}"
+        if not start_from:
+            start_from = 0
+
+        url += f"?from={start_from}&pagingMode=OFFSET&size={page_size}"
+
+
+        json_dict = self.requester.get(url).json()
+        if json_dict['from'] + json_dict['size'] >= json_dict['totalCount']:
+            return None, json_dict['data']
+        else:
+            return json_dict['from'] + json_dict['size'], json_dict['data']
+
+
+
     #
     #     self.SCHADEBEHEERDER_UUID = 'd911dc02-f214-4f64-9c46-720dbdeb0d02'
     #

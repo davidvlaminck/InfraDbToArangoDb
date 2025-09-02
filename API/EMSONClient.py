@@ -1,3 +1,4 @@
+import logging
 from collections.abc import Generator
 from dataclasses import dataclass
 from pathlib import Path
@@ -20,6 +21,18 @@ class EMSONClient:
                                                            cookie=cookie)
         self.requester.first_part_url += 'emson/'
 
+    def get_resource_by_cursor(self, resource: str, cursor: str) -> Generator[tuple[str, dict]]:
+        while True:
+            response = self.requester.get(url=f'api/otl/{resource}', headers={'em-paging-cursor': cursor})
+            if response.status_code != 200:
+                print(response)
+                raise ProcessLookupError(response.content.decode("utf-8"))
+            logging.info(f'fetched 100 results for {resource}')
+            cursor = response.headers.get('em-paging-next-cursor')
+            yield cursor, response.json()['@graph']
+            if cursor is None:
+                break
+
     def get_asset_by_uuid(self, uuid: str) -> dict:
         response = self.requester.get(url=f'api/otl/assets/{uuid}')
         if response.status_code != 200:
@@ -27,18 +40,6 @@ class EMSONClient:
             raise ProcessLookupError(response.content.decode("utf-8"))
         return response.json()
 
-    def get_assets(self) -> Generator[dict]:
-        paging_cursor = None
-        while True:
-            response = self.requester.get( url='api/otl/assets', headers={'em-paging-cursor': paging_cursor})
-            if response.status_code != 200:
-                print(response)
-                raise ProcessLookupError(response.content.decode("utf-8"))
-            print('fetched 100 results')
-            yield from response.json()['@graph']
-            paging_cursor = response.headers.get('em-paging-next-cursor')
-            if paging_cursor is None:
-                break
 
     def get_assetrelatie_by_uuid(self, uuid: str) -> dict:
         response = self.requester.get(url=f'api/otl/assetrelaties/{uuid}')
