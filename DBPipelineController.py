@@ -44,6 +44,7 @@ class DBPipelineController:
             return json.load(file)
 
     def run(self):
+        # TODO make this a while True loop when everything else is written
         db = self.factory.create_connection()
         current_step = get_db_step(db)
         logging.info(f"Current DB step: {current_step}")
@@ -118,18 +119,26 @@ class InitialFillStep:
         # Resultaten ophalen
         docs = list(cursor)
         if any(docs):
-            pass
+            docs_to_update = []
+            for feed_name in (d['_key'][5:] for d in docs):
+                print(feed_name)
+
+                resource_page = self.eminfra_client.get_last_feedproxy_page(feed_name)
+                self_page = next(p for p in resource_page['links'] if p['rel'] == 'self')
+                page_number = self_page['href'].split('/')[1]
+                last_entry = sorted(
+                    iter(resource_page['entries']),
+                    key=lambda p: datetime.fromisoformat(p['updated']).astimezone(
+                        timezone.utc))[-1]
+                print(last_entry['id'])
+                docs_to_update.append({'_id': f'params/feed_{feed_name}', 'page': int(page_number),
+                                       'event_uuid': last_entry['id']})
             # save the last feedpage to the params collection
+
+            db.collection("params").update_many(docs_to_update)
         print(docs)
 
-        assets_page = self.eminfra_client.get_last_feedproxy_page('assets')
-        self_page = next(p for p in assets_page['links'] if p['rel'] == 'self')
-        page_number = self_page['href'].split('/')[1]
-        last_entry = sorted(
-            iter(assets_page['entries']),
-            key=lambda p: datetime.fromisoformat(p['updated']).astimezone(
-                timezone.utc))[-1]
-        print(last_entry['id'])
+
 
 class CreateDBStep:
     def __init__(self, factory):
