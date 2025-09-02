@@ -13,21 +13,18 @@ from Enums import DBStep
 class DBPipelineController:
     """Manages the linear DB pipeline from initial fill to final syncing process."""
     def __init__(self, settings_path: Path, auth_type=AuthType.JWT, env=Environment.PRD):
-        factory, em_infra_client, emson_client = self.settings_to_clients(settings_path=settings_path, auth_type=auth_type, env=env)
+        self.settings = self.load_settings(settings_path)
+        factory, em_infra_client, emson_client = self.settings_to_clients(auth_type=auth_type, env=env)
 
         self.factory = factory
         self.test_connection()
 
-    @classmethod
-    def settings_to_clients(cls, settings_path, auth_type, env) -> tuple[ArangoDBConnectionFactory, EMInfraClient, EMSONClient]:
-        settings = cls.load_settings(settings_path)
-        db_settings = settings['databases'][str(env.value[0])]
+    def settings_to_clients(self, auth_type, env) -> tuple[ArangoDBConnectionFactory, EMInfraClient, EMSONClient]:
+        db_settings = self.settings['databases'][str(env.value[0])]
 
-        settings_path = Path('/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json')
-        eminfra_client = EMInfraClient(env=env, auth_type=auth_type, settings_path=settings_path)
-        emson_client = EMSONClient(env=Environment.PRD, auth_type=auth_type, settings_path=settings_path)
+        eminfra_client = EMInfraClient(env=env, auth_type=auth_type, settings=self.settings)
+        emson_client = EMSONClient(env=Environment.PRD, auth_type=auth_type, settings=self.settings)
 
-        # 🔐 Connection details
         db_name = db_settings['database']
         username = db_settings['user']
         password = db_settings['password']
@@ -36,7 +33,7 @@ class DBPipelineController:
         return factory, eminfra_client, emson_client
 
     @staticmethod
-    def load_settings(settings_path: Path) -> dict:
+    def load_settings(settings_path: Path) -> dict[str, object]:
         import json
         with open(settings_path, 'r') as file:
             return json.load(file)
@@ -77,7 +74,7 @@ class DBPipelineController:
             db = self.factory.create_connection()
             logging.info(f"✅ Successfully connected to database: {db.name}. Interact with it at http://localhost:8529")
         except Exception as e:
-            logging.info(f"❌ Failed to connect to database: {e}")
+            logging.error(f"❌ Failed to connect to database: {e}")
             raise
 
 

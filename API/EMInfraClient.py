@@ -35,8 +35,8 @@ class Query(BaseDataclass):
 
 
 class EMInfraClient:
-    def __init__(self, auth_type: AuthType, env: Environment, settings_path: Path = None, cookie: str = None):
-        self.requester = RequesterFactory.create_requester(auth_type=auth_type, env=env, settings_path=settings_path,
+    def __init__(self, auth_type: AuthType, env: Environment, settings: dict = None, cookie: str = None):
+        self.requester = RequesterFactory.create_requester(auth_type=auth_type, env=env, settings=settings,
                                                            cookie=cookie)
         self.requester.first_part_url += 'eminfra/'
         self.SCHADEBEHEERDER_UUID = 'd911dc02-f214-4f64-9c46-720dbdeb0d02'

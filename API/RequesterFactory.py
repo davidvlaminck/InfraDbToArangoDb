@@ -17,7 +17,7 @@ class RequesterFactory:
     }
 
     @classmethod
-    def create_requester(cls, auth_type: AuthType, env: Environment, settings_path: Path = None, cookie: str = None) -> AbstractRequester:
+    def create_requester(cls, auth_type: AuthType, env: Environment, settings: dict = None, cookie: str = None) -> AbstractRequester:
         first_part_url = cls.first_part_url_dict.get(env)
         if first_part_url is None:
             raise ValueError(f"Invalid environment: {env}")
@@ -27,8 +27,9 @@ class RequesterFactory:
                 raise ValueError("argument cookie is required for COOKIE authentication")
             return CookieRequester(cookie=cookie, first_part_url=first_part_url.replace('services.', ''))
 
-        with open(settings_path) as settings_file:
-            settings = json.load(settings_file)
+        if settings is None or 'authentication' not in settings:
+            raise ValueError("invalid settings")
+
         specific_settings = settings['authentication'][auth_type.name][env.name.lower()]
 
         if auth_type == AuthType.JWT:
