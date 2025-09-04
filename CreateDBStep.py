@@ -22,13 +22,21 @@ class CreateDBStep:
                     db.delete_collection(name, ignore_missing=True)
                     logging.info(f"🗑️ Dropped collection: {name}")
 
-            # 🆕 Create required collections
-            for name in ["params", "assets", "assettypes"]:
+            # 🆕 Create document collections
+            for name in ["params", "assets", "assettypes", 'relatietypes', "agents"]:
                 db.create_collection(name)
-                logging.info(f"✅ Created collection: {name}")
+                logging.info(f"✅ Created document collection: {name}")
+
+            # 🆕 Create edge collections
+            for name in ["assetrelaties",  "betrokkenerelaties"]:
+                db.create_collection(name, edge=True)
+                logging.info(f"✅ Created edge collection: {name}")
 
             # indexes and constraints will be created in later steps but add them here for now
-            db.collection('assets').add_persistent_index(fields=['assettype_key'], unique=False, sparse=True)
+            db.collection('assets').add_persistent_index(fields=['assettype_key'], unique=False, sparse=False)
+            db.collection('assetrelaties').add_persistent_index(fields=["relatietype_key"], unique=False, sparse=False)
+            db.collection('assettypes').add_persistent_index(fields=['label'], unique=False, sparse=False)
+            # also add graphs here later
 
             params = db.collection('params')
 

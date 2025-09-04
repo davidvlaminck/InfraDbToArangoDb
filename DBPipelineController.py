@@ -24,7 +24,8 @@ class DBPipelineController:
 
         self.feed_resources = {ResourceEnum.assets, ResourceEnum.assetrelaties,
                                ResourceEnum.betrokkenerelaties, ResourceEnum.agents}
-        self.fill_resources = {ResourceEnum.assettypes, ResourceEnum.assets}
+        self.fill_resources = [ResourceEnum.assettypes, ResourceEnum.assets, ResourceEnum.relatietypes,
+                               ResourceEnum.assetrelaties]
 
     def settings_to_clients(self, auth_type, env) -> tuple[ArangoDBConnectionFactory, EMInfraClient, EMSONClient]:
         db_settings = self.settings['databases'][str(env.value[0])]

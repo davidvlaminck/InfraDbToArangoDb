@@ -18,8 +18,9 @@ class InitialFillStep:
         self.factory = factory
         self.eminfra_client = eminfra_client
         self.emson_client = emson_client
-        self.default_page_size = 100
+        self.default_page_size = 1000
         self.assettype_lookup = None
+        self.relatietype_lookup = None
         self.transformer = Transformer.from_crs("EPSG:31370", "EPSG:4326", always_xy=True)
 
     def execute(self, fill_resources: set[ResourceEnum]):
@@ -71,12 +72,13 @@ class InitialFillStep:
                 raise
 
     def _fill_resource(self, resource: str):
-        if resource in {ResourceEnum.assettypes.value}:
+        if resource in {ResourceEnum.assettypes.value, ResourceEnum.relatietypes.value}:
             self._fill_resource_using_em_infra(resource)
         else:
             self._fill_resource_using_emson(resource)
 
     def _fill_resource_using_emson(self, resource: str):
+        # TODO use transaction
         color = colorama_table[resource]
         logging.info(f"{color}Filling resource: {resource}")
         db = self.factory.create_connection()
@@ -91,7 +93,8 @@ class InitialFillStep:
         cursor = params_resource['from']
         while params_resource['fill']:
 
-            for cursor, dicts in self.emson_client.get_resource_by_cursor(resource, cursor=cursor):
+            for cursor, dicts in self.emson_client.get_resource_by_cursor(
+                    resource, cursor=cursor, page_size=self.default_page_size):
                 if dicts:
                     self._insert_resource_data(db, resource, dicts)
                     db.aql.execute("""UPDATE @key WITH { from: @start_from } IN params""",
@@ -111,6 +114,7 @@ class InitialFillStep:
 
 
     def _fill_resource_using_em_infra(self, resource: str):
+        # TODO use transaction
         color = colorama_table[resource]
         logging.info(f"{color}Filling resource: {resource}")
         db = self.factory.create_connection()
@@ -151,7 +155,7 @@ class InitialFillStep:
                 {
                     "_key": record["uuid"][:8],
                     "uuid": record["uuid"],
-                    "name": record["naam"],
+                    "naam": record["naam"],
                     "label": record["afkorting"],
                     "uri": record["uri"],
                     "definitie": record["definitie"],
@@ -169,8 +173,6 @@ class InitialFillStep:
                     at["uri"]: at["_key"]
                     for at in db.collection('assettypes')  # your list of 100 assettype dicts
                 }
-
-
             docs_to_insert = []
             for obj in dicts:
                 try:
@@ -198,14 +200,11 @@ class InitialFillStep:
                         geojson = mapping(geom_wgs84)
                         obj['geometry'] = geojson
 
-                    asset_key = self.assettype_lookup.get(uri)
-                    if asset_key:
+                    if asset_key := self.assettype_lookup.get(uri):
                         obj["assettype_key"] = asset_key
                         docs_to_insert.append(obj)
                     else:
                         print(f"⚠️ No matching assettype for URI: {uri}")
-                        # retry by raising a specific exception
-                        # check if assettypes is still filling here, so you can wait for it to finish
                 except Exception as e:
                     logging.error(f"Error processing asset {obj.get('@id', 'unknown')}: {e}")
                     raise e
@@ -214,6 +213,55 @@ class InitialFillStep:
             # make ns a separate nested field and remove it from the attributes
             # replace "." with "_"
             collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+        elif resource == ResourceEnum.relatietypes.value:
+            collection = db.collection('relatietypes')
+            docs_to_insert = [
+                {
+                    "_key": record["uuid"][:4],
+                    "uuid": record["uuid"],
+                    "naam": record["naam"],
+                    "label": record.get("label", None),
+                    "uri": record.get("uri", None),
+                    "definitie": record["definitie"],
+                    "actief": record.get("actief", True),
+                    "gericht": record.get('gericht', None)
+                }
+                for record in dicts
+            ]
+            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+        elif resource == ResourceEnum.assetrelaties.value:
+            collection = db.collection('assetrelaties')
+            if self.relatietype_lookup is None:
+                self.relatietype_lookup = {
+                    at["uri"]: at["_key"]
+                    for at in db.collection('relatietypes')
+                }
+            docs_to_insert = []
+            for obj in dicts:
+                try:
+                    obj = self._transform_keys(obj)
+                    uri = obj["@type"]
+
+                    obj["_key"] = obj.get("@id").split("/")[-1][:36]
+
+                    obj["_from"] = 'assets/' + obj['RelatieObject_bron'].get("@id").split("/")[-1][:36]
+                    obj["_to"] = 'assets/' + obj['RelatieObject_doel'].get("@id").split("/")[-1][:36]
+
+                    if "AIMDBStatus_isActief" not in obj:
+                        obj["AIMDBStatus_isActief"] = True
+
+                    if relatietype_key := self.relatietype_lookup.get(uri):
+                        obj["relatietype_key"] = relatietype_key
+                        docs_to_insert.append(obj)
+                    else:
+                        print(f"⚠️ No matching relatietype for URI: {uri}")
+                except Exception as e:
+                    logging.error(f"Error processing asset {obj.get('@id', 'unknown')}: {e}")
+                    raise e
+
+            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+        else:
+            raise NotImplementedError(f"Resource '{resource}' not implemented for insertion.")
 
     @staticmethod
     def _transform_keys(data):
