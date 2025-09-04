@@ -64,7 +64,10 @@ class EMInfraClient:
             else:
                 yield start_from, json_dict['data']
 
-
+    def test_connection(self):
+        url = f"core/api/gebruikers/ik"
+        json_dict = self.requester.get(url).json()
+        return json_dict
 
 
     #

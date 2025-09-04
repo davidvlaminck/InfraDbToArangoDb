@@ -1,4 +1,6 @@
 import logging
+import time
+from concurrent.futures import ProcessPoolExecutor, as_completed, ThreadPoolExecutor
 from datetime import datetime, timezone
 
 from API.EMInfraClient import EMInfraClient
@@ -14,14 +16,16 @@ import json
 
 
 class InitialFillStep:
+    default_page_size = 1000
+
     def __init__(self, factory, eminfra_client: EMInfraClient, emson_client: EMSONClient):
         self.factory = factory
-        self.eminfra_client = eminfra_client
-        self.emson_client = emson_client
-        self.default_page_size = 1000
-        self.assettype_lookup = None
-        self.relatietype_lookup = None
-        self.transformer = Transformer.from_crs("EPSG:31370", "EPSG:4326", always_xy=True)
+        self.eminfra_client: EMInfraClient = eminfra_client
+        self.emson_client: EMSONClient = emson_client
+
+        self.assettype_lookup: dict = None
+        self.relatietype_lookup: dict = None
+        self.transformer: Transformer = Transformer.from_crs("EPSG:31370", "EPSG:4326", always_xy=True)
 
     def execute(self, fill_resources: set[ResourceEnum]):
         db = self.factory.create_connection()
@@ -61,15 +65,47 @@ class InitialFillStep:
         """Updates the 'params' collection with the provided documents."""
         db.collection("params").update_many(docs_to_update)
 
+    def _fill_resource_worker(self, resource):
+        """Worker function to run in a separate process."""
+        color = colorama_table[resource]
+        logging.info(f'{color}Filling {resource.value} table')
+        self._fill_resource(resource.value)  # may raise
+        return resource
+
     def fill_tables(self, fill_resources):
-        for resource in fill_resources:
-            color = colorama_table[resource]
-            logging.info(f'{color}Filling {resource.value} table')
-            try:
-                self._fill_resource(resource.value)
-            except Exception as e:
-                logging.error(f'{color}Error filling {resource.value}: {e}')
-                raise
+        """
+        Run all fill tasks in parallel. Retry failed ones indefinitely until all succeed.
+        Wait 30 seconds between retry batches if any fail.
+        """
+        remaining = list(fill_resources)
+        attempt = 1
+
+        while remaining:
+            logging.info(f"=== Batch attempt {attempt} with {len(remaining)} task(s) ===")
+            failed = []
+
+            max_workers = min(len(remaining), 4)
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                futures = {executor.submit(self._fill_resource_worker, r): r for r in remaining}
+
+                for future in as_completed(futures):
+                    resource = futures[future]
+                    color = colorama_table[resource]
+                    try:
+                        res = future.result()
+                        logging.info(f'{color}Finished filling {res.value} table')
+                    except Exception as e:
+                        logging.error(f'{color}Error filling {resource.value}: {e}')
+                        failed.append(resource)
+
+            if failed:
+                logging.warning(f"{len(failed)} task(s) failed in attempt {attempt}. Retrying in 30 seconds...")
+                time.sleep(30)
+                remaining = failed
+                attempt += 1
+            else:
+                logging.info("✅ All tasks completed successfully!")
+                break
 
     def _fill_resource(self, resource: str):
         if resource in {ResourceEnum.assettypes.value, ResourceEnum.relatietypes.value}:
@@ -111,6 +147,15 @@ class InitialFillStep:
             db.aql.execute("""UPDATE @key WITH { from: @start_from, fill: @fill} IN params""",
                            bind_vars={"key": f"fill_{resource}", "start_from": None, "fill": False})
 
+    @staticmethod
+    def to_short_uri(object_uri: str):
+        if object_uri == 'http://purl.org/dc/terms/Agent':
+            return 'dcmi:Agent'
+        shorter_uri = object_uri.split('/ns/')[1]
+        if object_uri.startswith('https://wegenenverkeer.'):
+            return shorter_uri
+        prefix = object_uri.split('://')[1].split('.')[0]
+        return f'{prefix}:{shorter_uri}'
 
 
     def _fill_resource_using_em_infra(self, resource: str):
@@ -158,6 +203,7 @@ class InitialFillStep:
                     "naam": record["naam"],
                     "label": record["afkorting"],
                     "uri": record["uri"],
+                    "short_uri": record['korteUri'],
                     "definitie": record["definitie"],
                     "actief": record["actief"]
                 }
@@ -222,6 +268,7 @@ class InitialFillStep:
                     "naam": record["naam"],
                     "label": record.get("label", None),
                     "uri": record.get("uri", None),
+                    "short": None if record.get("uri", None) is None else record["uri"].split('#')[-1],
                     "definitie": record["definitie"],
                     "actief": record.get("actief", True),
                     "gericht": record.get('gericht', None)

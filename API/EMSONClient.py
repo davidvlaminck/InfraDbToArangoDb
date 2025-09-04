@@ -21,6 +21,11 @@ class EMSONClient:
                                                            cookie=cookie)
         self.requester.first_part_url += 'emson/'
 
+    def test_connection(self):
+        url = "api/otl/assetrelaties"
+        json_dict = self.requester.get(url).json()
+        return json_dict
+
     def get_resource_by_cursor(self, resource: str, cursor: str, page_size: int = 100) -> Generator[tuple[str, dict]]:
         query = Query(filters={}, size=page_size, fromCursor=cursor)
         while True:
