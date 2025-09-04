@@ -27,6 +27,9 @@ class CreateDBStep:
                 db.create_collection(name)
                 logging.info(f"✅ Created collection: {name}")
 
+            # indexes and constraints will be created in later steps but add them here for now
+            db.collection('assets').add_persistent_index(fields=['assettype_key'], unique=False, sparse=True)
+
             params = db.collection('params')
 
             # Define default documents

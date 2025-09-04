@@ -11,7 +11,7 @@ from API.RequesterFactory import RequesterFactory
 class Query(BaseDataclass):
     size: int
     filters: dict
-    orderByProperty: str
+    orderByProperty: str | None = None
     fromCursor: str | None = None
 
 
@@ -21,17 +21,18 @@ class EMSONClient:
                                                            cookie=cookie)
         self.requester.first_part_url += 'emson/'
 
-    def get_resource_by_cursor(self, resource: str, cursor: str) -> Generator[tuple[str, dict]]:
+    def get_resource_by_cursor(self, resource: str, cursor: str, page_size: int = 100) -> Generator[tuple[str, dict]]:
+        query = Query(filters={}, size=page_size, fromCursor=cursor)
         while True:
-            response = self.requester.get(url=f'api/otl/{resource}', headers={'em-paging-cursor': cursor})
+            response = self.requester.post(url=f'api/otl/{resource}/search', data=query.json())
             if response.status_code != 200:
                 print(response)
                 raise ProcessLookupError(response.content.decode("utf-8"))
-            logging.info(f'fetched 100 results for {resource}')
             cursor = response.headers.get('em-paging-next-cursor')
             yield cursor, response.json()['@graph']
             if cursor is None:
                 break
+            query.fromCursor = cursor
 
     def get_asset_by_uuid(self, uuid: str) -> dict:
         response = self.requester.get(url=f'api/otl/assets/{uuid}')

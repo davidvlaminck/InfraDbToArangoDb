@@ -6,6 +6,12 @@ from API.EMSONClient import EMSONClient
 from Enums import ResourceEnum
 from ResourceEnum import colorama_table
 
+from shapely import wkt
+from shapely.ops import transform
+from shapely.geometry import mapping
+from pyproj import Transformer
+import json
+
 
 class InitialFillStep:
     def __init__(self, factory, eminfra_client: EMInfraClient, emson_client: EMSONClient):
@@ -13,6 +19,8 @@ class InitialFillStep:
         self.eminfra_client = eminfra_client
         self.emson_client = emson_client
         self.default_page_size = 100
+        self.assettype_lookup = None
+        self.transformer = Transformer.from_crs("EPSG:31370", "EPSG:4326", always_xy=True)
 
     def execute(self, fill_resources: set[ResourceEnum]):
         db = self.factory.create_connection()
@@ -154,37 +162,83 @@ class InitialFillStep:
 
             # Bulk insert with overwrite (optional)
             collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+        elif resource == ResourceEnum.assets.value:
+            collection = db.collection('assets')
+            if self.assettype_lookup is None:
+                self.assettype_lookup = {
+                    at["uri"]: at["_key"]
+                    for at in db.collection('assettypes')  # your list of 100 assettype dicts
+                }
 
-        # for assets:
-        # make ns a seperate nested field and remove it from the attributes
-        # replace "." with "_"
+
+            docs_to_insert = []
+            for obj in dicts:
+                try:
+                    obj = self._transform_keys(obj)
+                    uri = obj["@type"]
+
+
+                    obj["_key"] = obj.get("@id").split("/")[-1][:36]
+
+                    wkt_string = None
+                    # extract wkt string
+                    if 'geo' in obj and obj['geo']['Geometrie_log']:
+                        geometrie_dict = obj['geo']['Geometrie_log'][0]['DtcLog_geometrie']
+                        wkt_string = next(iter(geometrie_dict.values()))
+                    elif 'loc' in obj:
+                        if 'Locatie_geometrie' in obj['loc'] and obj['loc']['Locatie_geometrie'] != '':
+                            wkt_string = obj['loc']['Locatie_geometrie']
+                        elif 'Locatie_puntlocatie' in obj['loc'] and obj['loc']['Locatie_puntlocatie'] != '' and '3Dpunt_puntgeometrie' in obj['loc']['Locatie_puntlocatie'] and obj['loc']['Locatie_puntlocatie']['3Dpunt_puntgeometrie'] != '':
+                            coords = obj['loc']['Locatie_puntlocatie']['3Dpunt_puntgeometrie']['DtcCoord.lambert72']
+                            wkt_string = f"POINT Z ({coords['DtcCoordLambert72.xcoordinaat']} {coords['DtcCoordLambert72.ycoordinaat']} {coords['DtcCoordLambert72.zcoordinaat']})"
+                    if wkt_string is not None:
+                        obj['wkt'] = wkt_string
+                        geom = wkt.loads(wkt_string)
+                        geom_wgs84 = transform(self.transformer.transform, geom)
+                        geojson = mapping(geom_wgs84)
+                        obj['geometry'] = geojson
+
+                    asset_key = self.assettype_lookup.get(uri)
+                    if asset_key:
+                        obj["assettype_key"] = asset_key
+                        docs_to_insert.append(obj)
+                    else:
+                        print(f"⚠️ No matching assettype for URI: {uri}")
+                        # retry by raising a specific exception
+                        # check if assettypes is still filling here, so you can wait for it to finish
+                except Exception as e:
+                    logging.error(f"Error processing asset {obj.get('@id', 'unknown')}: {e}")
+                    raise e
+
+            # for assets:
+            # make ns a separate nested field and remove it from the attributes
+            # replace "." with "_"
+            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
 
     @staticmethod
     def _transform_keys(data):
-        def process(obj):
+        def process(obj, depth=0):
             if isinstance(obj, dict):
                 result = {}
                 for key, value in obj.items():
-                    # Recursively process the value
-                    value = process(value)
+                    value = process(value, depth + 1)
 
-                    # Split namespace if present
-                    if ":" in key:
+                    # Only split namespace at top level
+                    if depth == 0 and ":" in key:
                         ns, field = key.split(":", 1)
                         field = field.replace(".", "_")
                         if ns not in result:
                             result[ns] = {}
                         result[ns][field] = value
                     else:
-                        clean_key = key.replace(".", "_")
+                        clean_key = key.split(":", 1)[-1].replace(".", "_")
                         result[clean_key] = value
                 return result
 
             elif isinstance(obj, list):
-                return [process(item) for item in obj]
+                return [process(item, depth) for item in obj]
 
             else:
                 return obj
 
         return process(data)
-

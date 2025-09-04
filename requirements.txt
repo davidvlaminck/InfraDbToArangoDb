@@ -4,3 +4,5 @@ cryptography
 colorama
 pytz
 python-arango
+shapely
+pyproj
