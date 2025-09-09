@@ -1,7 +1,7 @@
 import logging
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed, ThreadPoolExecutor
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 
 from API.EMInfraClient import EMInfraClient
 from API.EMSONClient import EMSONClient
@@ -84,7 +84,7 @@ class InitialFillStep:
             logging.info(f"=== Batch attempt {attempt} with {len(remaining)} task(s) ===")
             failed = []
 
-            max_workers = min(len(remaining), 4)
+            max_workers = min(len(remaining), 8)
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
                 futures = {executor.submit(self._fill_resource_worker, r): r for r in remaining}
 
@@ -108,7 +108,8 @@ class InitialFillStep:
                 break
 
     def _fill_resource(self, resource: str):
-        if resource in {ResourceEnum.assettypes.value, ResourceEnum.relatietypes.value}:
+        if resource in {ResourceEnum.assettypes.value, ResourceEnum.relatietypes.value, ResourceEnum.agents.value,
+                        ResourceEnum.assets.value, ResourceEnum.betrokkenerelaties.value, ResourceEnum.toezichtgroepen.value}:
             self._fill_resource_using_em_infra(resource)
         else:
             self._fill_resource_using_emson(resource)
@@ -172,9 +173,17 @@ class InitialFillStep:
             return
 
         start_from = params_resource.get('from')
+        page_size = self.default_page_size
+
+        generator = self.eminfra_client.get_resource_page(resource, page_size, start_from)
+        if resource in {ResourceEnum.agents.value, ResourceEnum.betrokkenerelaties.value}:
+            generator = self.eminfra_client.get_resource_by_cursor(resource, start_from, page_size,
+                                                                            expansion_strings=['contactInfo'])
+        elif resource == ResourceEnum.toezichtgroepen.value:
+            generator = self.eminfra_client.get_identity_resource_page(resource, page_size, start_from)
+
         while params_resource['fill']:
-            page_size = self.default_page_size
-            for cursor, dicts in self.eminfra_client.get_resource_page(resource, page_size, start_from):
+            for cursor, dicts in generator:
                 if dicts:
                     self._insert_resource_data(db, resource, dicts)
                     start_from = cursor
@@ -191,7 +200,6 @@ class InitialFillStep:
                     db.aql.execute("""UPDATE @key WITH { from: @start_from, fill: @fill} IN params""",
                                    bind_vars={"key": f"fill_{resource}", "start_from": None, "fill": False})
                     return
-
 
     def _insert_resource_data(self, db, resource, dicts):
         if resource == ResourceEnum.assettypes.value:
@@ -307,6 +315,63 @@ class InitialFillStep:
                     raise e
 
             collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+        elif resource == ResourceEnum.agents.value:
+            collection = db.collection('agents')
+            docs_to_insert = []
+            for obj in dicts:
+                try:
+                    obj = self._transform_keys(obj)
+                    obj["_key"] = obj.get("@id").split("/")[-1][:13]
+                    obj["uuid"] = obj.get("@id").split("/")[-1][:36]
+                    docs_to_insert.append(obj)
+                except Exception as e:
+                    logging.error(f"Error processing agent {obj.get('@id', 'unknown')}: {e}")
+                    raise e
+            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+        elif resource == ResourceEnum.betrokkenerelaties.value:
+            collection = db.collection('betrokkenerelaties')
+            docs_to_insert = []
+            for obj in dicts:
+                try:
+                    obj = self._transform_keys(obj)
+
+                    obj["_key"] = obj.get("@id").split("/")[-1][:36]
+
+                    if obj['RelatieObject_bron']['@type'] == 'http://purl.org/dc/terms/Agent':
+                        obj["_from"] = 'agents/' + obj['RelatieObject_bron'].get("@id").split("/")[-1][:13]
+                    else:
+                        obj["_from"] = 'assets/' + obj['RelatieObject_bron'].get("@id").split("/")[-1][:36]
+                    obj["_to"] = 'assets/' + obj['RelatieObject_doel'].get("@id").split("/")[-1][:13]
+
+                    if "AIMDBStatus_isActief" not in obj:
+                        obj["AIMDBStatus_isActief"] = True
+
+                    if 'HeeftBetrokkene_rol' in obj and '/' in obj['HeeftBetrokkene_rol']:
+                        obj["rol"] = obj["HeeftBetrokkene_rol"].split('/')[-1]
+
+                except Exception as e:
+                    logging.error(f"Error processing asset {obj.get('@id', 'unknown')}: {e}")
+                    raise e
+
+            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+        elif resource == ResourceEnum.toezichtgroepen.value:
+            collection = db.collection('toezichtgroepen')
+            docs_to_insert = [
+                {
+                    "_key": record["uuid"][:8],
+                    "uuid": record["uuid"],
+                    "naam": record["naam"],
+                    'actiefInterval': record['actiefInterval'],
+                    'actief': self.actief_interval_to_actief(record['actiefInterval']),
+                    'contactFiche': record['contactFiche'],
+                    "omschrijving": record.get("omschrijving"),
+                    "type": record['_type'],
+                }
+                for record in dicts
+            ]
+
+            # Bulk insert with overwrite (optional)
+            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
         else:
             raise NotImplementedError(f"Resource '{resource}' not implemented for insertion.")
 
@@ -337,3 +402,17 @@ class InitialFillStep:
                 return obj
 
         return process(data)
+
+    def actief_interval_to_actief(self, actief_interval: dict):
+        van = actief_interval.get('van')
+        tot = actief_interval.get('tot')
+        if van is None:
+            return False
+        van_date = date.fromisoformat(van)
+        if van_date < datetime.now(timezone.utc):
+            if tot is None:
+                return True
+            tot_date = date.fromisoformat(van)
+            if tot_date > datetime.now(timezone.utc):
+                return True
+        return False

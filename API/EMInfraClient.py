@@ -25,12 +25,16 @@ from utils.query_dto_helpers import add_expression
 import os
 
 
-@dataclass
+@dataclass()
 class Query(BaseDataclass):
     size: int
     filters: dict
-    orderByProperty: str
+    orderByProperty: str | None = None
     fromCursor: str | None = None
+    expansions: dict[str, list[str]] | None = None
+
+    def add_expansions(self, expansions: list[str]):
+        self.expansions = {"fields" : expansions}
 
 
 class EMInfraClient:
@@ -47,8 +51,7 @@ class EMInfraClient:
 
     def get_feedproxy_page(self, feed_name: str, page_num: int, page_size: int = 1) -> dict:
         url = f"feedproxy/feed/{feed_name}/{page_num}/{page_size}"
-        json_dict = self.requester.get(url).json()
-        return json_dict
+        return self.requester.get(url).json()
 
     def get_resource_page(self, resource: str, page_size: int, start_from: int):
         if not start_from:
@@ -64,10 +67,42 @@ class EMInfraClient:
             else:
                 yield start_from, json_dict['data']
 
+    def get_identity_resource_page(self, resource: str, page_size: int, start_from: int):
+        if not start_from:
+            start_from = 0
+
+        while True:
+            url = f"identiteit/api/{resource}?from={start_from}&pagingMode=OFFSET&size={page_size}"
+            json_dict = self.requester.get(url).json()
+            start_from = json_dict['from'] + json_dict['size']
+            if start_from >= json_dict['totalCount']:
+                yield None, json_dict['data']
+                break
+            else:
+                yield start_from, json_dict['data']
+
+
+    def get_resource_by_cursor(self, resource: str, cursor: str, page_size: int = 100, expansion_strings: list[str] = None) -> Generator[tuple[str, dict]]:
+        query = Query(filters={}, size=page_size, fromCursor=cursor)
+        if expansion_strings:
+            query.add_expansions(expansion_strings)
+        while True:
+            response = self.requester.post(url=f'core/api/otl/{resource}/search', data=query.json())
+            if response.status_code != 200:
+                print(response)
+                raise ProcessLookupError(response.content.decode("utf-8"))
+            cursor = response.headers.get('em-paging-next-cursor')
+            yield cursor, response.json()['@graph']
+            if cursor is None:
+                break
+            query.fromCursor = cursor
+
     def test_connection(self):
-        url = f"core/api/gebruikers/ik"
-        json_dict = self.requester.get(url).json()
-        return json_dict
+        return self.requester.get("core/api/gebruikers/ik").json()
+
+    
+    #
+    
 
 
     #
