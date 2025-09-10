@@ -6,8 +6,7 @@ from datetime import datetime, timezone, date
 
 from API.EMInfraClient import EMInfraClient
 from API.EMSONClient import EMSONClient
-from Enums import ResourceEnum
-from ResourceEnum import colorama_table
+from Enums import ResourceEnum, colorama_table
 
 from shapely import wkt
 from shapely.ops import transform
