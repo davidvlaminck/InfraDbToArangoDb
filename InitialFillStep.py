@@ -1,5 +1,6 @@
 import logging
 import time
+import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed, ThreadPoolExecutor
 from datetime import datetime, timezone, date
 
@@ -25,6 +26,8 @@ class InitialFillStep:
 
         self.assettype_lookup: dict = None
         self.relatietype_lookup: dict = None
+        self.beheerders_lookup: dict = None
+
         self.transformer: Transformer = Transformer.from_crs("EPSG:31370", "EPSG:4326", always_xy=True)
 
     def execute(self, fill_resources: set[ResourceEnum]):
@@ -109,7 +112,8 @@ class InitialFillStep:
 
     def _fill_resource(self, resource: str):
         if resource in {ResourceEnum.assettypes.value, ResourceEnum.relatietypes.value, ResourceEnum.agents.value,
-                        ResourceEnum.assets.value, ResourceEnum.betrokkenerelaties.value, ResourceEnum.toezichtgroepen.value}:
+                        ResourceEnum.assets.value, ResourceEnum.betrokkenerelaties.value, ResourceEnum.beheerders.value,
+                        ResourceEnum.toezichtgroepen.value, ResourceEnum.identiteiten.value, ResourceEnum.bestekken.value}:
             self._fill_resource_using_em_infra(resource)
         else:
             self._fill_resource_using_emson(resource)
@@ -179,8 +183,10 @@ class InitialFillStep:
         if resource in {ResourceEnum.agents.value, ResourceEnum.betrokkenerelaties.value}:
             generator = self.eminfra_client.get_resource_by_cursor(resource, start_from, page_size,
                                                                             expansion_strings=['contactInfo'])
-        elif resource == ResourceEnum.toezichtgroepen.value:
+        elif resource in {ResourceEnum.toezichtgroepen.value, ResourceEnum.identiteiten.value}:
             generator = self.eminfra_client.get_identity_resource_page(resource, page_size, start_from)
+        elif resource == ResourceEnum.bestekken.value:
+            generator = self.eminfra_client.get_resource_page("bestekrefs", page_size, start_from)
 
         while params_resource['fill']:
             for cursor, dicts in generator:
@@ -222,12 +228,19 @@ class InitialFillStep:
             collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
         elif resource == ResourceEnum.assets.value:
             collection = db.collection('assets')
+            collection2 = db.collection('bestekkoppelingen')
             if self.assettype_lookup is None:
                 self.assettype_lookup = {
                     at["uri"]: at["_key"]
-                    for at in db.collection('assettypes')  # your list of 100 assettype dicts
+                    for at in db.collection('assettypes')
+                }
+            if self.beheerders_lookup is None:
+                self.beheerders_lookup = {
+                    at["ref"]: at["_key"]
+                    for at in db.collection('beheerders')
                 }
             docs_to_insert = []
+            docs2_to_insert = []
             for obj in dicts:
                 try:
                     obj = self._transform_keys(obj)
@@ -254,11 +267,31 @@ class InitialFillStep:
                         geojson = mapping(geom_wgs84)
                         obj['geometry'] = geojson
 
-                    if asset_key := self.assettype_lookup.get(uri):
-                        obj["assettype_key"] = asset_key
-                        docs_to_insert.append(obj)
+                    if assettype_key := self.assettype_lookup.get(uri):
+                        obj["assettype_key"] = assettype_key
                     else:
                         print(f"⚠️ No matching assettype for URI: {uri}")
+                        continue
+
+                    if tzg_id := obj.get('tz', {}).get("Toezichtgroep_toezichtgroep", {}).get('DtcToezichtGroep_id'):
+                        obj["toezichtgroep_key"] = tzg_id[:8]
+
+                    if tz_id := obj.get('tz', {}).get("Toezicht_toezichter", {}).get('DtcToezichter_id'):
+                        obj["toezichter_key"] = tz_id[:8]
+
+                    sb_ref = obj.get('tz', {}).get("Schadebeheerder_schadebeheerder", {}).get('DtcBeheerder_referentie')
+                    if sb_key := self.assettype_lookup.get(sb_ref):
+                        obj["beheerder_key"] = sb_key
+
+                    if 'bs' in obj and 'Bestek_bestekkoppeling' in obj['bs'] and obj['bs']['Bestek_bestekkoppeling']:
+                        bestek_koppelingen = obj['bs']['Bestek_bestekkoppeling']
+                        for koppeling in bestek_koppelingen:
+                            koppeling["_from"] = 'assets/' + obj['_key']
+                            koppeling["_to"] = 'bestekken/' + koppeling['DtcBestekkoppeling_bestekId'].get("@DtcIdentificator_identificator")[:8]
+                            koppeling['_key'] = str(uuid.uuid4())
+                            koppeling['status'] = koppeling.get('status').split('/')[-1] if koppeling.get('status') else None
+                            docs2_to_insert.append(koppeling)
+                    docs_to_insert.append(obj)
                 except Exception as e:
                     logging.error(f"Error processing asset {obj.get('@id', 'unknown')}: {e}")
                     raise e
@@ -267,6 +300,7 @@ class InitialFillStep:
             # make ns a separate nested field and remove it from the attributes
             # replace "." with "_"
             collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+            collection2.import_bulk(docs2_to_insert, overwrite=False, on_duplicate="update")
         elif resource == ResourceEnum.relatietypes.value:
             collection = db.collection('relatietypes')
             docs_to_insert = [
@@ -372,6 +406,65 @@ class InitialFillStep:
 
             # Bulk insert with overwrite (optional)
             collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+        elif resource == ResourceEnum.identiteiten.value:
+            collection = db.collection('identiteiten')
+            docs_to_insert = [
+                {
+                    "_key": record["uuid"][:8],
+                    "uuid": record["uuid"],
+                    "type": record['_type'],
+                    "naam": record["naam"],
+                    "voornaam": record["voornaam"],
+                    "gebruikersnaam": record["gebruikersnaam"],
+                    "systeem": record["systeem"],
+                    "voId": record.get("voId"),
+                    "bron": record.get("bron"),
+                    'actief': record['actief'],
+                    'contactFiche': record['contactFiche'],
+                    'gebruikersrechtOrganisaties': record.get('gebruikersrechtOrganisaties'),
+                }
+                for record in dicts
+            ]
+
+            # Bulk insert with overwrite (optional)
+            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+        elif resource == ResourceEnum.beheerders.value:
+            collection = db.collection('beheerders')
+            docs_to_insert = [
+                {
+                    "_key": record["uuid"][:8],
+                    "uuid": record["uuid"],
+                    "type": record['_type'],
+                    "naam": record["naam"],
+                    "referentie": record["referentie"],
+                    'actiefInterval': record['actiefInterval'],
+                    'actief': self.actief_interval_to_actief(record['actiefInterval']),
+                    'contactFiche': record['contactFiche']
+                }
+                for record in dicts
+            ]
+
+            # Bulk insert with overwrite (optional)
+            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+        elif resource == ResourceEnum.bestekken.value:
+            collection = db.collection('bestekken')
+            docs_to_insert = [
+                {
+                    "_key": record["uuid"][:8],
+                    "uuid": record["uuid"],
+                    "type": record['type'],
+                    "awvId": record.get("awvId"),
+                    'eDeltaDossiernummer': record.get('eDeltaDossiernummer'),
+                    'eDeltaBesteknummer': record.get('eDeltaBesteknummer'),
+                    'aannemerNaam': record.get('aannemerNaam'),
+                    'aannemerReferentie': record.get('aannemerReferentie'),
+                    'actief': record.get('actief')
+                }
+                for record in dicts
+            ]
+
+            # Bulk insert with overwrite (optional)
+            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
         else:
             raise NotImplementedError(f"Resource '{resource}' not implemented for insertion.")
 
@@ -408,11 +501,11 @@ class InitialFillStep:
         tot = actief_interval.get('tot')
         if van is None:
             return False
-        van_date = date.fromisoformat(van)
+        van_date = datetime.fromisoformat(van).astimezone(timezone.utc)
         if van_date < datetime.now(timezone.utc):
             if tot is None:
                 return True
-            tot_date = date.fromisoformat(van)
+            tot_date = datetime.fromisoformat(tot).astimezone(timezone.utc)
             if tot_date > datetime.now(timezone.utc):
                 return True
         return False

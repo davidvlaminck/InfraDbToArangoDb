@@ -25,8 +25,9 @@ class DBPipelineController:
         self.feed_resources = {ResourceEnum.assets, ResourceEnum.assetrelaties,
                                ResourceEnum.betrokkenerelaties, ResourceEnum.agents}
         self.fill_resources = [ResourceEnum.assettypes, ResourceEnum.relatietypes, ResourceEnum.assetrelaties,
-                               ResourceEnum.assets, ResourceEnum.agents, ResourceEnum.betrokkenerelaties,]
-        self.fill_resources = [ResourceEnum.betrokkenerelaties,]
+                               ResourceEnum.assets, ResourceEnum.agents, ResourceEnum.betrokkenerelaties, ResourceEnum.toezichtgroepen,
+                               ResourceEnum.identiteiten, ResourceEnum.beheerders]
+        self.fill_resources = [ResourceEnum.bestekken]
 
     def settings_to_clients(self, auth_type, env) -> tuple[ArangoDBConnectionFactory, EMInfraClient, EMSONClient]:
         db_settings = self.settings['databases'][str(env.value[0])]
@@ -50,7 +51,7 @@ class DBPipelineController:
     def run(self):
         # TODO make this a while True loop when everything else is written
         db = self.factory.create_connection()
-        for i in range(10):
+        for _ in range(2):
             current_step = get_db_step(db)
             logging.info(f"Current DB step: {current_step}")
             if current_step is None or current_step == DBStep.CREATE_DB:
@@ -73,6 +74,7 @@ class DBPipelineController:
         step_runner.execute(fill_resources=self.fill_resources)
 
     def _run_extra_fill(self):
+        # vplan kenmerk, elektrisch aansluiting kenmerk
         pass
 
     def _run_indexes(self):

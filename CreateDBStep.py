@@ -23,17 +23,21 @@ class CreateDBStep:
                     logging.info(f"🗑️ Dropped collection: {name}")
 
             # 🆕 Create document collections
-            for name in ["params", "assets", "assettypes", 'relatietypes', "agents", "toezichtgroepen"]:
+            for name in ["params", "assets", "assettypes", 'relatietypes', "agents", "toezichtgroepen", "identiteiten",
+                         "beheerders", "bestekken"]:
                 db.create_collection(name)
                 logging.info(f"✅ Created document collection: {name}")
 
             # 🆕 Create edge collections
-            for name in ["assetrelaties",  "betrokkenerelaties"]:
+            for name in ["assetrelaties",  "betrokkenerelaties", "bestekkoppelingen"]:
                 db.create_collection(name, edge=True)
                 logging.info(f"✅ Created edge collection: {name}")
 
             # indexes and constraints will be created in later steps but add them here for now
             db.collection('assets').add_persistent_index(fields=['assettype_key'], unique=False, sparse=False)
+            db.collection('assets').add_persistent_index(fields=['toezichter_key'], unique=False, sparse=False)
+            db.collection('assets').add_persistent_index(fields=['toezichtgroep_key'], unique=False, sparse=False)
+            db.collection('assets').add_persistent_index(fields=['beheerder_key'], unique=False, sparse=False)
             db.collection('assetrelaties').add_persistent_index(fields=["relatietype_key"], unique=False, sparse=False)
             db.collection('assettypes').add_persistent_index(fields=['short_uri'], unique=False, sparse=False)
             db.collection('relatietypes').add_persistent_index(fields=['short'], unique=False, sparse=False)
