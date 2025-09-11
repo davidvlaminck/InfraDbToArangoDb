@@ -71,6 +71,14 @@ class EMInfraClient:
         url = f"core/api/assettypes/{assettype_uuid}/kenmerktypes"
         return self.requester.get(url).json()['data']
 
+    def get_vplannen_by_asset_uuid(self, asset_uuid: str):
+        url = f"core/api/assets/{asset_uuid}/kenmerken/9f12fd85-d4ae-4adc-952f-5fa6e9d0ffb7/vplannen"
+        return self.requester.get(url).json()['data']
+
+    def get_aansluiting_by_asset_uuid(self, asset_uuid: str):
+        url = f"core/api/assets/{asset_uuid}/kenmerken/87dff279-4162-4031-ba30-fb7ffd9c014b"
+        return self.requester.get(url).json()
+
     def get_identity_resource_page(self, resource: str, page_size: int, start_from: int):
         if not start_from:
             start_from = 0
@@ -1734,3 +1742,4 @@ class EMInfraClient:
     #     if response.status_code != 202:
     #         logging.error(response)
     #         raise ProcessLookupError(response.content.decode("utf-8"))
+
