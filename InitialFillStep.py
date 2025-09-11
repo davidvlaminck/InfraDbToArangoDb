@@ -36,6 +36,7 @@ class InitialFillStep:
             docs_to_update = self._build_docs_to_update(docs)
             self._update_params_collection(db, docs_to_update)
         self.fill_tables(fill_resource_groups=fill_resource_groups)
+        self.removed_fill_params(db)
 
     def _get_docs_to_update(self, db):
         """Fetches documents from the 'params' collection where page == -1."""
@@ -266,6 +267,11 @@ class InitialFillStep:
                         geom = wkt.loads(wkt_string)
                         geom_wgs84 = transform(self.transformer.transform, geom)
                         geojson = mapping(geom_wgs84)
+
+                        # Trim Z coordinate only for Points
+                        if geojson.get("type") == "Point" and len(geojson.get("coordinates", [])) >= 3:
+                            geojson["coordinates"] = geojson["coordinates"][:2]
+
                         obj['geometry'] = geojson
 
                     if assettype_key := self.assettype_lookup.get(uri):
@@ -510,3 +516,9 @@ class InitialFillStep:
             if tot_date > datetime.now(timezone.utc):
                 return True
         return False
+
+    def removed_fill_params(self, db):
+        db.aql.execute("""FOR doc IN params
+          FILTER LIKE(doc._key, "fill_%", true)
+          REMOVE doc IN params
+        """)
