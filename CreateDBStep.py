@@ -44,6 +44,8 @@ class CreateDBStep:
             db.collection('betrokkenerelaties').add_persistent_index(fields=['_from', 'role'], unique=False, sparse=False)
             db.collection('betrokkenerelaties').add_persistent_index(fields=['_to', 'role'], unique=False, sparse=False)
             db.collection('vplankoppelingen').add_persistent_index(fields=['assets_key'], unique=False, sparse=False)
+            db.collection('aansluitingen').add_persistent_index(fields=["asset_key"], unique=False, sparse=False)
+            db.collection('aansluitingen').add_persistent_index(fields=["aansluiting_key"], unique=False, sparse=False)
 
             # also add graphs here later
 
