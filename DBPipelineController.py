@@ -24,10 +24,15 @@ class DBPipelineController:
 
         self.feed_resources = {ResourceEnum.assets, ResourceEnum.assetrelaties,
                                ResourceEnum.betrokkenerelaties, ResourceEnum.agents}
-        self.fill_resources = [ResourceEnum.assettypes, ResourceEnum.relatietypes, ResourceEnum.assetrelaties,
-                               ResourceEnum.assets, ResourceEnum.agents, ResourceEnum.betrokkenerelaties, ResourceEnum.toezichtgroepen,
-                               ResourceEnum.identiteiten, ResourceEnum.beheerders]
-        self.fill_resources = [ResourceEnum.bestekken]
+
+        self.fill_resource_groups = [
+            [ResourceEnum.assettypes, ResourceEnum.relatietypes, ResourceEnum.toezichtgroepen, ResourceEnum.bestekken,
+             ResourceEnum.identiteiten, ResourceEnum.beheerders],
+            [ResourceEnum.assetrelaties, ResourceEnum.assets, ResourceEnum.agents, ResourceEnum.betrokkenerelaties,]
+        ]
+        self.fill_resource_groups = [
+            [ResourceEnum.assets,]
+        ]
 
     def settings_to_clients(self, auth_type, env) -> tuple[ArangoDBConnectionFactory, EMInfraClient, EMSONClient]:
         db_settings = self.settings['databases'][str(env.value[0])]
@@ -71,7 +76,7 @@ class DBPipelineController:
 
     def _run_fill(self):
         step_runner = InitialFillStep(self.factory, eminfra_client=self.eminfra_client, emson_client=self.emson_client)
-        step_runner.execute(fill_resources=self.fill_resources)
+        step_runner.execute(fill_resource_groups=self.fill_resource_groups)
 
     def _run_extra_fill(self):
         # vplan kenmerk, elektrisch aansluiting kenmerk

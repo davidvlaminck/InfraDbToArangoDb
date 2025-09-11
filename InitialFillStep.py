@@ -29,13 +29,13 @@ class InitialFillStep:
 
         self.transformer: Transformer = Transformer.from_crs("EPSG:31370", "EPSG:4326", always_xy=True)
 
-    def execute(self, fill_resources: set[ResourceEnum]):
+    def execute(self, fill_resource_groups: list[list[ResourceEnum]]):
         db = self.factory.create_connection()
         docs = self._get_docs_to_update(db)
         if any(docs):
             docs_to_update = self._build_docs_to_update(docs)
             self._update_params_collection(db, docs_to_update)
-        self.fill_tables(fill_resources=fill_resources)
+        self.fill_tables(fill_resource_groups=fill_resource_groups)
 
     def _get_docs_to_update(self, db):
         """Fetches documents from the 'params' collection where page == -1."""
@@ -74,45 +74,44 @@ class InitialFillStep:
         self._fill_resource(resource.value)  # may raise
         return resource
 
-    def fill_tables(self, fill_resources):
+    def fill_tables(self, fill_resource_groups: list[list[ResourceEnum]]):
         """
         Run all fill tasks in parallel. Retry failed ones indefinitely until all succeed.
         Wait 30 seconds between retry batches if any fail.
         """
-        remaining = list(fill_resources)
-        attempt = 1
+        for group_index, fill_resource_group in enumerate(fill_resource_groups):
+            remaining = list(fill_resource_group)
+            attempt = 1
 
-        while remaining:
-            logging.info(f"=== Batch attempt {attempt} with {len(remaining)} task(s) ===")
-            failed = []
+            while remaining:
+                logging.info(f"=== Batch attempt {attempt} with {len(remaining)} task(s) ===")
+                failed = []
 
-            max_workers = min(len(remaining), 8)
-            with ThreadPoolExecutor(max_workers=max_workers) as executor:
-                futures = {executor.submit(self._fill_resource_worker, r): r for r in remaining}
+                max_workers = min(len(remaining), 8)
+                with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                    futures = {executor.submit(self._fill_resource_worker, r): r for r in remaining}
 
-                for future in as_completed(futures):
-                    resource = futures[future]
-                    color = colorama_table[resource]
-                    try:
-                        res = future.result()
-                        logging.info(f'{color}Finished filling {res.value} table')
-                    except Exception as e:
-                        logging.error(f'{color}Error filling {resource.value}: {e}')
-                        failed.append(resource)
+                    for future in as_completed(futures):
+                        resource = futures[future]
+                        color = colorama_table[resource]
+                        try:
+                            res = future.result()
+                            logging.info(f'{color}Finished filling {res.value} table')
+                        except Exception as e:
+                            logging.error(f'{color}Error filling {resource.value}: {e}')
+                            failed.append(resource)
 
-            if failed:
-                logging.warning(f"{len(failed)} task(s) failed in attempt {attempt}. Retrying in 30 seconds...")
-                time.sleep(30)
-                remaining = failed
-                attempt += 1
-            else:
-                logging.info("✅ All tasks completed successfully!")
-                break
+                if failed:
+                    logging.warning(f"{len(failed)} task(s) failed in attempt {attempt}. Retrying in 30 seconds...")
+                    time.sleep(30)
+                    remaining = failed
+                    attempt += 1
+                else:
+                    logging.info(f"✅ All tasks for group {group_index} completed successfully!")
+                    break
 
     def _fill_resource(self, resource: str):
-        if resource in {ResourceEnum.assettypes.value, ResourceEnum.relatietypes.value, ResourceEnum.agents.value,
-                        ResourceEnum.assets.value, ResourceEnum.betrokkenerelaties.value, ResourceEnum.beheerders.value,
-                        ResourceEnum.toezichtgroepen.value, ResourceEnum.identiteiten.value, ResourceEnum.bestekken.value}:
+        if resource not in {ResourceEnum.assets.value, ResourceEnum.assetrelaties.value}:
             self._fill_resource_using_em_infra(resource)
         else:
             self._fill_resource_using_emson(resource)
@@ -235,7 +234,7 @@ class InitialFillStep:
                 }
             if self.beheerders_lookup is None:
                 self.beheerders_lookup = {
-                    at["ref"]: at["_key"]
+                    at["referentie"]: at["_key"]
                     for at in db.collection('beheerders')
                 }
             docs_to_insert = []
@@ -243,8 +242,11 @@ class InitialFillStep:
             for obj in dicts:
                 try:
                     obj = self._transform_keys(obj)
-                    uri = obj["@type"]
-
+                    uri = obj.get("@type")
+                    if uri is None:
+                        print(f'object without uri: {obj}')
+                    if '00000453-56ce-4f8b-af44-960df526cb30-bGdjOmluc3RhbGxhdGllI0thc3Q' in obj['@id']:
+                        pass
 
                     obj["_key"] = obj.get("@id").split("/")[-1][:36]
 
@@ -272,7 +274,7 @@ class InitialFillStep:
                         print(f"⚠️ No matching assettype for URI: {uri}")
                         continue
 
-                    if tzg_id := obj.get('tz', {}).get("Toezichtgroep_toezichtgroep", {}).get('DtcToezichtGroep_id'):
+                    if tzg_id := obj.get('tz', {}).get("Toezicht_toezichtgroep", {}).get('DtcToezichtGroep_id'):
                         obj["toezichtgroep_key"] = tzg_id[:8]
 
                     if tz_id := obj.get('tz', {}).get("Toezicht_toezichter", {}).get('DtcToezichter_id'):
@@ -286,7 +288,7 @@ class InitialFillStep:
                         bestek_koppelingen = obj['bs']['Bestek_bestekkoppeling']
                         for koppeling in bestek_koppelingen:
                             koppeling["_from"] = 'assets/' + obj['_key']
-                            koppeling["_to"] = 'bestekken/' + koppeling['DtcBestekkoppeling_bestekId'].get("@DtcIdentificator_identificator")[:8]
+                            koppeling["_to"] = 'bestekken/' + koppeling['DtcBestekkoppeling_bestekId'].get("DtcIdentificator_identificator")[:8]
                             koppeling['_key'] = str(uuid.uuid4())
                             koppeling['status'] = koppeling.get('status').split('/')[-1] if koppeling.get('status') else None
                             docs2_to_insert.append(koppeling)
