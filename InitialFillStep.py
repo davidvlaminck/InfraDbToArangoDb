@@ -12,7 +12,6 @@ from shapely import wkt
 from shapely.ops import transform
 from shapely.geometry import mapping
 from pyproj import Transformer
-import json
 
 
 class InitialFillStep:
@@ -194,7 +193,6 @@ class InitialFillStep:
                     start_from = cursor
                     db.aql.execute("""UPDATE @key WITH { from: @start_from } IN params""",
                                    bind_vars={"key": f"fill_{resource}", "start_from": start_from})
-                    # TODO remove after done
                     result = db.aql.execute(f"""RETURN LENGTH({resource})""")
                     count = list(result)[0]
                     logging.debug(f"{color}Total records in {resource} collection: {count}")
@@ -244,11 +242,6 @@ class InitialFillStep:
                 try:
                     obj = self._transform_keys(obj)
                     uri = obj.get("@type")
-                    if uri is None:
-                        print(f'object without uri: {obj}')
-                    if '00000453-56ce-4f8b-af44-960df526cb30-bGdjOmluc3RhbGxhdGllI0thc3Q' in obj['@id']:
-                        pass
-
                     obj["_key"] = obj.get("@id").split("/")[-1][:36]
 
                     wkt_string = None

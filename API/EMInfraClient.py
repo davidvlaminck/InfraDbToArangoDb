@@ -67,6 +67,10 @@ class EMInfraClient:
             else:
                 yield start_from, json_dict['data']
 
+    def get_kenmerktypes_by_asettype_uuid(self, assettype_uuid: str):
+        url = f"core/api/assettypes/{assettype_uuid}/kenmerktypes"
+        return self.requester.get(url).json()['data']
+
     def get_identity_resource_page(self, resource: str, page_size: int, start_from: int):
         if not start_from:
             start_from = 0
