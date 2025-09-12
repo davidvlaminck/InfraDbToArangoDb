@@ -3,7 +3,7 @@ from pathlib import Path
 
 from API.AbstractRequester import AbstractRequester
 from API.CertRequester import CertRequester
-from API.Enums import Environment, AuthType
+from API.APIEnums import Environment, AuthType
 from API.JWTRequester import JWTRequester
 from API.CookieRequester import CookieRequester
 

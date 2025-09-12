@@ -1,7 +1,7 @@
 from collections.abc import Generator
 
 from API.EMInfraDomain import Query
-from API.Enums import AuthType, Environment
+from API.APIEnums import AuthType, Environment
 from API.RequesterFactory import RequesterFactory
 
 

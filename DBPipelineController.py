@@ -3,7 +3,7 @@ from pathlib import Path
 
 from API.EMInfraClient import EMInfraClient
 from API.EMSONClient import EMSONClient
-from API.Enums import AuthType, Environment
+from API.APIEnums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 from CreateDBStep import CreateDBStep
 from Enums import DBStep, ResourceEnum

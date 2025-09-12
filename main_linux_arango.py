@@ -1,9 +1,7 @@
 import logging
 from pathlib import Path
 
-from API.EMInfraClient import EMInfraClient
-from API.EMSONClient import EMSONClient
-from API.Enums import Environment, AuthType
+from API.APIEnums import Environment, AuthType
 from DBPipelineController import DBPipelineController
 
 logging.basicConfig(
