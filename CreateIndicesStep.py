@@ -60,7 +60,7 @@ class CreateIndicesStep:
         aansluitingen_graph.create_edge_definition(
             edge_collection="aansluitingen",
             from_vertex_collections=["assets"],
-            to_vertex_collections=["aansluitingref"]
+            to_vertex_collections=["aansluitingrefs"]
         )
 
 
