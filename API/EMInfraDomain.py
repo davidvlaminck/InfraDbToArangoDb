@@ -108,3 +108,62 @@ class Query(BaseDataclass):
 
     def add_expansions(self, expansions: list[str]):
         self.expansions = {"fields" : expansions}
+
+
+@dataclass
+class TermDTO(BaseDataclass):
+    property: str
+    value: object
+    operator: OperatorEnum
+    logicalOp: LogicalOpEnum | None = None
+    negate: bool | None = False
+
+
+@dataclass
+class ExpressionDTO(BaseDataclass):
+    terms: list[dict] | list[TermDTO]
+    logicalOp: LogicalOpEnum | None = None
+
+    def __post_init__(self):
+        self._fix_nested_list_classes({('terms', TermDTO)})
+
+
+@dataclass
+class SelectionDTO(BaseDataclass):
+    expressions: list[dict] | list[ExpressionDTO]
+    settings: dict | None = None
+
+    def __post_init__(self):
+        self._fix_nested_list_classes({('expressions', ExpressionDTO)})
+
+
+@dataclass
+class ExpansionsDTO(BaseDataclass):
+    fields: list[str]
+
+
+class PagingModeEnum(Enum):
+    OFFSET = 'OFFSET'
+    CURSOR = 'CURSOR'
+
+
+class DirectionEnum(Enum):
+    ASC = 'ASC'
+    DESC = 'DESC'
+
+
+@dataclass
+class QueryDTO(BaseDataclass):
+    size: int
+    from_: int | None = None
+    selection: dict | SelectionDTO | None = None
+    fromCursor: str | None = None
+    orderByProperty: str | None = None
+    settings: dict | None = None
+    expansions: dict | ExpansionsDTO | None = None
+    orderByDirection: DirectionEnum | None = None
+    pagingMode: PagingModeEnum | None = None
+
+    def __post_init__(self):
+        self._fix_enums({('pagingMode', PagingModeEnum)})
+        self._fix_nested_classes({('selection', SelectionDTO), ('expansions', ExpansionsDTO)})

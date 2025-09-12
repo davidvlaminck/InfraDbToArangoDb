@@ -111,9 +111,6 @@ class ExtraFillStep:
         elif resource == 'aansluitingrefs':
             db = self.factory.create_connection()
             params_resource = db.collection('params').get(f'fill_{resource}')
-            if params_resource is None:
-                db.collection('params').insert({'_key': f'fill_{resource}', 'fill': True, 'from': None})
-            params_resource = db.collection('params').get(f'fill_{resource}')
             if not params_resource['fill']:
                 logging.info(f"Skipping {resource}, already filled.")
                 return
@@ -153,41 +150,65 @@ class ExtraFillStep:
                                    bind_vars={"key": f"fill_{resource}", "start_from": None, "fill": False})
                     return
         elif resource == 'aansluitingen':
-            # TODO refactor to use /assets endpoint filtering on assettypes with aansluitpunt_kenmerk as expansion
             db = self.factory.create_connection()
             query = """
-              FOR asset IN assets
-                FOR atype IN assettypes
-                  FILTER asset.assettype_key == atype._key
-                  FILTER atype.aansluitpunt_kenmerk == true
-                  RETURN asset._key
+              FOR atype IN assettypes
+                FILTER atype.aansluitpunt_kenmerk == true
+                RETURN atype.uuid
             """
-
             cursor = db.aql.execute(query)
-            uuids_sorted = list(cursor)
+            assettype_uuids = list(cursor)
 
-            for asset_uuid in sorted(uuids_sorted):
-                if start_from is not None and asset_uuid < start_from:
-                    print(f'⏭️ Skipping aansluitingen for {asset_uuid}')
-                    continue
+            db = self.factory.create_connection()
+            params_resource = db.collection('params').get(f'fill_{resource}')
+            if not params_resource['fill']:
+                logging.info(f"Skipping {resource}, already filled.")
+                return
 
-                aansluiting_info = self.eminfra_client.get_aansluiting_by_asset_uuid(asset_uuid)
-                if 'elektriciteitsAansluitingRef' not in aansluiting_info:
-                    print(f'⚠️ No aansluiting info for {asset_uuid}, skipping')
+            start_from = params_resource.get('from')
+            generator = self.eminfra_client.get_assets_by_assettype_uuids(
+                assettype_uuids=assettype_uuids, cursor=start_from, page_size=100,
+                expansion_strings=['kenmerk:87dff279-4162-4031-ba30-fb7ffd9c014b'])
+
+            while params_resource['fill']:
+                for cursor, dicts in generator:
+                    if not dicts:
+                        continue
+                    collection = db.collection('aansluitingen')
+
+                    docs_to_insert = []
+                    for record in dicts:
+                        if 'kenmerken' not in record or not record['kenmerken']:
+                            continue
+                        aansluit_kenmerk = next(filter(lambda k: k['_type'] == '87dff279-4162-4031-ba30-fb7ffd9c014b', record['kenmerken']['data']), None)
+                        if aansluit_kenmerk is None:
+                            continue
+                        aansluiting_ref = aansluit_kenmerk.get('elektriciteitsAansluitingRef', None)
+                        if aansluiting_ref is None:
+                            continue
+
+                        aansluiting_uuid = aansluiting_ref['uuid']
+
+                        docs_to_insert.append({
+                            "_key": record["uuid"] + '_' + aansluiting_uuid[:8],
+                            "asset_key": record["uuid"],
+                            "aansluiting_key": aansluiting_uuid[:8]
+                        })
+
+                    if docs_to_insert:
+                        collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+
+                    start_from = cursor
                     db.aql.execute("""UPDATE @key WITH { from: @start_from } IN params""",
-                                   bind_vars={"key": f"fill_{resource}", "start_from": asset_uuid})
-                    continue
-                print(f'🔄 Updating aansluitingen for {asset_uuid}')
-                query = """
-                INSERT {_key: @prim_key, asset_key: @asset_key, aansluiting_key: @aansluiting_key} IN aansluitingen
-                """
-                aansluiting_key = aansluiting_info['elektriciteitsAansluitingRef']['uuid'][:8]
-                db.aql.execute(query,
-                               bind_vars={"prim_key": f'{asset_uuid}_{aansluiting_key}', "asset_key": asset_uuid,
-                                          "aansluiting_key": aansluiting_key})
-
-                db.aql.execute("""UPDATE @key WITH { from: @start_from } IN params""",
-                               bind_vars={"key": f"fill_{resource}", "start_from": asset_uuid})
+                                   bind_vars={"key": f"fill_{resource}", "start_from": start_from})
+                    result = db.aql.execute(f"""RETURN LENGTH({resource})""")
+                    count = list(result)[0]
+                    logging.info(f"Total records in {resource} collection: {count} Next cursor: {cursor}")
+                if start_from is None:
+                    logging.info(f"No more data for {resource}. Marking as filled.")
+                    db.aql.execute("""UPDATE @key WITH { from: @start_from, fill: @fill} IN params""",
+                                   bind_vars={"key": f"fill_{resource}", "start_from": None, "fill": False})
+                    break
             logging.info(f"✅ No more data for {resource}. Marking as filled.")
             db.aql.execute("""UPDATE @key WITH { from: @start_from, fill: @fill} IN params""",
                            bind_vars={"key": f"fill_{resource}", "start_from": None, "fill": False})

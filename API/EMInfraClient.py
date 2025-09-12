@@ -1,6 +1,7 @@
 from collections.abc import Generator
 
-from API.EMInfraDomain import Query
+from API.EMInfraDomain import Query, TermDTO, OperatorEnum, QueryDTO, PagingModeEnum, ExpansionsDTO, SelectionDTO, \
+    ExpressionDTO
 from API.APIEnums import AuthType, Environment
 from API.RequesterFactory import RequesterFactory
 
@@ -43,10 +44,6 @@ class EMInfraClient:
         url = f"core/api/assets/{asset_uuid}/kenmerken/9f12fd85-d4ae-4adc-952f-5fa6e9d0ffb7/vplannen"
         return self.requester.get(url).json()['data']
 
-    def get_aansluiting_by_asset_uuid(self, asset_uuid: str):
-        url = f"core/api/assets/{asset_uuid}/kenmerken/87dff279-4162-4031-ba30-fb7ffd9c014b"
-        return self.requester.get(url).json()
-
     def get_identity_resource_page(self, resource: str, page_size: int, start_from: int):
         if not start_from:
             start_from = 0
@@ -75,6 +72,24 @@ class EMInfraClient:
             if cursor is None:
                 break
             query.fromCursor = cursor
+
+    def get_assets_by_assettype_uuids(self, assettype_uuids: list[str], cursor: str = None, page_size: int = 100,
+                                      expansion_strings: list[str] = None) -> Generator[tuple[str, dict]]:
+        type_term = TermDTO(property='type', operator=OperatorEnum.IN, value=assettype_uuids)
+        query_dto = QueryDTO(size=page_size, pagingMode=PagingModeEnum.CURSOR, fromCursor=cursor,
+                             expansions=ExpansionsDTO(fields=expansion_strings),
+                             selection=SelectionDTO(expressions=[ExpressionDTO(terms=[type_term])]))
+        while True:
+            response = self.requester.post(url=f'core/api/assets/search', data=query_dto.json())
+            if response.status_code != 200:
+                print(response)
+                raise ProcessLookupError(response.content.decode("utf-8"))
+            json_response = response.json()
+            cursor = json_response.get('next')
+            yield cursor, json_response['data']
+            if cursor is None:
+                break
+            query_dto.fromCursor = cursor
 
     def test_connection(self):
         return self.requester.get("core/api/gebruikers/ik").json()

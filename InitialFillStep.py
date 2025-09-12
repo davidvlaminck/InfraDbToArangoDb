@@ -1,17 +1,17 @@
 import logging
 import time
 import uuid
-from concurrent.futures import ProcessPoolExecutor, as_completed, ThreadPoolExecutor
-from datetime import datetime, timezone, date
+from concurrent.futures import as_completed, ThreadPoolExecutor
+from datetime import datetime, timezone
+
+from pyproj import Transformer
+from shapely import wkt
+from shapely.geometry import mapping
+from shapely.ops import transform
 
 from API.EMInfraClient import EMInfraClient
 from API.EMSONClient import EMSONClient
 from Enums import ResourceEnum, colorama_table
-
-from shapely import wkt
-from shapely.ops import transform
-from shapely.geometry import mapping
-from pyproj import Transformer
 
 
 class InitialFillStep:
@@ -22,9 +22,9 @@ class InitialFillStep:
         self.eminfra_client: EMInfraClient = eminfra_client
         self.emson_client: EMSONClient = emson_client
 
-        self.assettype_lookup: dict = None
-        self.relatietype_lookup: dict = None
-        self.beheerders_lookup: dict = None
+        self.assettype_lookup: dict | None = None
+        self.relatietype_lookup: dict | None = None
+        self.beheerders_lookup: dict | None = None
 
         self.transformer: Transformer = Transformer.from_crs("EPSG:31370", "EPSG:4326", always_xy=True)
 
@@ -37,7 +37,8 @@ class InitialFillStep:
         self.fill_tables(fill_resource_groups=fill_resource_groups)
         self.removed_fill_params(db)
 
-    def _get_docs_to_update(self, db):
+    @staticmethod
+    def _get_docs_to_update(db):
         """Fetches documents from the 'params' collection where page == -1."""
         cursor = db.aql.execute("""
             FOR doc IN params
@@ -63,7 +64,8 @@ class InitialFillStep:
                                    'event_uuid': last_entry['id']})
         return docs_to_update
 
-    def _update_params_collection(self, db, docs_to_update):
+    @staticmethod
+    def _update_params_collection(db, docs_to_update):
         """Updates the 'params' collection with the provided documents."""
         db.collection("params").update_many(docs_to_update)
 
