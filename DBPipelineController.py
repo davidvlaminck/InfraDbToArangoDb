@@ -85,9 +85,6 @@ class DBPipelineController:
     def _run_extra_fill(self):
         step_runner = ExtraFillStep(self.factory, eminfra_client=self.eminfra_client)
         step_runner.execute()
-        # vplan kenmerk, elektrisch aansluiting kenmerk
-        # eerst ophalen van welke assettypes deze kenmerken hebben
-        # daarna opslaan in de db
         pass
 
     def _run_indexes(self):
