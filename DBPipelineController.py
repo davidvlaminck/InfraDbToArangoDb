@@ -6,6 +6,7 @@ from API.EMSONClient import EMSONClient
 from API.APIEnums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 from CreateDBStep import CreateDBStep
+from CreateIndicesStep import CreateIndicesStep
 from Enums import DBStep, ResourceEnum
 from ExtraFillStep import ExtraFillStep
 from GenericDbFunctions import get_db_step, set_db_step
@@ -68,7 +69,9 @@ class DBPipelineController:
             elif current_step == DBStep.EXTRA_DATA_FILL:
                 logging.info("Do some additional filling...")
                 self._run_extra_fill()
-            self._run_indexes()
+            elif current_step == DBStep.CREATE_INDEXES:
+                logging.info("Adding indices and graphs...")
+                self._run_indices()
             self._run_constraints()
             self._run_syncing()
 
@@ -85,10 +88,11 @@ class DBPipelineController:
     def _run_extra_fill(self):
         step_runner = ExtraFillStep(self.factory, eminfra_client=self.eminfra_client)
         step_runner.execute()
-        pass
+        set_db_step(self.pipeline_connection, step=DBStep.CREATE_INDEXES)
 
-    def _run_indexes(self):
-        pass
+    def _run_indices(self):
+        step_runner = CreateIndicesStep(self.factory)
+        step_runner.execute()
 
     def _run_constraints(self):
         pass

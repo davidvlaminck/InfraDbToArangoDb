@@ -191,8 +191,8 @@ class ExtraFillStep:
 
                         docs_to_insert.append({
                             "_key": record["uuid"] + '_' + aansluiting_uuid[:8],
-                            "asset_key": record["uuid"],
-                            "aansluiting_key": aansluiting_uuid[:8]
+                            "_from": f"assets/{record['uuid']}",
+                            "_to": f"aansluitingen/{aansluiting_uuid[:8]}"
                         })
 
                     if docs_to_insert:

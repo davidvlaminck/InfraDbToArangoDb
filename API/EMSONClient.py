@@ -1,8 +1,17 @@
 from collections.abc import Generator
+from dataclasses import dataclass
 
-from API.EMInfraDomain import Query
 from API.APIEnums import AuthType, Environment
+from API.EMInfraDomain import BaseDataclass
 from API.RequesterFactory import RequesterFactory
+
+
+@dataclass()
+class Query(BaseDataclass):
+    size: int
+    filters: dict
+    orderByProperty: str | None = None
+    fromCursor: str | None = None
 
 
 class EMSONClient:

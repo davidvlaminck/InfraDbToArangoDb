@@ -15,6 +15,12 @@ class CreateDBStep:
         if not db.has_collection("params"):
             logging.info("⚠️ 'params' collection not found. Resetting database...")
 
+            # 🧹 Drop all graphs in the database
+            for graph in db.graphs():
+                name = graph["name"]
+                db.delete_graph(name, ignore_missing=True, drop_collections=True)
+                logging.info(f"🗑️ Dropped graph: {name}")
+
             # 🧹 Drop all non-system collections
             for col in db.collections():
                 name = col["name"]
@@ -24,30 +30,14 @@ class CreateDBStep:
 
             # 🆕 Create document collections
             for name in ["params", "assets", "assettypes", 'relatietypes', "agents", "toezichtgroepen", "identiteiten",
-                         "beheerders", "bestekken"]:
+                         "beheerders", "bestekken", 'vplankoppelingen', 'aansluitingrefs']:
                 db.create_collection(name)
                 logging.info(f"✅ Created document collection: {name}")
 
             # 🆕 Create edge collections
-            for name in ["assetrelaties",  "betrokkenerelaties", "bestekkoppelingen"]:
+            for name in ["assetrelaties",  "betrokkenerelaties", "bestekkoppelingen", 'aansluitingen']:
                 db.create_collection(name, edge=True)
                 logging.info(f"✅ Created edge collection: {name}")
-
-            # indexes and constraints will be created in later steps but add them here for now
-            db.collection('assets').add_persistent_index(fields=['assettype_key'], unique=False, sparse=False)
-            db.collection('assets').add_persistent_index(fields=['toezichter_key'], unique=False, sparse=False)
-            db.collection('assets').add_persistent_index(fields=['toezichtgroep_key'], unique=False, sparse=False)
-            db.collection('assets').add_persistent_index(fields=['beheerder_key'], unique=False, sparse=False)
-            db.collection('assetrelaties').add_persistent_index(fields=["relatietype_key"], unique=False, sparse=False)
-            db.collection('assettypes').add_persistent_index(fields=['short_uri'], unique=False, sparse=False)
-            db.collection('relatietypes').add_persistent_index(fields=['short'], unique=False, sparse=False)
-            db.collection('betrokkenerelaties').add_persistent_index(fields=['_from', 'role'], unique=False, sparse=False)
-            db.collection('betrokkenerelaties').add_persistent_index(fields=['_to', 'role'], unique=False, sparse=False)
-            db.collection('vplankoppelingen').add_persistent_index(fields=['assets_key'], unique=False, sparse=False)
-            db.collection('aansluitingen').add_persistent_index(fields=["asset_key"], unique=False, sparse=False)
-            db.collection('aansluitingen').add_persistent_index(fields=["aansluiting_key"], unique=False, sparse=False)
-
-            # also add graphs here later
 
             params = db.collection('params')
 
