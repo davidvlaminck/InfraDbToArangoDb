@@ -275,6 +275,9 @@ class InitialFillStep:
                         print(f"⚠️ No matching assettype for URI: {uri}")
                         continue
 
+                    if 'AIMToestand_toestand' in obj:
+                        obj['toestand'] = obj["AIMToestand_toestand"].split('/')[-1]
+
                     if tzg_id := obj.get('tz', {}).get("Toezicht_toezichtgroep", {}).get('DtcToezichtGroep_id'):
                         obj["toezichtgroep_key"] = tzg_id[:8]
 
