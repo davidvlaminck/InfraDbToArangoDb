@@ -11,7 +11,8 @@ class CreateIndicesStep:
         self.add_indices(db)
         self.add_graphs(db)
 
-    def add_indices(self, db):
+    @staticmethod
+    def add_indices(db):
         # indexes and constraints will be created in later steps but add them here for now
         db.collection('assets').add_persistent_index(fields=['assettype_key'], unique=False, sparse=False)
         db.collection('assets').add_persistent_index(fields=['toezichter_key'], unique=False, sparse=False)
@@ -26,7 +27,8 @@ class CreateIndicesStep:
         db.collection('betrokkenerelaties').add_persistent_index(fields=['_to', 'role'], unique=False, parse=False)
         db.collection('vplankoppelingen').add_persistent_index(fields=['assets_key'], unique=False, sparse=False)
 
-    def add_graphs(self, db):
+    @staticmethod
+    def add_graphs(db):
         if db.has_graph("assetrelaties_graph"):
             db.delete_graph("assetrelaties_graph", drop_collections=False)
         assetrelaties_graph = db.create_graph("assetrelaties_graph")
