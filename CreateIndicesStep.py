@@ -23,8 +23,8 @@ class CreateIndicesStep:
 
         db.collection('assettypes').add_persistent_index(fields=['short_uri'], unique=False, sparse=False)
         db.collection('relatietypes').add_persistent_index(fields=['short'], unique=False, sparse=False)
-        db.collection('betrokkenerelaties').add_persistent_index(fields=['_from', 'role'], unique=False, parse=False)
-        db.collection('betrokkenerelaties').add_persistent_index(fields=['_to', 'role'], unique=False, parse=False)
+        db.collection('betrokkenerelaties').add_persistent_index(fields=['_from', 'role'], unique=False, sparse=False)
+        db.collection('betrokkenerelaties').add_persistent_index(fields=['_to', 'role'], unique=False, sparse=False)
         db.collection('vplankoppelingen').add_persistent_index(fields=['assets_key'], unique=False, sparse=False)
 
     @staticmethod
