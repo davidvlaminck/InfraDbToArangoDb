@@ -8,7 +8,7 @@ class CreateIndicesStep:
     def execute(self):
         db = self.factory.create_connection()
 
-        # self.add_indices(db)
+        self.add_indices(db)
         self.add_graphs(db)
 
     def add_indices(self, db):
