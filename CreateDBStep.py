@@ -28,31 +28,30 @@ class CreateDBStep:
                     db.delete_collection(name, ignore_missing=True)
                     logging.info(f"🗑️ Dropped collection: {name}")
 
-            # 🆕 Create document collections
-            for name in ["params", "assets", "assettypes", 'relatietypes', "agents", "toezichtgroepen", "identiteiten",
-                         "beheerders", "bestekken", 'vplankoppelingen', 'aansluitingrefs']:
+            # 🆕 Create document and edge collections
+            doc_collections = [
+                "params", "assets", "assettypes", "relatietypes", "agents", "toezichtgroepen", "identiteiten",
+                "beheerders", "bestekken", "vplankoppelingen", "aansluitingrefs"]
+            edge_collections = ["assetrelaties", "betrokkenerelaties", "bestekkoppelingen", "aansluitingen"]
+
+            for name in doc_collections:
                 db.create_collection(name)
                 logging.info(f"✅ Created document collection: {name}")
 
-            # 🆕 Create edge collections
-            for name in ["assetrelaties",  "betrokkenerelaties", "bestekkoppelingen", 'aansluitingen']:
+            for name in edge_collections:
                 db.create_collection(name, edge=True)
                 logging.info(f"✅ Created edge collection: {name}")
 
-            params = db.collection('params')
-
-            # Define default documents
-            # TODO refactor to use the feed set
+            # Insert default documents in bulk
             default_docs = [
                 {"_key": "feed_assetrelaties", "page": -1, "event_uuid": None},
                 {"_key": "feed_betrokkenerelaties", "page": -1, "event_uuid": None},
                 {"_key": "feed_agents", "page": -1, "event_uuid": None},
                 {"_key": "feed_assets", "page": -1, "event_uuid": None},
             ]
-
-            # Insert documents
+            params = db.collection('params')
+            params.insert_many(default_docs)
             for doc in default_docs:
-                params.insert(doc)
                 logging.info(f"✅ Inserted default for '{doc['_key']}'")
 
         else:
