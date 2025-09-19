@@ -103,7 +103,7 @@ class DBPipelineController:
 
     def _run_constraints(self):
         logging.debug("Constraints are currently handled in the CreateIndicesStep.")
-        set_db_step(self.pipeline_connection, step=DBStep.FINAL_SYNC)
+        set_db_step(self.pipeline_connection, step=DBStep.SYNC)
 
     def _run_syncing(self):
         logging.debug("Since the database is filling fast, skip the final syncing step for now.")
