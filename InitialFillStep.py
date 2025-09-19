@@ -494,8 +494,11 @@ class InitialFillStep:
                     continue
 
                 # optional mappings
-                if "AIMToestand_toestand" in obj:
-                    obj["toestand"] = obj["AIMToestand_toestand"].split("/")[-1]
+                if toestand := obj.get("AIMToestand_toestand"):
+                    obj["toestand"] = toestand.split("/")[-1]
+
+                if naampad := obj.get("NaampadObject_naampad"):
+                    obj["naampad_parts"] = naampad.split("/")
 
                 tzg_id = obj.get("tz", {}).get("Toezicht_toezichtgroep", {}).get("DtcToezichtGroep_id")
                 if tzg_id:
