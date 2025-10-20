@@ -156,7 +156,7 @@ class InitialFillStep:
 
     def _fill_resource(self, resource: str):
         """Dispatch to the appropriate client-based filler."""
-        if resource in {ResourceEnum.assets.value, ResourceEnum.assetrelaties.value}:
+        if resource in {ResourceEnum.assets.value, ResourceEnum.assetrelaties.value, ResourceEnum.betrokkenerelaties.value}:
             self._fill_resource_using_emson(resource)
         else:
             self._fill_resource_using_em_infra(resource)
