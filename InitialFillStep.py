@@ -249,13 +249,18 @@ class InitialFillStep:
                     if 'geo' in obj and obj['geo']['Geometrie_log']:
                         geometrie_dict = obj['geo']['Geometrie_log'][0]['DtcLog_geometrie']
                         wkt_string = next(iter(geometrie_dict.values()))
+
                     elif 'loc' in obj:
                         if 'Locatie_geometrie' in obj['loc'] and obj['loc']['Locatie_geometrie'] != '':
                             wkt_string = obj['loc']['Locatie_geometrie']
                         elif 'Locatie_puntlocatie' in obj['loc'] and obj['loc']['Locatie_puntlocatie'] != '' and '3Dpunt_puntgeometrie' in obj['loc']['Locatie_puntlocatie'] and obj['loc']['Locatie_puntlocatie']['3Dpunt_puntgeometrie'] != '':
-                            coords = obj['loc']['Locatie_puntlocatie']['3Dpunt_puntgeometrie']['DtcCoord.lambert72']
-                            wkt_string = f"POINT Z ({coords['DtcCoordLambert72.xcoordinaat']} {coords['DtcCoordLambert72.ycoordinaat']} {coords['DtcCoordLambert72.zcoordinaat']})"
-                    if wkt_string is not None:
+                            coords = obj['loc']['Locatie_puntlocatie']['3Dpunt_puntgeometrie']
+                            if 'DtcCoord.lambert72' in coords:
+                                coords = coords['DtcCoord.lambert72']
+                                wkt_string = f"POINT Z ({coords['DtcCoordLambert72.xcoordinaat']} {coords['DtcCoordLambert72.ycoordinaat']} {coords['DtcCoordLambert72.zcoordinaat']})"
+                            else:
+                                coords = coords['DtcCoordLambert2008']
+                                wkt_string = f"POINT Z ({coords['DtcCoordLambert2008.xcoordinaat']} {coords['DtcCoordLambert2008.ycoordinaat']} {coords['DtcCoordLambert2008.zcoordinaat']})"
                         obj['wkt'] = wkt_string
                         geom = wkt.loads(wkt_string)
                         geom_wgs84 = transform(self.transformer.transform, geom)
