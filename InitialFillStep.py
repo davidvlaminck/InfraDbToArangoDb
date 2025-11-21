@@ -26,7 +26,7 @@ class InitialFillStep:
         self.relatietype_lookup: dict = None
         self.beheerders_lookup: dict = None
 
-        self.transformer: Transformer = Transformer.from_crs("EPSG:31370", "EPSG:4326", always_xy=True)
+        self.transformer: Transformer = Transformer.from_crs("EPSG:3812", "EPSG:4326", always_xy=True)
 
     def execute(self, fill_resource_groups: list[list[ResourceEnum]]):
         db = self.factory.create_connection()
@@ -261,15 +261,19 @@ class InitialFillStep:
                             else:
                                 coords = coords['DtcCoordLambert2008']
                                 wkt_string = f"POINT Z ({coords['DtcCoordLambert2008.xcoordinaat']} {coords['DtcCoordLambert2008.ycoordinaat']} {coords['DtcCoordLambert2008.zcoordinaat']})"
-                        obj['wkt'] = wkt_string
+
+                    if wkt_string is not None:
+                        full_wkt_string = wkt_string
+                        if wkt_string.upper().startswith("SRID="):
+                            srid_part, wkt_string = wkt_string.split(";", 1)
                         geom = wkt.loads(wkt_string)
+
+                        obj['wkt'] = full_wkt_string
                         geom_wgs84 = transform(self.transformer.transform, geom)
                         geojson = mapping(geom_wgs84)
-
                         # Trim Z coordinate only for Points
                         if geojson.get("type") == "Point" and len(geojson.get("coordinates", [])) >= 3:
                             geojson["coordinates"] = geojson["coordinates"][:2]
-
                         obj['geometry'] = geojson
 
                     if assettype_key := self.assettype_lookup.get(uri):

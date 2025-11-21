@@ -31,14 +31,15 @@ class DBPipelineController:
         self.fill_resource_groups = [
             [ResourceEnum.assettypes, ResourceEnum.relatietypes, ResourceEnum.toezichtgroepen, ResourceEnum.bestekken,
              ResourceEnum.identiteiten, ResourceEnum.beheerders],
-            [ResourceEnum.assetrelaties, ResourceEnum.assets, ResourceEnum.agents, ResourceEnum.betrokkenerelaties,]
+            [ResourceEnum.assets #, ResourceEnum.assetrelaties, ResourceEnum.agents, ResourceEnum.betrokkenerelaties,]
+]
         ]
 
     def settings_to_clients(self, auth_type, env) -> tuple[ArangoDBConnectionFactory, EMInfraClient, EMSONClient]:
         db_settings = self.settings['databases'][str(env.value[0])]
 
         eminfra_client = EMInfraClient(env=env, auth_type=auth_type, settings=self.settings)
-        emson_client = EMSONClient(env=Environment.PRD, auth_type=auth_type, settings=self.settings)
+        emson_client = EMSONClient(env=env, auth_type=auth_type, settings=self.settings)
 
         db_name = db_settings['database']
         username = db_settings['user']
