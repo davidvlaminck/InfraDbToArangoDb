@@ -1,13 +1,12 @@
-import logging
 from collections.abc import Generator
 from dataclasses import dataclass
-from pathlib import Path
 
+from API.APIEnums import AuthType, Environment
 from API.EMInfraDomain import BaseDataclass
-from API.Enums import AuthType, Environment
 from API.RequesterFactory import RequesterFactory
 
-@dataclass
+
+@dataclass()
 class Query(BaseDataclass):
     size: int
     filters: dict
@@ -43,7 +42,6 @@ class EMSONClient:
             print(response)
             raise ProcessLookupError(response.content.decode("utf-8"))
         return response.json()
-
 
     def get_assetrelatie_by_uuid(self, uuid: str) -> dict:
         response = self.requester.get(url=f'api/otl/assetrelaties/{uuid}')

@@ -1,8 +1,8 @@
-requests
-pyjwt
-cryptography
 colorama
+cryptography
+pyjwt
+pyproj
 pytz
 python-arango
+requests
 shapely
-pyproj

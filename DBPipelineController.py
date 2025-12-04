@@ -3,9 +3,10 @@ from pathlib import Path
 
 from API.EMInfraClient import EMInfraClient
 from API.EMSONClient import EMSONClient
-from API.Enums import AuthType, Environment
+from API.APIEnums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 from CreateDBStep import CreateDBStep
+from CreateIndicesStep import CreateIndicesStep
 from Enums import DBStep, ResourceEnum
 from ExtraFillStep import ExtraFillStep
 from GenericDbFunctions import get_db_step, set_db_step
@@ -54,23 +55,31 @@ class DBPipelineController:
             return json.load(file)
 
     def run(self):
-        # TODO make this a while True loop when everything else is written
         db = self.factory.create_connection()
-        for _ in range(2):
+        while True:
             current_step = get_db_step(db)
             logging.info(f"Current DB step: {current_step}")
             if current_step is None or current_step == DBStep.CREATE_DB:
-                logging.info("Creating the database...")
+                logging.info("[0] Creating the database...")
                 self._create_db()
             elif current_step == DBStep.INITIAL_FILL:
-                logging.info("Filling the database...")
+                logging.info("[1] Filling the database...")
                 self._run_fill()
             elif current_step == DBStep.EXTRA_DATA_FILL:
-                logging.info("Do some additional filling...")
+                logging.info("[2] Do some additional filling...")
                 self._run_extra_fill()
-            self._run_indexes()
-            self._run_constraints()
-            self._run_syncing()
+            elif current_step == DBStep.CREATE_INDEXES:
+                logging.info("[3] Adding indices and graphs...")
+                self._run_indices()
+            elif current_step == DBStep.APPLY_CONSTRAINTS:
+                logging.info("[4] Applying constraints...")
+                self._run_constraints()
+            elif current_step == DBStep.SYNC:
+                logging.info("[5] Synchronising...")
+                self._run_syncing()
+            elif current_step == DBStep.STOP:
+                logging.info("[6] Stopping...")
+                break
 
     def _create_db(self):
         step_runner = CreateDBStep(self.factory)
@@ -85,19 +94,20 @@ class DBPipelineController:
     def _run_extra_fill(self):
         step_runner = ExtraFillStep(self.factory, eminfra_client=self.eminfra_client)
         step_runner.execute()
-        # vplan kenmerk, elektrisch aansluiting kenmerk
-        # eerst ophalen van welke assettypes deze kenmerken hebben
-        # daarna opslaan in de db
-        pass
+        set_db_step(self.pipeline_connection, step=DBStep.CREATE_INDEXES)
 
-    def _run_indexes(self):
-        pass
+    def _run_indices(self):
+        step_runner = CreateIndicesStep(self.factory)
+        step_runner.execute()
+        set_db_step(self.pipeline_connection, step=DBStep.APPLY_CONSTRAINTS)
 
     def _run_constraints(self):
-        pass
+        logging.debug("Constraints are currently handled in the CreateIndicesStep.")
+        set_db_step(self.pipeline_connection, step=DBStep.SYNC)
 
     def _run_syncing(self):
-        pass
+        logging.debug("Since the database is filling fast, skip the final syncing step for now.")
+        set_db_step(self.pipeline_connection, step=DBStep.STOP)
 
     def test_connection(self):
         try:

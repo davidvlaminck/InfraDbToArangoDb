@@ -11,7 +11,7 @@ logging.basicConfig(
 
 
 if __name__ == '__main__':
-    settings_path = Path('/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json')
+    settings_path = Path.home() / 'OneDrive - Nordend/projects/AWV/resources/settings_SyncToArangoDB.json'
 
     # 🚀 Connect to ArangoDB using DBPipelineController
     controller = DBPipelineController(settings_path=settings_path, auth_type=AuthType.JWT, env=Environment.PRD)
