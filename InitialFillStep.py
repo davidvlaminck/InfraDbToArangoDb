@@ -34,6 +34,7 @@ class InitialFillStep:
 
         # transformer from Belgian Lambert 72 / EPSG:31370 to WGS84 / EPSG:4326
         self.transformer = Transformer.from_crs("EPSG:31370", "EPSG:4326", always_xy=True)
+        self.transformer: Transformer = Transformer.from_crs("EPSG:3812", "EPSG:4326", always_xy=True)
 
         # resource handler registry
         self._resource_handlers: Dict[str, Callable[[Any, Iterable[Dict[str, Any]]], None]] = {
@@ -479,6 +480,7 @@ class InitialFillStep:
                 wkt_string = self._extract_wkt_from_obj(obj)
                 if wkt_string:
                     obj["wkt"] = wkt_string
+                    wkt_string = wkt_string.split(";")[1]
                     geom = wkt.loads(wkt_string)
                     geom_wgs84 = transform(self.transformer.transform, geom)
                     geojson = mapping(geom_wgs84)
@@ -492,6 +494,43 @@ class InitialFillStep:
                 else:
                     print(f"⚠️ No matching assettype for URI: {uri}")
                     continue
+                    wkt_string = None
+                    # extract wkt string
+                    if 'geo' in obj and obj['geo']['Geometrie_log']:
+                        geometrie_dict = obj['geo']['Geometrie_log'][0]['DtcLog_geometrie']
+                        wkt_string = next(iter(geometrie_dict.values()))
+
+                    elif 'loc' in obj:
+                        if 'Locatie_geometrie' in obj['loc'] and obj['loc']['Locatie_geometrie'] != '':
+                            wkt_string = obj['loc']['Locatie_geometrie']
+                        elif 'Locatie_puntlocatie' in obj['loc'] and obj['loc']['Locatie_puntlocatie'] != '' and '3Dpunt_puntgeometrie' in obj['loc']['Locatie_puntlocatie'] and obj['loc']['Locatie_puntlocatie']['3Dpunt_puntgeometrie'] != '':
+                            coords = obj['loc']['Locatie_puntlocatie']['3Dpunt_puntgeometrie']
+                            if 'DtcCoord.lambert72' in coords:
+                                coords = coords['DtcCoord.lambert72']
+                                wkt_string = f"POINT Z ({coords['DtcCoordLambert72.xcoordinaat']} {coords['DtcCoordLambert72.ycoordinaat']} {coords['DtcCoordLambert72.zcoordinaat']})"
+                            else:
+                                coords = coords['DtcCoordLambert2008']
+                                wkt_string = f"POINT Z ({coords['DtcCoordLambert2008.xcoordinaat']} {coords['DtcCoordLambert2008.ycoordinaat']} {coords['DtcCoordLambert2008.zcoordinaat']})"
+
+                    if wkt_string is not None:
+                        full_wkt_string = wkt_string
+                        if wkt_string.upper().startswith("SRID="):
+                            srid_part, wkt_string = wkt_string.split(";", 1)
+                        geom = wkt.loads(wkt_string)
+
+                        obj['wkt'] = full_wkt_string
+                        geom_wgs84 = transform(self.transformer.transform, geom)
+                        geojson = mapping(geom_wgs84)
+                        # Trim Z coordinate only for Points
+                        if geojson.get("type") == "Point" and len(geojson.get("coordinates", [])) >= 3:
+                            geojson["coordinates"] = geojson["coordinates"][:2]
+                        obj['geometry'] = geojson
+
+                    if assettype_key := self.assettype_lookup.get(uri):
+                        obj["assettype_key"] = assettype_key
+                    else:
+                        print(f"⚠️ No matching assettype for URI: {uri}")
+                        continue
 
                 # optional mappings
                 if toestand := obj.get("AIMToestand_toestand"):

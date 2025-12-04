@@ -12,7 +12,7 @@ class Query(BaseDataclass):
     filters: dict
     orderByProperty: str | None = None
     fromCursor: str | None = None
-
+    crs: str | None = '3812'  # Default to Belgian Lambert 2008
 
 class EMSONClient:
     def __init__(self, auth_type: AuthType, env: Environment, settings: dict = None, cookie: str = None):
@@ -21,9 +21,7 @@ class EMSONClient:
         self.requester.first_part_url += 'emson/'
 
     def test_connection(self):
-        url = "api/otl/assetrelaties"
-        json_dict = self.requester.get(url).json()
-        return json_dict
+        return self.requester.get("api/otl/assetrelaties").json()
 
     def get_resource_by_cursor(self, resource: str, cursor: str, page_size: int = 100) -> Generator[tuple[str, dict]]:
         query = Query(filters={}, size=page_size, fromCursor=cursor)
@@ -52,7 +50,8 @@ class EMSONClient:
             raise ProcessLookupError(response.content.decode("utf-8"))
         return response.json()
 
-    def get_assets_by_filter(self, filter: dict, size: int = 100, order_by_property: str = None) -> [dict]:
+    def get_assets_by_filter(self, filter: dict, size: int = 100, order_by_property: str = None
+                             ) -> Generator[dict, None, None]:
         """See https://apps.mow.vlaanderen.be/emson/docs/#_post_emsonapiotlassetssearch for more details
         +---------------------+----------------------------------------+------------------------------------+\n
         |       Filter        |              Omschrijving              |                Type                |\n
@@ -84,7 +83,8 @@ class EMSONClient:
                 break
             query.fromCursor = paging_cursor
 
-    def get_assetrelaties_by_filter(self, filter: dict, size: int = 100, order_by_property: str = None) -> [dict]:
+    def get_assetrelaties_by_filter(self, filter: dict, size: int = 100, order_by_property: str = None
+                                    ) -> Generator[dict, None, None]:
         """
         +-----------+---------------------------------------------------------------------------------+--------------------+\n
         |  Filter   |                                  Omschrijving                                   |        Type        |\n
