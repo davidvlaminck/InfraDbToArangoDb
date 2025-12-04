@@ -32,8 +32,7 @@ class InitialFillStep:
         self.relatietype_lookup: Optional[Dict[str, str]] = None
         self.beheerders_lookup: Optional[Dict[str, str]] = None
 
-        # transformer from Belgian Lambert 72 / EPSG:31370 to WGS84 / EPSG:4326
-        self.transformer = Transformer.from_crs("EPSG:31370", "EPSG:4326", always_xy=True)
+        # transformer from Belgian Lambert2008 / EPSG:3812 to WGS84 / EPSG:4326
         self.transformer: Transformer = Transformer.from_crs("EPSG:3812", "EPSG:4326", always_xy=True)
 
         # resource handler registry
@@ -479,8 +478,10 @@ class InitialFillStep:
                 # extract WKT from several possible locations
                 wkt_string = self._extract_wkt_from_obj(obj)
                 if wkt_string:
-                    obj["wkt"] = wkt_string
-                    wkt_string = wkt_string.split(";")[1]
+                    full_wkt_string = wkt_string
+                    obj["wkt"] = full_wkt_string
+                    if full_wkt_string.upper().startswith("SRID="):
+                        wkt_string = full_wkt_string.split(";")[1]
                     geom = wkt.loads(wkt_string)
                     geom_wgs84 = transform(self.transformer.transform, geom)
                     geojson = mapping(geom_wgs84)
@@ -665,10 +666,16 @@ class InitialFillStep:
             if pl and pl != "":
                 geom_container = pl.get("3Dpunt_puntgeometrie")
                 if geom_container and geom_container != "":
-                    coords = geom_container.get("DtcCoord.lambert72")
-                    if coords:
-                        # build WKT point Z string
-                        return f"POINT Z ({coords['DtcCoordLambert72.xcoordinaat']} {coords['DtcCoordLambert72.ycoordinaat']} {coords['DtcCoordLambert72.zcoordinaat']})"
+                    if 'DtcCoord.lambert72' in geom_container:
+                        coords = geom_container['DtcCoord.lambert72']
+                        wkt_string = f"POINT Z ({coords['DtcCoordLambert72.xcoordinaat']} {coords['DtcCoordLambert72.ycoordinaat']} {coords['DtcCoordLambert72.zcoordinaat']})"
+                    elif 'DtcCoord.lambert2008' in geom_container:
+                        coords = geom_container['DtcCoordLambert2008']
+                        wkt_string = f"POINT Z ({coords['DtcCoordLambert2008.xcoordinaat']} {coords['DtcCoordLambert2008.ycoordinaat']} {coords['DtcCoordLambert2008.zcoordinaat']})"
+                    else:
+                        logging.error(f"Unknown geometry type: {geom_container}")
+                        return None
+                    return wkt_string
         return None
 
     def actief_interval_to_actief(self, actief_interval: Optional[Dict[str, Any]]) -> bool:
