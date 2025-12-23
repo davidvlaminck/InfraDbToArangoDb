@@ -124,33 +124,6 @@ class ExtraFillStep:
         )
 
     def fill_aansluitingrefs(self, start_from, db, params):
-        params_resource = params.get('fill_aansluitingrefs')
-        if not params_resource or not params_resource['fill']:
-            logging.info("Skipping aansluitingrefs, already filled.")
-            return
-        start_from = params_resource.get('from')
-        generator = self.eminfra_client.get_resource_page("elektriciteitsaansluitingrefs", 1000, start_from)
-        for cursor, dicts in generator:
-            if not dicts:
-                continue
-            docs_to_insert = [
-                {
-                    "_key": record["uuid"][:8],
-                    "uuid": record["uuid"],
-                    "amid": record["amid"],
-                    "aansluitnummer": record["aansluitnummer"],
-                    "ean": record.get("ean")
-                }
-                for record in dicts
-            ]
-            db.collection('aansluitingrefs').import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
-            db.aql.execute(
-                "UPDATE @key WITH { from: @start_from } IN params",
-                bind_vars={"key": "fill_aansluitingrefs", "start_from": cursor}
-            )
-            count = list(db.aql.execute("RETURN LENGTH(aansluitingrefs)"))[0]
-            logging.debug(f"Total records in aansluitingrefs collection: {count}")
-            logging.info(f"Inserted {len(dicts)} records for aansluitingrefs. Next cursor: {cursor}")
         logging.info("No more data for aansluitingrefs. Marking as filled.")
         db.aql.execute(
             "UPDATE @key WITH { from: @start_from, fill: @fill} IN params",
@@ -158,47 +131,6 @@ class ExtraFillStep:
         )
 
     def fill_aansluitingen(self, start_from, db, params):
-        query = """
-          FOR atype IN assettypes
-            FILTER atype.aansluitpunt_kenmerk == true
-            RETURN atype.uuid
-        """
-        assettype_uuids = list(db.aql.execute(query))
-        params_resource = params.get('fill_aansluitingen')
-        if not params_resource or not params_resource['fill']:
-            logging.info("Skipping aansluitingen, already filled.")
-            return
-        start_from = params_resource.get('from')
-        generator = self.eminfra_client.get_assets_by_assettype_uuids(
-            assettype_uuids=assettype_uuids, cursor=start_from, page_size=100,
-            expansion_strings=['kenmerk:87dff279-4162-4031-ba30-fb7ffd9c014b']
-        )
-        for cursor, dicts in generator:
-            if not dicts:
-                continue
-            docs_to_insert = []
-            for record in dicts:
-                kenmerken = record.get('kenmerken', {}).get('data', [])
-                aansluit_kenmerk = next((k for k in kenmerken if k.get('_type') == '87dff279-4162-4031-ba30-fb7ffd9c014b'), None)
-                if not aansluit_kenmerk:
-                    continue
-                aansluiting_ref = aansluit_kenmerk.get('elektriciteitsAansluitingRef')
-                if not aansluiting_ref:
-                    continue
-                aansluiting_uuid = aansluiting_ref['uuid']
-                docs_to_insert.append({
-                    "_key": f"{record['uuid']}_{aansluiting_uuid[:8]}",
-                    "_from": f"assets/{record['uuid']}",
-                    "_to": f"aansluitingen/{aansluiting_uuid[:8]}"
-                })
-            if docs_to_insert:
-                db.collection('aansluitingen').import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
-            db.aql.execute(
-                "UPDATE @key WITH { from: @start_from } IN params",
-                bind_vars={"key": "fill_aansluitingen", "start_from": cursor}
-            )
-            count = list(db.aql.execute("RETURN LENGTH(aansluitingen)"))[0]
-            logging.info(f"Total records in aansluitingen collection: {count} Next cursor: {cursor}")
         logging.info("No more data for aansluitingen. Marking as filled.")
         db.aql.execute(
             "UPDATE @key WITH { from: @start_from, fill: @fill} IN params",
