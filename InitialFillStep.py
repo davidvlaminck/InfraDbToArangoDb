@@ -363,7 +363,7 @@ class InitialFillStep:
                 else:
                     obj["_from"] = "assets/" + bron.get("@id", "").split("/")[-1][:36]
 
-                obj["_to"] = "assets/" + doel.get("@id", "").split("/")[-1][:13]
+                obj["_to"] = "agents/" + doel.get("@id", "").split("/")[-1][:13]
 
                 if "AIMDBStatus_isActief" not in obj:
                     obj["AIMDBStatus_isActief"] = True
