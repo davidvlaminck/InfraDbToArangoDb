@@ -55,9 +55,11 @@ class InitialFillStep:
     def execute(self, fill_resource_groups: List[List[ResourceEnum]]):
         db = self.factory.create_connection()
         docs = self._get_docs_to_update(db)
-        if docs:
-            docs_to_update = self._build_docs_to_update(docs)
-            self._update_params_collection(db, docs_to_update)
+
+        # no longer need to update these
+        # if docs:
+        #     docs_to_update = self._build_docs_to_update(docs)
+        #     self._update_params_collection(db, docs_to_update)
 
         self.fill_tables(fill_resource_groups=fill_resource_groups)
         self._removed_fill_params(db)
