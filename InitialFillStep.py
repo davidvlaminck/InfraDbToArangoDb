@@ -541,6 +541,8 @@ class InitialFillStep:
 
                 if naampad := obj.get("NaampadObject_naampad"):
                     obj["naampad_parts"] = naampad.split("/")
+                    if len(obj["naampad_parts"]) >= 2:
+                        obj["naampad_parent"] = "/".join(obj["naampad_parts"][:-1])
 
                 tzg_id = obj.get("tz", {}).get("Toezicht_toezichtgroep", {}).get("DtcToezichtGroep_id")
                 if tzg_id:

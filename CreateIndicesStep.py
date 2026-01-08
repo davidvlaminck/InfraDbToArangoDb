@@ -20,6 +20,7 @@ class CreateIndicesStep:
         db.collection('assets').add_persistent_index(fields=['toezichtgroep_key'], unique=False, sparse=False)
         db.collection('assets').add_persistent_index(fields=['beheerder_key'], unique=False, sparse=False)
         db.collection('assets').add_persistent_index(fields=['naampad_parts'], unique=False, sparse=True)
+        db.collection('assets').add_persistent_index(fields=['naampad_parent'], unique=False, sparse=True)
         db.collection('assets').add_persistent_index(fields=['assettype_key', 'AIMDBStatus_isActief'], unique=False, sparse=False)
         db.collection('assets').add_persistent_index(fields=['assettype_key', 'AIMDBStatus_isActief', 'toestand'], unique=False, sparse=False)
 
