@@ -6,3 +6,5 @@ pytz
 python-arango
 requests
 shapely
+openpyxl
+pytest

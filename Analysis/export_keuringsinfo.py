@@ -40,6 +40,7 @@ from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 TARGET_SHEETS = {"V&W-WL", "V&W-WA", "V&W-WO", "V&W-WW", "V&W-WVB", "Tunnel Organ. VL."}
 EXCLUDED_SHEET = "Niet meegenomen"
 PIVOT_SHEET = "Pivot"
+PIVOT_ALL_SHEET = "Pivot (incl Niet meegenomen)"
 
 
 @dataclass(frozen=True)
@@ -235,15 +236,33 @@ def _is_not_included(record: KeuringsRecord) -> bool:
     return (record.toestand or "").lower() in {"verwijderd", "overgedragen"}
 
 
-def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str | None:
-    """Return normalized resultaat for pivot counting, or None if it shouldn't count."""
+def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
+    """Return pivot category for this record.
+
+    Rules
+    - A resultaatKeuring counts only when datumLaatsteKeuring > cutoff.
+    - Otherwise this record is categorized as "geen keuring".
+
+    This matches the requirement 'In de andere gevallen telt het resultaat niet en
+    is het hetzelfde als niet ingevuld'.
+    """
 
     d = _parse_iso_date(record.datum_laatste_keuring)
     if d is None or d <= cutoff:
-        return None
+        return "geen keuring"
 
     r = (record.resultaat_keuring or "").strip()
-    return r or None
+    return r if r else "geen keuring"
+
+
+def _pivot_group_name(record: KeuringsRecord) -> str:
+    """Map any record to one of the 6 target groups or 'Andere'.
+
+    For pivoting we intentionally collapse everything outside TARGET_SHEETS into
+    'Andere' so the pivot stays stable.
+    """
+
+    return _sheet_name(record.toezichtgroep)
 
 
 def _build_pivot(
@@ -256,26 +275,26 @@ def _build_pivot(
 
     Returns:
       - sorted unique result columns
-      - mapping toezichtgroep -> Counter(result => count)
+      - mapping pivotGroup -> Counter(result => count)
 
     Notes:
-    - By default we exclude "Niet meegenomen" from the pivot.
-    - Blank/None results (or dates <= cutoff) are ignored for pivot counting.
+    - By default we exclude 'Niet meegenomen' from the pivot.
+    - Every included record contributes exactly 1 to the pivot (either a valid
+      resultaat or 'geen keuring').
+    - Groups are reduced to the 6 target groups + 'Andere'.
     """
 
     counters: dict[str, Counter[str]] = defaultdict(Counter)
     all_results: set[str] = set()
 
     for r in records:
-        if (not include_not_meegenomen) and _is_not_included(r):
+        if _is_not_included(r) and (not include_not_meegenomen):
             continue
 
         res = _pivot_result_key(r, cutoff=cutoff)
-        if res is None:
-            continue
+        grp = _pivot_group_name(r)
 
-        tg = r.toezichtgroep or "UNKNOWN"
-        counters[tg][res] += 1
+        counters[grp][res] += 1
         all_results.add(res)
 
     result_cols = sorted(all_results)
@@ -285,27 +304,30 @@ def _build_pivot(
 def _write_pivot_sheet(
     wb: Any,
     *,
+    sheet_name: str,
     records: list[KeuringsRecord],
     cutoff: dt.date,
+    include_not_meegenomen: bool,
 ) -> None:
-    """Create/overwrite the Pivot sheet."""
+    """Create/overwrite a Pivot sheet."""
 
-    if PIVOT_SHEET in wb.sheetnames:
-        wb.remove(wb[PIVOT_SHEET])
+    if sheet_name in wb.sheetnames:
+        wb.remove(wb[sheet_name])
 
-    sh = wb.create_sheet(title=PIVOT_SHEET, index=0)
+    sh = wb.create_sheet(title=sheet_name, index=0)
 
-    cols, counters = _build_pivot(records, cutoff=cutoff, include_not_meegenomen=False)
+    cols, counters = _build_pivot(
+        records,
+        cutoff=cutoff,
+        include_not_meegenomen=include_not_meegenomen,
+    )
 
     header: list[Any] = ["toezichtgroep", *cols, "Totaal"]
     sh.append(header)
 
-    # stable row ordering: target groups (sorted) first, then others alphabetically
-    ordered_groups = list(sorted(TARGET_SHEETS))
-    other_groups = sorted([g for g in counters.keys() if g not in TARGET_SHEETS])
-    row_groups = ordered_groups + other_groups
+    # fixed ordering: target groups (sorted) then Andere
+    row_groups = [*sorted(TARGET_SHEETS), "Andere"]
 
-    # Rows per toezichtsgroep
     grand_total: Counter[str] = Counter()
     for tg in row_groups:
         c = counters.get(tg, Counter())
@@ -319,7 +341,6 @@ def _write_pivot_sheet(
         row.append(row_total)
         sh.append(row)
 
-    # Total row
     total_row: list[Any] = ["Totaal"]
     total_sum = 0
     for res in cols:
@@ -332,6 +353,7 @@ def _write_pivot_sheet(
 
 def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
     from openpyxl import Workbook
+    from openpyxl.utils import get_column_letter
 
     records_list = list(records)
 
@@ -339,8 +361,24 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
     default = wb.active
     wb.remove(default)
 
-    # Pivot sheet first (only counts included records / excludes Niet meegenomen by design)
-    _write_pivot_sheet(wb, records=records_list, cutoff=dt.date(2021, 1, 1))
+    # Two pivots:
+    # - Pivot: excludes Niet meegenomen
+    # - Pivot (incl Niet meegenomen): includes them
+    cutoff = dt.date(2021, 1, 1)
+    _write_pivot_sheet(
+        wb,
+        sheet_name=PIVOT_ALL_SHEET,
+        records=records_list,
+        cutoff=cutoff,
+        include_not_meegenomen=True,
+    )
+    _write_pivot_sheet(
+        wb,
+        sheet_name=PIVOT_SHEET,
+        records=records_list,
+        cutoff=cutoff,
+        include_not_meegenomen=False,
+    )
 
     sheet_names = [*sorted(TARGET_SHEETS), "Andere", EXCLUDED_SHEET]
     sheets = {name: wb.create_sheet(title=name) for name in sheet_names}
@@ -381,6 +419,35 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
                 r.resultaat_keuring,
             ]
         )
+
+    def _autofit_sheet_columns(ws: Any, *, min_width: int = 10, max_width: int = 80, padding: int = 2) -> None:
+        """Auto-adjust column widths based on cell value length."""
+
+        ws.freeze_panes = "A2"  # keep header row visible
+
+        # compute widths
+        for col_cells in ws.columns:
+            # col_cells can include merged cells etc; guard for missing column index
+            first = next(iter(col_cells), None)
+            if first is None or getattr(first, "column", None) is None:
+                continue
+
+            max_len = 0
+            for cell in col_cells:
+                v = cell.value
+                if v is None:
+                    continue
+                s = str(v)
+                if len(s) > max_len:
+                    max_len = len(s)
+
+            width = min(max(min_width, max_len + padding), max_width)
+            col_letter = get_column_letter(first.column)
+            ws.column_dimensions[col_letter].width = width
+
+    # Auto-fit all sheets (including Pivot)
+    for ws in wb.worksheets:
+        _autofit_sheet_columns(ws)
 
     wb.save(out_path)
 
