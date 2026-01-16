@@ -207,53 +207,10 @@ class ExtraFillStep:
     def fill_voedt_relaties(self, start_from, db, params):
         """(Re)build derived Voedt-only edges between active assets.
 
-        - Source edge: `assetrelaties`
-        - Target edge collection: `voedt_relaties`
-        - Filter: relationtype == Voedt AND edge active AND both endpoints active
+        Historically this had a dedicated implementation, but it's identical to the other derived
+        edge rebuilds. We now route through the generic helper for consistency.
         """
-        # This fill step is intentionally not incremental: it rebuilds to keep it consistent
-        # with assets/assetrelaties.
-        self._ensure_edge_collection(db, 'voedt_relaties')
-
-        # Clear existing derived edges
-        db.collection('voedt_relaties').truncate()
-
-        # Resolve Voedt relatietype key
-        voedt_key_cursor = db.aql.execute(
-            'FOR rt IN relatietypes FILTER rt.short == "Voedt" LIMIT 1 RETURN rt._key'
-        )
-        voedt_key = next(iter(voedt_key_cursor), None)
-        if voedt_key is None:
-            logging.warning("⚠️ Could not find relatietype 'Voedt'. Leaving voedt_relaties empty.")
-            self._mark_filled(db, "fill_voedt_relaties")
-            return
-
-        logging.info("🔄 Building voedt_relaties derived edges...")
-        db.aql.execute(
-            """
-            LET voedt_key = FIRST(FOR rt IN relatietypes FILTER rt.short == "Voedt" LIMIT 1 RETURN rt._key)
-            FOR e IN assetrelaties
-              FILTER e.relatietype_key == voedt_key
-              FILTER e.AIMDBStatus_isActief == true
-              LET a_from = DOCUMENT(e._from)
-              LET a_to   = DOCUMENT(e._to)
-              FILTER a_from != null && a_to != null
-              FILTER a_from.AIMDBStatus_isActief == true
-              FILTER a_to.AIMDBStatus_isActief == true
-              INSERT {
-                _from: e._from,
-                _to: e._to,
-                source_edge_id: e._id,
-                source_edge_key: e._key
-              } INTO voedt_relaties
-            """,
-            bind_vars={"voedt_key": voedt_key}
-        )
-
-        count = next(iter(db.aql.execute('RETURN LENGTH(voedt_relaties)')), None)
-        logging.info("✅ voedt_relaties built. Edge count: %s", count)
-
-        self._mark_filled(db, "fill_voedt_relaties")
+        self._fill_derived_edges(db, 'fill_voedt_relaties', 'voedt_relaties', 'Voedt')
 
     def fill_sturing_relaties(self, start_from, db, params):
         self._fill_derived_edges(db, 'fill_sturing_relaties', 'sturing_relaties', 'Sturing')
