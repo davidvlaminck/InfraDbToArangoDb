@@ -1,6 +1,7 @@
 import logging
 from API.EMInfraClient import EMInfraClient
 
+
 class ExtraFillStep:
     def __init__(self, factory, eminfra_client: EMInfraClient):
         self.factory = factory
@@ -8,7 +9,7 @@ class ExtraFillStep:
 
     def execute(self):
         db = self.factory.create_connection()
-        resources_to_fill = ['assettypes', 'vplankoppelingen', 'aansluitingrefs', 'aansluitingen']
+        resources_to_fill = ['assettypes', 'vplankoppelingen', 'aansluitingrefs', 'aansluitingen', 'voedt_relaties']
 
         # Ensure fill params exist
         params = db.collection('params')
@@ -32,6 +33,7 @@ class ExtraFillStep:
             'vplankoppelingen': self.fill_vplankoppelingen,
             'aansluitingrefs': self.fill_aansluitingrefs,
             'aansluitingen': self.fill_aansluitingen,
+            'voedt_relaties': self.fill_voedt_relaties,
         }
 
         if resource in fill_functions:
@@ -136,3 +138,62 @@ class ExtraFillStep:
             "UPDATE @key WITH { from: @start_from, fill: @fill} IN params",
             bind_vars={"key": "fill_aansluitingen", "start_from": None, "fill": False}
         )
+
+    def fill_voedt_relaties(self, start_from, db, params):
+        """(Re)build derived Voedt-only edges between active assets.
+
+        - Source edge: `assetrelaties`
+        - Target edge collection: `voedt_relaties`
+        - Filter: relationtype == Voedt AND edge active AND both endpoints active
+        """
+        # This fill step is intentionally not incremental: it rebuilds to keep it consistent
+        # with assets/assetrelaties.
+        if not db.has_collection('voedt_relaties'):
+            db.create_collection('voedt_relaties', edge=True)
+
+        # Clear existing derived edges
+        db.collection('voedt_relaties').truncate()
+
+        # Resolve Voedt relatietype key
+        voedt_key_cursor = db.aql.execute(
+            'FOR rt IN relatietypes FILTER rt.short == "Voedt" LIMIT 1 RETURN rt._key'
+        )
+        voedt_key = next(iter(voedt_key_cursor), None)
+        if voedt_key is None:
+            logging.warning("⚠️ Could not find relatietype 'Voedt'. Leaving voedt_relaties empty.")
+            db.aql.execute(
+                "UPDATE @key WITH { from: @start_from, fill: @fill} IN params",
+                bind_vars={"key": "fill_voedt_relaties", "start_from": None, "fill": False}
+            )
+            return
+
+        logging.info("🔄 Building voedt_relaties derived edges...")
+        db.aql.execute(
+            """
+            LET voedt_key = FIRST(FOR rt IN relatietypes FILTER rt.short == "Voedt" LIMIT 1 RETURN rt._key)
+            FOR e IN assetrelaties
+              FILTER e.relatietype_key == voedt_key
+              FILTER e.AIMDBStatus_isActief == true
+              LET a_from = DOCUMENT(e._from)
+              LET a_to   = DOCUMENT(e._to)
+              FILTER a_from != null && a_to != null
+              FILTER a_from.AIMDBStatus_isActief == true
+              FILTER a_to.AIMDBStatus_isActief == true
+              INSERT {
+                _from: e._from,
+                _to: e._to,
+                source_edge_id: e._id,
+                source_edge_key: e._key
+              } INTO voedt_relaties
+            """,
+            bind_vars={"voedt_key": voedt_key}
+        )
+
+        count = next(iter(db.aql.execute('RETURN LENGTH(voedt_relaties)')), None)
+        logging.info("✅ voedt_relaties built. Edge count: %s", count)
+
+        db.aql.execute(
+            "UPDATE @key WITH { from: @start_from, fill: @fill} IN params",
+            bind_vars={"key": "fill_voedt_relaties", "start_from": None, "fill": False}
+        )
+

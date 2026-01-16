@@ -21,17 +21,25 @@ class CreateIndicesStep:
         db.collection('assets').add_persistent_index(fields=['beheerder_key'], unique=False, sparse=False)
         db.collection('assets').add_persistent_index(fields=['naampad_parts'], unique=False, sparse=True)
         db.collection('assets').add_persistent_index(fields=['naampad_parent'], unique=False, sparse=True)
-        db.collection('assets').add_persistent_index(fields=['assettype_key', 'AIMDBStatus_isActief'], unique=False, sparse=False)
-        db.collection('assets').add_persistent_index(fields=['assettype_key', 'AIMDBStatus_isActief', 'toestand'], unique=False, sparse=False)
+        db.collection('assets').add_persistent_index(fields=['assettype_key', 'AIMDBStatus_isActief'], unique=False,
+                                                     sparse=False)
+        db.collection('assets').add_persistent_index(fields=['assettype_key', 'AIMDBStatus_isActief', 'toestand'],
+                                                     unique=False, sparse=False)
 
         db.collection('assetrelaties').add_persistent_index(fields=["relatietype_key"], unique=False, sparse=False)
-        db.collection('assetrelaties').add_persistent_index(fields=['relatietype_key', 'AIMDBStatus_isActief'], unique=False, sparse=False)
+        db.collection('assetrelaties').add_persistent_index(fields=['relatietype_key', 'AIMDBStatus_isActief'],
+                                                            unique=False, sparse=False)
 
         db.collection('assettypes').add_persistent_index(fields=['short_uri'], unique=False, sparse=False)
         db.collection('relatietypes').add_persistent_index(fields=['short'], unique=False, sparse=False)
         db.collection('betrokkenerelaties').add_persistent_index(fields=['_from', 'role'], unique=False, sparse=False)
         db.collection('betrokkenerelaties').add_persistent_index(fields=['_to', 'role'], unique=False, sparse=False)
         db.collection('vplankoppelingen').add_persistent_index(fields=['assets_key'], unique=False, sparse=False)
+
+        # Derived Voedt-only edges used for loop detection queries
+        if db.has_collection('voedt_relaties'):
+            db.collection('voedt_relaties').add_persistent_index(fields=['_from'], unique=False, sparse=False)
+            db.collection('voedt_relaties').add_persistent_index(fields=['_to'], unique=False, sparse=False)
 
     @staticmethod
     def add_graphs(db):
@@ -40,6 +48,16 @@ class CreateIndicesStep:
         assetrelaties_graph = db.create_graph("assetrelaties_graph")
         assetrelaties_graph.create_edge_definition(
             edge_collection="assetrelaties",
+            from_vertex_collections=["assets"],
+            to_vertex_collections=["assets"]
+        )
+
+        # Fast Voedt-only traversal graph
+        if db.has_graph("voedt_graph"):
+            db.delete_graph("voedt_graph", drop_collections=False)
+        voedt_graph = db.create_graph("voedt_graph")
+        voedt_graph.create_edge_definition(
+            edge_collection="voedt_relaties",
             from_vertex_collections=["assets"],
             to_vertex_collections=["assets"]
         )
@@ -70,7 +88,7 @@ class CreateIndicesStep:
             from_vertex_collections=["assets"],
             to_vertex_collections=["aansluitingrefs"]
         )
-        
+
     def ensure_naampad_analyzer_and_view(self, db):
         """
         Ensure the edge_ngram analyzer and ArangoSearch view for assets.naampad_parts.
