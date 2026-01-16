@@ -36,10 +36,11 @@ class CreateIndicesStep:
         db.collection('betrokkenerelaties').add_persistent_index(fields=['_to', 'role'], unique=False, sparse=False)
         db.collection('vplankoppelingen').add_persistent_index(fields=['assets_key'], unique=False, sparse=False)
 
-        # Derived Voedt-only edges used for loop detection queries
-        if db.has_collection('voedt_relaties'):
-            db.collection('voedt_relaties').add_persistent_index(fields=['_from'], unique=False, sparse=False)
-            db.collection('voedt_relaties').add_persistent_index(fields=['_to'], unique=False, sparse=False)
+        # Derived edges used for fast traversal/loop detection queries
+        for derived in ['voedt_relaties', 'sturing_relaties', 'bevestiging_relaties', 'hoortbij_relaties']:
+            if db.has_collection(derived):
+                db.collection(derived).add_persistent_index(fields=['_from'], unique=False, sparse=False)
+                db.collection(derived).add_persistent_index(fields=['_to'], unique=False, sparse=False)
 
     @staticmethod
     def add_graphs(db):
@@ -52,15 +53,22 @@ class CreateIndicesStep:
             to_vertex_collections=["assets"]
         )
 
-        # Fast Voedt-only traversal graph
-        if db.has_graph("voedt_graph"):
-            db.delete_graph("voedt_graph", drop_collections=False)
-        voedt_graph = db.create_graph("voedt_graph")
-        voedt_graph.create_edge_definition(
-            edge_collection="voedt_relaties",
-            from_vertex_collections=["assets"],
-            to_vertex_collections=["assets"]
-        )
+        # Fast derived traversal graphs
+        derived_graphs = {
+            'voedt_graph': 'voedt_relaties',
+            'sturing_graph': 'sturing_relaties',
+            'bevestiging_graph': 'bevestiging_relaties',
+            'hoortbij_graph': 'hoortbij_relaties',
+        }
+        for graph_name, edge_collection in derived_graphs.items():
+            if db.has_graph(graph_name):
+                db.delete_graph(graph_name, drop_collections=False)
+            g = db.create_graph(graph_name)
+            g.create_edge_definition(
+                edge_collection=edge_collection,
+                from_vertex_collections=["assets"],
+                to_vertex_collections=["assets"]
+            )
 
         if db.has_graph("betrokkenerelaties_graph"):
             db.delete_graph("betrokkenerelaties_graph", drop_collections=False)

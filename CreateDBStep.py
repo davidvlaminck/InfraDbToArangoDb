@@ -32,7 +32,11 @@ class CreateDBStep:
             doc_collections = [
                 "params", "assets", "assettypes", "relatietypes", "agents", "toezichtgroepen", "identiteiten",
                 "beheerders", "bestekken", "vplankoppelingen", "aansluitingrefs"]
-            edge_collections = ["assetrelaties", "betrokkenerelaties", "bestekkoppelingen", "aansluitingen", "voedt_relaties"]
+            edge_collections = [
+                "assetrelaties", "betrokkenerelaties", "bestekkoppelingen", "aansluitingen",
+                # Derived edge collections
+                "voedt_relaties", "sturing_relaties", "bevestiging_relaties", "hoortbij_relaties"
+            ]
 
             for name in doc_collections:
                 db.create_collection(name)

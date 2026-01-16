@@ -9,7 +9,11 @@ class ExtraFillStep:
 
     def execute(self):
         db = self.factory.create_connection()
-        resources_to_fill = ['assettypes', 'vplankoppelingen', 'aansluitingrefs', 'aansluitingen', 'voedt_relaties']
+        resources_to_fill = [
+            'assettypes', 'vplankoppelingen', 'aansluitingrefs', 'aansluitingen',
+            # derived edge collections
+            'voedt_relaties', 'sturing_relaties', 'bevestiging_relaties', 'hoortbij_relaties'
+        ]
 
         # Ensure fill params exist
         params = db.collection('params')
@@ -34,6 +38,9 @@ class ExtraFillStep:
             'aansluitingrefs': self.fill_aansluitingrefs,
             'aansluitingen': self.fill_aansluitingen,
             'voedt_relaties': self.fill_voedt_relaties,
+            'sturing_relaties': self.fill_sturing_relaties,
+            'bevestiging_relaties': self.fill_bevestiging_relaties,
+            'hoortbij_relaties': self.fill_hoortbij_relaties,
         }
 
         if resource in fill_functions:
@@ -139,6 +146,64 @@ class ExtraFillStep:
             bind_vars={"key": "fill_aansluitingen", "start_from": None, "fill": False}
         )
 
+    def _ensure_edge_collection(self, db, name: str):
+        if not db.has_collection(name):
+            db.create_collection(name, edge=True)
+
+    def _mark_filled(self, db, params_key: str):
+        db.aql.execute(
+            "UPDATE @key WITH { from: @start_from, fill: @fill} IN params",
+            bind_vars={"key": params_key, "start_from": None, "fill": False}
+        )
+
+    def _fill_derived_edges(self, db, params_key: str, edge_collection: str, relatietype_short: str):
+        """(Re)build derived edges in edge_collection for a given relatietype.short.
+
+        - Source edge: assetrelaties
+        - Filters: correct relatietype, edge active, both endpoints active
+        - Write: derived edge with _from/_to and source edge metadata
+        """
+        self._ensure_edge_collection(db, edge_collection)
+
+        # Clear existing derived edges
+        db.collection(edge_collection).truncate()
+
+        rt_key_cursor = db.aql.execute(
+            'FOR rt IN relatietypes FILTER rt.short == @short LIMIT 1 RETURN rt._key',
+            bind_vars={'short': relatietype_short}
+        )
+        rt_key = next(iter(rt_key_cursor), None)
+        if rt_key is None:
+            logging.warning("⚠️ Could not find relatietype '%s'. Leaving %s empty.", relatietype_short, edge_collection)
+            self._mark_filled(db, params_key)
+            return
+
+        logging.info("🔄 Building %s derived edges for relatietype '%s'...", edge_collection, relatietype_short)
+        db.aql.execute(
+            f"""
+            LET rt_key = FIRST(FOR rt IN relatietypes FILTER rt.short == @short LIMIT 1 RETURN rt._key)
+            FOR e IN assetrelaties
+              FILTER e.relatietype_key == rt_key
+              FILTER e.AIMDBStatus_isActief == true
+              LET a_from = DOCUMENT(e._from)
+              LET a_to   = DOCUMENT(e._to)
+              FILTER a_from != null && a_to != null
+              FILTER a_from.AIMDBStatus_isActief == true
+              FILTER a_to.AIMDBStatus_isActief == true
+              INSERT {{
+                _from: e._from,
+                _to: e._to,
+                source_edge_id: e._id,
+                source_edge_key: e._key
+              }} INTO {edge_collection}
+            """,
+            bind_vars={'short': relatietype_short}
+        )
+
+        count = next(iter(db.aql.execute(f'RETURN LENGTH({edge_collection})')), None)
+        logging.info("✅ %s built. Edge count: %s", edge_collection, count)
+        self._mark_filled(db, params_key)
+
     def fill_voedt_relaties(self, start_from, db, params):
         """(Re)build derived Voedt-only edges between active assets.
 
@@ -148,8 +213,7 @@ class ExtraFillStep:
         """
         # This fill step is intentionally not incremental: it rebuilds to keep it consistent
         # with assets/assetrelaties.
-        if not db.has_collection('voedt_relaties'):
-            db.create_collection('voedt_relaties', edge=True)
+        self._ensure_edge_collection(db, 'voedt_relaties')
 
         # Clear existing derived edges
         db.collection('voedt_relaties').truncate()
@@ -161,10 +225,7 @@ class ExtraFillStep:
         voedt_key = next(iter(voedt_key_cursor), None)
         if voedt_key is None:
             logging.warning("⚠️ Could not find relatietype 'Voedt'. Leaving voedt_relaties empty.")
-            db.aql.execute(
-                "UPDATE @key WITH { from: @start_from, fill: @fill} IN params",
-                bind_vars={"key": "fill_voedt_relaties", "start_from": None, "fill": False}
-            )
+            self._mark_filled(db, "fill_voedt_relaties")
             return
 
         logging.info("🔄 Building voedt_relaties derived edges...")
@@ -192,8 +253,13 @@ class ExtraFillStep:
         count = next(iter(db.aql.execute('RETURN LENGTH(voedt_relaties)')), None)
         logging.info("✅ voedt_relaties built. Edge count: %s", count)
 
-        db.aql.execute(
-            "UPDATE @key WITH { from: @start_from, fill: @fill} IN params",
-            bind_vars={"key": "fill_voedt_relaties", "start_from": None, "fill": False}
-        )
+        self._mark_filled(db, "fill_voedt_relaties")
 
+    def fill_sturing_relaties(self, start_from, db, params):
+        self._fill_derived_edges(db, 'fill_sturing_relaties', 'sturing_relaties', 'Sturing')
+
+    def fill_bevestiging_relaties(self, start_from, db, params):
+        self._fill_derived_edges(db, 'fill_bevestiging_relaties', 'bevestiging_relaties', 'Bevestiging')
+
+    def fill_hoortbij_relaties(self, start_from, db, params):
+        self._fill_derived_edges(db, 'fill_hoortbij_relaties', 'hoortbij_relaties', 'HoortBij')
