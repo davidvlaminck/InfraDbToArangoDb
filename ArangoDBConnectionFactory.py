@@ -3,7 +3,7 @@ from arango import ArangoClient
 
 class ArangoDBConnectionFactory:
     def __init__(self, db_name, username, password):
-        self.client = ArangoClient(request_timeout=600)
+        self.client = ArangoClient(request_timeout=180)
         self.db_name = db_name
         self.username = username
         self.password = password
