@@ -3,7 +3,7 @@ import time
 import uuid
 from concurrent.futures import as_completed, ThreadPoolExecutor
 from datetime import datetime, timezone
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Callable
+from typing import Any, Dict, Iterable, List, Optional, Callable
 
 from pyproj import Transformer
 from shapely import wkt
@@ -18,6 +18,10 @@ from Enums import ResourceEnum, colorama_table
 DEFAULT_PAGE_SIZE = 1000
 MAX_WORKERS = 8
 RETRY_DELAY_SECONDS = 30
+
+# Tune bulk import chunking (keeps behavior, reduces memory spikes)
+ASSET_IMPORT_CHUNK_SIZE = 1000
+BESTEK_IMPORT_CHUNK_SIZE = 2000
 
 
 class InitialFillStep:
@@ -268,14 +272,15 @@ class InitialFillStep:
 
     def _select_eminfra_generator(self, resource: str, start_from: Optional[str], page_size: int):
         """Return the appropriate EMInfra generator for the resource."""
+        sf: Optional[str] = start_from
         if resource in {ResourceEnum.agents.value, ResourceEnum.betrokkenerelaties.value}:
             # these require cursor-based iteration with contactInfo expansion
-            return self.eminfra_client.get_resource_by_cursor(resource, start_from, page_size, expansion_strings=["contactInfo"])
+            return self.eminfra_client.get_resource_by_cursor(resource, sf, page_size, expansion_strings=["contactInfo"])
         if resource in {ResourceEnum.toezichtgroepen.value, ResourceEnum.identiteiten.value}:
-            return self.eminfra_client.get_identity_resource_page(resource, page_size, start_from)
+            return self.eminfra_client.get_identity_resource_page(resource, page_size, sf)
         if resource == ResourceEnum.bestekken.value:
-            return self.eminfra_client.get_resource_page("bestekrefs", page_size, start_from)
-        return self.eminfra_client.get_resource_page(resource, page_size, start_from)
+            return self.eminfra_client.get_resource_page("bestekrefs", page_size, sf)
+        return self.eminfra_client.get_resource_page(resource, page_size, sf)
 
     # -----------------------
     # Data insertion and transformations
@@ -458,7 +463,13 @@ class InitialFillStep:
 
     # ----- complex handlers reused from previous refactor -----
     def _insert_assets(self, db, dicts: Iterable[Dict[str, Any]]):
-        """Process and import asset records (large, complex transformation)."""
+        """Process and import asset records.
+
+        Performance notes:
+        - This is the hottest path (~millions of records).
+        - We keep the same output fields, but optimize CPU/memory by chunked imports and
+          by avoiding unnecessary heavy geometry transforms when no WKT is present.
+        """
         collection = db.collection("assets")
         kopp_collection = db.collection("bestekkoppelingen")
 
@@ -468,113 +479,105 @@ class InitialFillStep:
         if self.beheerders_lookup is None:
             self.beheerders_lookup = {b["referentie"]: b["_key"] for b in db.collection("beheerders")}
 
-        docs_to_insert = []
-        docs2_to_insert = []
+        docs_batch: List[Dict[str, Any]] = []
+        kopp_batch: List[Dict[str, Any]] = []
+
+        unknown_type_uris = 0
+
+        def flush_batches():
+            if docs_batch:
+                collection.import_bulk(docs_batch, overwrite=False, on_duplicate="update")
+                docs_batch.clear()
+            if kopp_batch:
+                kopp_collection.import_bulk(kopp_batch, overwrite=False, on_duplicate="update")
+                kopp_batch.clear()
 
         for raw in dicts:
             try:
-                obj = self._transform_keys(raw)
+                # assets-hotpath: avoid deep recursive transform unless needed
+                obj = self._normalize_asset_top_level_keys(raw)
                 uri = obj.get("@type")
                 obj["_key"] = obj.get("@id", "").split("/")[-1][:36]
 
-                # extract WKT from several possible locations
+                # assettype resolution (skip unknown types)
+                assettype_key = self.assettype_lookup.get(uri)
+                if not assettype_key:
+                    unknown_type_uris += 1
+                    continue
+                obj["assettype_key"] = assettype_key
+
+                # extract WKT and ONLY then do Shapely parsing + transform
                 wkt_string = self._extract_wkt_from_obj(obj)
                 if wkt_string:
-                    full_wkt_string = wkt_string
-                    obj["wkt"] = full_wkt_string
-                    if full_wkt_string.upper().startswith("SRID="):
-                        wkt_string = full_wkt_string.split(";")[1]
-                    geom = wkt.loads(wkt_string)
-                    geom_wgs84 = transform(self.transformer.transform, geom)
-                    geojson = mapping(geom_wgs84)
-                    if geojson.get("type") == "Point" and len(geojson.get("coordinates", [])) >= 3:
-                        geojson["coordinates"] = geojson["coordinates"][:2]
-                    obj["geometry"] = geojson
+                    obj["wkt"] = wkt_string
 
-                # assettype resolution
-                if (assettype_key := self.assettype_lookup.get(uri)):
-                    obj["assettype_key"] = assettype_key
-                else:
-                    print(f"⚠️ No matching assettype for URI: {uri}")
-                    continue
-                    wkt_string = None
-                    # extract wkt string
-                    if 'geo' in obj and obj['geo']['Geometrie_log']:
-                        geometrie_dict = obj['geo']['Geometrie_log'][0]['DtcLog_geometrie']
-                        wkt_string = next(iter(geometrie_dict.values()))
-
-                    elif 'loc' in obj:
-                        if 'Locatie_geometrie' in obj['loc'] and obj['loc']['Locatie_geometrie'] != '':
-                            wkt_string = obj['loc']['Locatie_geometrie']
-                        elif 'Locatie_puntlocatie' in obj['loc'] and obj['loc']['Locatie_puntlocatie'] != '' and '3Dpunt_puntgeometrie' in obj['loc']['Locatie_puntlocatie'] and obj['loc']['Locatie_puntlocatie']['3Dpunt_puntgeometrie'] != '':
-                            coords = obj['loc']['Locatie_puntlocatie']['3Dpunt_puntgeometrie']
-                            if 'DtcCoord.lambert72' in coords:
-                                coords = coords['DtcCoord.lambert72']
-                                wkt_string = f"POINT Z ({coords['DtcCoordLambert72.xcoordinaat']} {coords['DtcCoordLambert72.ycoordinaat']} {coords['DtcCoordLambert72.zcoordinaat']})"
-                            else:
-                                coords = coords['DtcCoordLambert2008']
-                                wkt_string = f"POINT Z ({coords['DtcCoordLambert2008.xcoordinaat']} {coords['DtcCoordLambert2008.ycoordinaat']} {coords['DtcCoordLambert2008.zcoordinaat']})"
-
-                    if wkt_string is not None:
-                        full_wkt_string = wkt_string
-                        if wkt_string.upper().startswith("SRID="):
-                            srid_part, wkt_string = wkt_string.split(";", 1)
-                        geom = wkt.loads(wkt_string)
-
-                        obj['wkt'] = full_wkt_string
+                    # fast-path for typical POINTs
+                    geojson = self._fast_point_wgs84_from_wkt3812(wkt_string, self.transformer)
+                    if geojson is None:
+                        # fallback to shapely for complex geometry
+                        w = wkt_string
+                        if w.upper().startswith("SRID="):
+                            w = w.split(";", 1)[1]
+                        geom = wkt.loads(w)
                         geom_wgs84 = transform(self.transformer.transform, geom)
                         geojson = mapping(geom_wgs84)
-                        # Trim Z coordinate only for Points
                         if geojson.get("type") == "Point" and len(geojson.get("coordinates", [])) >= 3:
                             geojson["coordinates"] = geojson["coordinates"][:2]
-                        obj['geometry'] = geojson
-
-                    if assettype_key := self.assettype_lookup.get(uri):
-                        obj["assettype_key"] = assettype_key
-                    else:
-                        print(f"⚠️ No matching assettype for URI: {uri}")
-                        continue
+                    obj["geometry"] = geojson
 
                 # optional mappings
                 if toestand := obj.get("AIMToestand_toestand"):
                     obj["toestand"] = toestand.split("/")[-1]
 
                 if naampad := obj.get("NaampadObject_naampad"):
-                    obj["naampad_parts"] = naampad.split("/")
-                    if len(obj["naampad_parts"]) >= 2:
-                        obj["naampad_parent"] = "/".join(obj["naampad_parts"][:-1])
+                    parts = naampad.split("/")
+                    obj["naampad_parts"] = parts
+                    if len(parts) >= 2:
+                        obj["naampad_parent"] = "/".join(parts[:-1])
 
-                tzg_id = obj.get("tz", {}).get("Toezicht_toezichtgroep", {}).get("DtcToezichtGroep_id")
-                if tzg_id:
-                    obj["toezichtgroep_key"] = tzg_id[:8]
+                tzg = obj.get("tz")
+                if isinstance(tzg, dict):
+                    tg_id = tzg.get("Toezicht_toezichtgroep", {}).get("DtcToezichtGroep_id")
+                    if tg_id:
+                        obj["toezichtgroep_key"] = tg_id[:8]
 
-                tz_id = obj.get("tz", {}).get("Toezicht_toezichter", {}).get("DtcToezichter_id")
-                if tz_id:
-                    obj["toezichter_key"] = tz_id[:8]
+                    toez_id = tzg.get("Toezicht_toezichter", {}).get("DtcToezichter_id")
+                    if toez_id:
+                        obj["toezichter_key"] = toez_id[:8]
 
-                sb_ref = obj.get("tz", {}).get("Schadebeheerder_schadebeheerder", {}).get("DtcBeheerder_referentie")
-                if sb_ref and (sb_key := self.beheerders_lookup.get(sb_ref)):
-                    obj["beheerder_key"] = sb_key
+                    sb_ref = tzg.get("Schadebeheerder_schadebeheerder", {}).get("DtcBeheerder_referentie")
+                    if sb_ref:
+                        sb_key = self.beheerders_lookup.get(sb_ref)
+                        if sb_key:
+                            obj["beheerder_key"] = sb_key
 
                 # bestek koppelingen
-                if "bs" in obj and "Bestek_bestekkoppeling" in obj["bs"] and obj["bs"]["Bestek_bestekkoppeling"]:
-                    bestek_koppelingen = obj["bs"]["Bestek_bestekkoppeling"]
+                bestek_koppelingen = obj.get("bs", {}).get("Bestek_bestekkoppeling")
+                if bestek_koppelingen:
                     for koppeling in bestek_koppelingen:
                         koppeling["_from"] = "assets/" + obj["_key"]
-                        koppeling["_to"] = "bestekken/" + koppeling["DtcBestekkoppeling_bestekId"].get("DtcIdentificator_identificator")[:8]
+                        koppeling["_to"] = "bestekken/" + koppeling["DtcBestekkoppeling_bestekId"].get(
+                            "DtcIdentificator_identificator"
+                        )[:8]
                         koppeling["_key"] = str(uuid.uuid4())
                         koppeling["status"] = koppeling.get("status").split("/")[-1] if koppeling.get("status") else None
-                        docs2_to_insert.append(koppeling)
+                        kopp_batch.append(koppeling)
 
-                docs_to_insert.append(obj)
+                        if len(kopp_batch) >= BESTEK_IMPORT_CHUNK_SIZE:
+                            flush_batches()
+
+                docs_batch.append(obj)
+                if len(docs_batch) >= ASSET_IMPORT_CHUNK_SIZE:
+                    flush_batches()
+
             except Exception as e:
                 logging.error("Error processing asset %s: %s", raw.get("@id", "unknown"), e)
                 raise
 
-        if docs_to_insert:
-            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
-        if docs2_to_insert:
-            kopp_collection.import_bulk(docs2_to_insert, overwrite=False, on_duplicate="update")
+        flush_batches()
+
+        if unknown_type_uris:
+            logging.warning("Skipped %d asset(s) with unknown @type (missing in assettypes lookup).", unknown_type_uris)
 
     def _insert_asset_relations(self, db, dicts: Iterable[Dict[str, Any]]):
         """Insert asset relations resolving relatietype lookup lazily."""
@@ -712,3 +715,57 @@ class InitialFillStep:
                 REMOVE doc IN params
             """
         )
+
+    @staticmethod
+    def _normalize_asset_top_level_keys(raw: Dict[str, Any]) -> Dict[str, Any]:
+        """Faster key normalization for assets.
+
+        Assets are big and `@id/@type` are top-level, while dotted keys occur mostly at top-level.
+        For assets we keep the semantics of:
+        - replace '.' with '_'
+        - keep '@id' and '@type' verbatim
+
+        We do NOT do the expensive namespace nesting here; assets don't rely on that.
+        Nested dicts/lists are left as-is because we access them with existing keys.
+        """
+        out: Dict[str, Any] = {}
+        for k, v in raw.items():
+            if k and ("." in k) and not k.startswith("@"):
+                out[k.replace(".", "_")] = v
+            else:
+                out[k] = v
+        return out
+
+    @staticmethod
+    def _fast_point_wgs84_from_wkt3812(wkt_string: str, transformer: Transformer) -> Optional[Dict[str, Any]]:
+        """Fast-path for common POINT/POINT Z WKT in EPSG:3812.
+
+        Returns a GeoJSON dict or None when it can't parse fast.
+        """
+        s = wkt_string.strip()
+        if s.upper().startswith("SRID="):
+            # SRID=3812;POINT Z(...)
+            try:
+                s = s.split(";", 1)[1].strip()
+            except Exception:
+                return None
+
+        up = s.upper()
+        if not up.startswith("POINT"):
+            return None
+
+        # Support: POINT( x y ) and POINT Z( x y z ) and POINT Z (x y z)
+        try:
+            start = s.find("(")
+            end = s.rfind(")")
+            if start == -1 or end == -1 or end <= start:
+                return None
+            nums = s[start + 1 : end].replace(",", " ").split()
+            if len(nums) < 2:
+                return None
+            x = float(nums[0])
+            y = float(nums[1])
+            lon, lat = transformer.transform(x, y)
+            return {"type": "Point", "coordinates": [lon, lat]}
+        except Exception:
+            return None

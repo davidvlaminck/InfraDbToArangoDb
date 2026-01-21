@@ -150,6 +150,12 @@ class ExtraFillStep:
         if not db.has_collection(name):
             db.create_collection(name, edge=True)
 
+        # Ensure basic traversal indexes for derived edges
+        col = db.collection(name)
+        # add_persistent_index is idempotent; Arango will ignore duplicates
+        col.add_persistent_index(fields=['_from'], unique=False, sparse=False)
+        col.add_persistent_index(fields=['_to'], unique=False, sparse=False)
+
     def _mark_filled(self, db, params_key: str):
         db.aql.execute(
             "UPDATE @key WITH { from: @start_from, fill: @fill} IN params",
@@ -159,29 +165,37 @@ class ExtraFillStep:
     def _fill_derived_edges(self, db, params_key: str, edge_collection: str, relatietype_short: str):
         """(Re)build derived edges in edge_collection for a given relatietype.short.
 
-        - Source edge: assetrelaties
-        - Filters: correct relatietype, edge active, both endpoints active
-        - Write: derived edge with _from/_to and source edge metadata
+        Speed focus:
+        - Truncate + single AQL insert statement
+        - Uses bind parameters for collection name so the query plan can be cached
         """
         self._ensure_edge_collection(db, edge_collection)
 
         # Clear existing derived edges
         db.collection(edge_collection).truncate()
 
-        rt_key_cursor = db.aql.execute(
-            'FOR rt IN relatietypes FILTER rt.short == @short LIMIT 1 RETURN rt._key',
-            bind_vars={'short': relatietype_short}
+        rt_key = next(
+            iter(
+                db.aql.execute(
+                    'FOR rt IN relatietypes FILTER rt.short == @short LIMIT 1 RETURN rt._key',
+                    bind_vars={'short': relatietype_short},
+                    batch_size=1,
+                    stream=True,
+                )
+            ),
+            None,
         )
-        rt_key = next(iter(rt_key_cursor), None)
         if rt_key is None:
             logging.warning("⚠️ Could not find relatietype '%s'. Leaving %s empty.", relatietype_short, edge_collection)
             self._mark_filled(db, params_key)
             return
 
         logging.info("🔄 Building %s derived edges for relatietype '%s'...", edge_collection, relatietype_short)
+
+        # One-shot edge derivation. Use bind var for collection name.
         db.aql.execute(
-            f"""
-            LET rt_key = FIRST(FOR rt IN relatietypes FILTER rt.short == @short LIMIT 1 RETURN rt._key)
+            """
+            LET rt_key = @rt_key
             FOR e IN assetrelaties
               FILTER e.relatietype_key == rt_key
               FILTER e.AIMDBStatus_isActief == true
@@ -190,17 +204,20 @@ class ExtraFillStep:
               FILTER a_from != null && a_to != null
               FILTER a_from.AIMDBStatus_isActief == true
               FILTER a_to.AIMDBStatus_isActief == true
-              INSERT {{
+              INSERT {
                 _from: e._from,
                 _to: e._to,
                 source_edge_id: e._id,
                 source_edge_key: e._key
-              }} INTO {edge_collection}
+              } INTO @@edge_collection
+              OPTIONS { ignoreErrors: true }
             """,
-            bind_vars={'short': relatietype_short}
+            bind_vars={'rt_key': rt_key, '@edge_collection': edge_collection},
+            batch_size=5000,
+            stream=True,
         )
 
-        count = next(iter(db.aql.execute(f'RETURN LENGTH({edge_collection})')), None)
+        count = next(iter(db.aql.execute('RETURN COUNT(FOR x IN @@c RETURN 1)', bind_vars={'@c': edge_collection})), None)
         logging.info("✅ %s built. Edge count: %s", edge_collection, count)
         self._mark_filled(db, params_key)
 
