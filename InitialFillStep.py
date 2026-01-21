@@ -423,6 +423,46 @@ class InitialFillStep:
     def _handle_assetrelaties(self, db, dicts: Iterable[Dict[str, Any]]):
         self._insert_asset_relations(db, dicts)
 
+    def _insert_asset_relations(self, db, dicts: Iterable[Dict[str, Any]]):
+        """Insert assetrelaties documents.
+
+        This was historically named `_insert_asset_relations`. During refactoring this method was
+        accidentally removed; `_handle_assetrelaties` still calls it.
+
+        Behavior is unchanged:
+        - transform keys
+        - derive `_from`, `_to`, `_key`
+        - resolve `relatietype_key` via lookup
+        - bulk upsert
+        """
+        collection = db.collection("assetrelaties")
+        if self.relatietype_lookup is None:
+            self.relatietype_lookup = {rt["uri"]: rt["_key"] for rt in db.collection("relatietypes")}
+
+        docs_to_insert = []
+        for raw in dicts:
+            try:
+                obj = self._transform_keys(raw)
+                uri = obj.get("@type")
+                obj["_key"] = obj.get("@id", "").split("/")[-1][:36]
+                obj["_from"] = "assets/" + obj["RelatieObject_bron"].get("@id", "").split("/")[-1][:36]
+                obj["_to"] = "assets/" + obj["RelatieObject_doel"].get("@id", "").split("/")[-1][:36]
+                if "AIMDBStatus_isActief" not in obj:
+                    obj["AIMDBStatus_isActief"] = True
+
+                relatietype_key = self.relatietype_lookup.get(uri) if uri else None
+                if relatietype_key:
+                    obj["relatietype_key"] = relatietype_key
+                    docs_to_insert.append(obj)
+                else:
+                    print(f"⚠️ No matching relatietype for URI: {uri}")
+            except Exception as e:
+                logging.error("Error processing assetrelatie %s: %s", raw.get("@id", "unknown"), e)
+                raise
+
+        if docs_to_insert:
+            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+
     def _handle_agents(self, db, dicts: Iterable[Dict[str, Any]]):
         collection = db.collection("agents")
         docs = []
