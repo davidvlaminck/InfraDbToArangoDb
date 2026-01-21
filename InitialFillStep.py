@@ -2,8 +2,9 @@ import logging
 import time
 import uuid
 from concurrent.futures import as_completed, ThreadPoolExecutor
+from queue import Queue
 from datetime import datetime, timezone
-from typing import Any, Dict, Iterable, List, Optional, Callable
+from typing import Any, Dict, Iterable, List, Optional, Callable, cast
 
 from pyproj import Transformer
 from shapely import wkt
@@ -25,12 +26,28 @@ BESTEK_IMPORT_CHUNK_SIZE = 2000
 
 
 class InitialFillStep:
+    """Step that performs the initial fill of the ArangoDB.
+
+    Two families of sources exist:
+
+    - EMSON (cursor-based): `assets`, `assetrelaties`, `betrokkenerelaties`
+    - EMInfra (page-based): everything else
+
+    The hot path is assets ingestion. For that we keep the logic identical, but we try to keep the
+    code understandable by splitting the enrichment work into small helpers.
+    """
+
     def __init__(self, factory, eminfra_client: EMInfraClient, emson_client: EMSONClient,
-                 page_size: int = DEFAULT_PAGE_SIZE):
+                 page_size: int = DEFAULT_PAGE_SIZE,
+                 use_pipeline: bool = False,
+                 pipeline_queue_size: int = 3):
         self.factory = factory
         self.eminfra_client = eminfra_client
         self.emson_client = emson_client
         self.default_page_size = page_size
+
+        self.use_pipeline = use_pipeline
+        self.pipeline_queue_size = max(1, pipeline_queue_size)
 
         self.assettype_lookup: Optional[Dict[str, str]] = None
         self.relatietype_lookup: Optional[Dict[str, str]] = None
@@ -171,6 +188,16 @@ class InitialFillStep:
     # Fill using EMSON (assets / asset relations)
     # -----------------------
     def _fill_resource_using_emson(self, resource: str):
+        """Fill an EMSON cursor-based resource.
+
+        This method persists its cursor inside the `params` collection under `fill_<resource>`.
+
+        When `self.use_pipeline` is enabled, it uses a small producer/consumer pipeline:
+        - producer: fetches pages sequentially (cursor semantics remain intact)
+        - consumer: transforms and writes to Arango
+
+        This overlaps network I/O with CPU/DB work without breaking ordering.
+        """
         color = colorama_table[resource]
         logging.info("%sFilling resource: %s", color, resource)
 
@@ -188,30 +215,87 @@ class InitialFillStep:
             logging.info("%sSkipping %s, already filled.", color, resource)
             return
 
-        cursor = params_resource.get("from")
-        # emson client yields (cursor, dicts)
-        for cursor, dicts in self.emson_client.get_resource_by_cursor(resource, cursor=cursor, page_size=self.default_page_size):
-            if dicts:
-                self._insert_resource_data(db, resource, dicts)
+        start_cursor = params_resource.get("from")
 
-            # persist progress
-            db.aql.execute(
-                """
-                UPDATE @key WITH { from: @start_from } IN params
-                """,
-                bind_vars={"key": params_key, "start_from": cursor},
-            )
-            logging.info("%sInserted %d records for %s. Next cursor: %s", color, len(dicts) if dicts else 0, resource, cursor)
+        # Sequential default (existing behavior)
+        if not self.use_pipeline:
+            cursor = start_cursor
+            for cursor, dicts in self.emson_client.get_resource_by_cursor(resource, cursor=cursor, page_size=self.default_page_size):
+                if dicts:
+                    self._insert_resource_data(db, resource, dicts)
 
-            if cursor is None:
-                logging.info("%sNo more data for %s. Marking as filled.", color, resource)
+                # persist progress
                 db.aql.execute(
                     """
-                    UPDATE @key WITH { from: @start_from, fill: @fill } IN params
+                    UPDATE @key WITH { from: @start_from } IN params
                     """,
-                    bind_vars={"key": params_key, "start_from": None, "fill": False},
+                    bind_vars={"key": params_key, "start_from": cursor},
                 )
-                break
+                logging.info("%sInserted %d records for %s. Next cursor: %s", color, len(dicts) if dicts else 0, resource, cursor)
+
+                if cursor is None:
+                    logging.info("%sNo more data for %s. Marking as filled.", color, resource)
+                    db.aql.execute(
+                        """
+                        UPDATE @key WITH { from: @start_from, fill: @fill } IN params
+                        """,
+                        bind_vars={"key": params_key, "start_from": None, "fill": False},
+                    )
+                    break
+            return
+
+        # Pipeline mode: producer fetches cursor sequentially; consumer transforms+writes.
+        q: Queue[Optional[tuple[Optional[str], list[Dict[str, Any]]]]] = Queue(maxsize=self.pipeline_queue_size)
+
+        def producer():
+            cursor = start_cursor
+            for cursor, dicts in self.emson_client.get_resource_by_cursor(resource, cursor=cursor, page_size=self.default_page_size):
+                if dicts:
+                    q.put((cursor, list(dicts)))
+                else:
+                    # still update progress cursor even if page empty
+                    q.put((cursor, []))
+
+                if cursor is None:
+                    break
+
+            q.put(None)  # sentinel
+
+        def consumer():
+            while True:
+                item = q.get()
+                if item is None:
+                    return
+                cursor, dicts = item
+
+                if dicts:
+                    self._insert_resource_data(db, resource, dicts)
+
+                # persist progress
+                db.aql.execute(
+                    """
+                    UPDATE @key WITH { from: @start_from } IN params
+                    """,
+                    bind_vars={"key": params_key, "start_from": cursor},
+                )
+
+                if cursor is None:
+                    db.aql.execute(
+                        """
+                        UPDATE @key WITH { from: @start_from, fill: @fill } IN params
+                        """,
+                        bind_vars={"key": params_key, "start_from": None, "fill": False},
+                    )
+                    return
+
+        with ThreadPoolExecutor(max_workers=2) as ex:
+            f_prod = ex.submit(producer)
+            f_cons = ex.submit(consumer)
+            f_prod.result()
+            f_cons.result()
+
+        logging.info("%sCompleted filling %s (pipeline mode).", color, resource)
+        return
 
     # -----------------------
     # Fill using EMInfra (all other resources)
@@ -272,7 +356,7 @@ class InitialFillStep:
 
     def _select_eminfra_generator(self, resource: str, start_from: Optional[str], page_size: int):
         """Return the appropriate EMInfra generator for the resource."""
-        sf: Optional[str] = start_from
+        sf = cast(Optional[str], start_from)
         if resource in {ResourceEnum.agents.value, ResourceEnum.betrokkenerelaties.value}:
             # these require cursor-based iteration with contactInfo expansion
             return self.eminfra_client.get_resource_by_cursor(resource, sf, page_size, expansion_strings=["contactInfo"])
@@ -463,12 +547,19 @@ class InitialFillStep:
 
     # ----- complex handlers reused from previous refactor -----
     def _insert_assets(self, db, dicts: Iterable[Dict[str, Any]]):
-        """Process and import asset records.
+        """Transform and upsert assets (+ derived bestekkoppelingen).
 
-        Performance notes:
-        - This is the hottest path (~millions of records).
-        - We keep the same output fields, but optimize CPU/memory by chunked imports and
-          by avoiding unnecessary heavy geometry transforms when no WKT is present.
+        Contract (kept stable):
+        - Keys are normalized (namespace buckets + '.' -> '_', recursively)
+        - Minimal derived fields are added on the asset document:
+          - `_key`, `assettype_key`
+          - `wkt`, `geometry` (if geometry is present)
+          - `toestand`, `naampad_parts`, `naampad_parent`
+          - `toezichtgroep_key`, `toezichter_key`, `beheerder_key`
+        - Bestek koppelingen are written as edges in `bestekkoppelingen` with `_from/_to`.
+
+        Notes:
+        - This is the hottest part of the pipeline. Keep allocations low and flush in chunks.
         """
         collection = db.collection("assets")
         kopp_collection = db.collection("bestekkoppelingen")
@@ -494,8 +585,19 @@ class InitialFillStep:
 
         for raw in dicts:
             try:
-                # assets-hotpath: avoid deep recursive transform unless needed
+                # assets-hotpath: do top-level namespace bucketing + '.'→'_' first
                 obj = self._normalize_asset_top_level_keys(raw)
+
+                # Generic namespace cleanup: recursively normalize all top-level buckets (dict/list payloads)
+                # This ensures namespaces like tz/loc/bs/ins/ond/vtc/geo/... all behave consistently:
+                # - remove nested "ns:" prefixes
+                # - replace '.' with '_'
+                for k, v in list(obj.items()):
+                    if k.startswith("@"):  # keep metadata as-is
+                        continue
+                    if isinstance(v, (dict, list)):
+                        obj[k] = self._normalize_nested_keys(v)
+
                 uri = obj.get("@type")
                 obj["_key"] = obj.get("@id", "").split("/")[-1][:36]
 
@@ -506,65 +608,10 @@ class InitialFillStep:
                     continue
                 obj["assettype_key"] = assettype_key
 
-                # extract WKT and ONLY then do Shapely parsing + transform
-                wkt_string = self._extract_wkt_from_obj(obj)
-                if wkt_string:
-                    obj["wkt"] = wkt_string
-
-                    # fast-path for typical POINTs
-                    geojson = self._fast_point_wgs84_from_wkt3812(wkt_string, self.transformer)
-                    if geojson is None:
-                        # fallback to shapely for complex geometry
-                        w = wkt_string
-                        if w.upper().startswith("SRID="):
-                            w = w.split(";", 1)[1]
-                        geom = wkt.loads(w)
-                        geom_wgs84 = transform(self.transformer.transform, geom)
-                        geojson = mapping(geom_wgs84)
-                        if geojson.get("type") == "Point" and len(geojson.get("coordinates", [])) >= 3:
-                            geojson["coordinates"] = geojson["coordinates"][:2]
-                    obj["geometry"] = geojson
-
-                # optional mappings
-                if toestand := obj.get("AIMToestand_toestand"):
-                    obj["toestand"] = toestand.split("/")[-1]
-
-                if naampad := obj.get("NaampadObject_naampad"):
-                    parts = naampad.split("/")
-                    obj["naampad_parts"] = parts
-                    if len(parts) >= 2:
-                        obj["naampad_parent"] = "/".join(parts[:-1])
-
-                tzg = obj.get("tz")
-                if isinstance(tzg, dict):
-                    tg_id = tzg.get("Toezicht_toezichtgroep", {}).get("DtcToezichtGroep_id")
-                    if tg_id:
-                        obj["toezichtgroep_key"] = tg_id[:8]
-
-                    toez_id = tzg.get("Toezicht_toezichter", {}).get("DtcToezichter_id")
-                    if toez_id:
-                        obj["toezichter_key"] = toez_id[:8]
-
-                    sb_ref = tzg.get("Schadebeheerder_schadebeheerder", {}).get("DtcBeheerder_referentie")
-                    if sb_ref:
-                        sb_key = self.beheerders_lookup.get(sb_ref)
-                        if sb_key:
-                            obj["beheerder_key"] = sb_key
-
-                # bestek koppelingen
-                bestek_koppelingen = obj.get("bs", {}).get("Bestek_bestekkoppeling")
-                if bestek_koppelingen:
-                    for koppeling in bestek_koppelingen:
-                        koppeling["_from"] = "assets/" + obj["_key"]
-                        koppeling["_to"] = "bestekken/" + koppeling["DtcBestekkoppeling_bestekId"].get(
-                            "DtcIdentificator_identificator"
-                        )[:8]
-                        koppeling["_key"] = str(uuid.uuid4())
-                        koppeling["status"] = koppeling.get("status").split("/")[-1] if koppeling.get("status") else None
-                        kopp_batch.append(koppeling)
-
-                        if len(kopp_batch) >= BESTEK_IMPORT_CHUNK_SIZE:
-                            flush_batches()
+                self._enrich_geometry(obj)
+                self._enrich_state_and_naampad(obj)
+                self._enrich_toezicht_keys(obj)
+                self._collect_bestekkoppelingen(obj, kopp_batch)
 
                 docs_batch.append(obj)
                 if len(docs_batch) >= ASSET_IMPORT_CHUNK_SIZE:
@@ -579,34 +626,87 @@ class InitialFillStep:
         if unknown_type_uris:
             logging.warning("Skipped %d asset(s) with unknown @type (missing in assettypes lookup).", unknown_type_uris)
 
-    def _insert_asset_relations(self, db, dicts: Iterable[Dict[str, Any]]):
-        """Insert asset relations resolving relatietype lookup lazily."""
-        collection = db.collection("assetrelaties")
-        if self.relatietype_lookup is None:
-            self.relatietype_lookup = {rt["uri"]: rt["_key"] for rt in db.collection("relatietypes")}
+    def _enrich_geometry(self, obj: Dict[str, Any]) -> None:
+        """If a WKT geometry is present, add `wkt` and a GeoJSON `geometry` field."""
+        wkt_string = self._extract_wkt_from_obj(obj)
+        if not wkt_string:
+            return
 
-        docs_to_insert = []
-        for raw in dicts:
-            try:
-                obj = self._transform_keys(raw)
-                uri = obj.get("@type")
-                obj["_key"] = obj.get("@id", "").split("/")[-1][:36]
-                obj["_from"] = "assets/" + obj["RelatieObject_bron"].get("@id", "").split("/")[-1][:36]
-                obj["_to"] = "assets/" + obj["RelatieObject_doel"].get("@id", "").split("/")[-1][:36]
-                if "AIMDBStatus_isActief" not in obj:
-                    obj["AIMDBStatus_isActief"] = True
+        obj["wkt"] = wkt_string
 
-                if (relatietype_key := self.relatietype_lookup.get(uri)):
-                    obj["relatietype_key"] = relatietype_key
-                    docs_to_insert.append(obj)
-                else:
-                    print(f"⚠️ No matching relatietype for URI: {uri}")
-            except Exception as e:
-                logging.error("Error processing assetrelatie %s: %s", raw.get("@id", "unknown"), e)
-                raise
+        # fast-path for typical POINTs
+        geojson = self._fast_point_wgs84_from_wkt3812(wkt_string, self.transformer)
+        if geojson is None:
+            # fallback to shapely for complex geometry
+            w = wkt_string
+            if w.upper().startswith("SRID="):
+                w = w.split(";", 1)[1]
+            geom = wkt.loads(w)
+            geom_wgs84 = transform(self.transformer.transform, geom)
+            geojson = mapping(geom_wgs84)
+            if geojson.get("type") == "Point" and len(geojson.get("coordinates", [])) >= 3:
+                geojson["coordinates"] = geojson["coordinates"][:2]
 
-        if docs_to_insert:
-            collection.import_bulk(docs_to_insert, overwrite=False, on_duplicate="update")
+        obj["geometry"] = geojson
+
+    @staticmethod
+    def _enrich_state_and_naampad(obj: Dict[str, Any]) -> None:
+        """Add convenience fields derived from toestand + naampad."""
+        if toestand := obj.get("AIMToestand_toestand"):
+            obj["toestand"] = toestand.split("/")[-1]
+
+        if naampad := obj.get("NaampadObject_naampad"):
+            parts = naampad.split("/")
+            obj["naampad_parts"] = parts
+            if len(parts) >= 2:
+                obj["naampad_parent"] = "/".join(parts[:-1])
+
+    def _enrich_toezicht_keys(self, obj: Dict[str, Any]) -> None:
+        """Derive shortcut keys used elsewhere in queries/reports.
+
+        - toezichtgroep_key comes from tz->Toezicht_toezichtgroep->DtcToezichtGroep_id
+        - toezichter_key comes from tz->Toezicht_toezichter->DtcToezichter_id
+        - beheerder_key maps tz->Schadebeheerder_schadebeheerder->DtcBeheerder_referentie
+        """
+        tzg = obj.get("tz")
+        if not isinstance(tzg, dict):
+            return
+
+        tg_id = tzg.get("Toezicht_toezichtgroep", {}).get("DtcToezichtGroep_id")
+        if tg_id:
+            obj["toezichtgroep_key"] = tg_id[:8]
+
+        toez_id = tzg.get("Toezicht_toezichter", {}).get("DtcToezichter_id")
+        if toez_id:
+            obj["toezichter_key"] = toez_id[:8]
+
+        sb_ref = tzg.get("Schadebeheerder_schadebeheerder", {}).get("DtcBeheerder_referentie")
+        if sb_ref:
+            sb_key = self.beheerders_lookup.get(sb_ref) if self.beheerders_lookup else None
+            if sb_key:
+                obj["beheerder_key"] = sb_key
+
+    def _collect_bestekkoppelingen(self, obj: Dict[str, Any], kopp_batch: List[Dict[str, Any]]) -> None:
+        """Convert bestekkoppelingen on the asset into edge documents.
+
+        Important: we do not normalise here. `obj['bs']` is already recursively normalised.
+        """
+        bestek_koppelingen = obj.get("bs", {}).get("Bestek_bestekkoppeling")
+        if not bestek_koppelingen:
+            return
+
+        for koppeling in bestek_koppelingen:
+            koppeling["_from"] = "assets/" + obj["_key"]
+            koppeling["_to"] = "bestekken/" + koppeling["DtcBestekkoppeling_bestekId"].get(
+                "DtcIdentificator_identificator"
+            )[:8]
+            koppeling["_key"] = str(uuid.uuid4())
+
+            # Keep legacy behavior: store last URI segment (or None)
+            status_uri = koppeling.get("status")
+            koppeling["status"] = status_uri.split("/")[-1] if status_uri else None
+
+            kopp_batch.append(koppeling)
 
     # -----------------------
     # Utilities
@@ -628,30 +728,99 @@ class InitialFillStep:
 
     @staticmethod
     def _transform_keys(data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Transform keys:
-        - At top-level split namespace 'ns:field' into nested field: result['ns'][field] = value
+        """Transform keys.
+
+        Semantics (must remain identical):
+        - At top-level (depth==0): split namespace 'ns:field' into nested dict: result['ns'][field] = value
         - Replace '.' with '_' in field names
         - Recurses inside lists and dicts
         """
+
         def process(obj: Any, depth: int = 0) -> Any:
+            # fast paths
+            if isinstance(obj, list):
+                return [process(i, depth) for i in obj]
             if not isinstance(obj, dict):
-                return [process(i, depth) for i in obj] if isinstance(obj, list) else obj
+                return obj
+
             result: Dict[str, Any] = {}
+
             for key, value in obj.items():
                 value = process(value, depth + 1)
-                if depth == 0 and ":" in key:
-                    ns, field = key.split(":", 1)
-                    field = field.replace(".", "_")
-                    if ns not in result:
-                        result[ns] = {}
-                    result[ns][field] = value
-                else:
-                    clean_key = key.split(":", 1)[-1].replace(".", "_")
-                    result[clean_key] = value
+
+                if depth == 0:
+                    colon = key.find(":")
+                    if colon != -1:
+                        ns = key[:colon]
+                        field = key[colon + 1 :]
+                        if "." in field:
+                            field = field.replace(".", "_")
+                        bucket = result.get(ns)
+                        if bucket is None:
+                            bucket = {}
+                            result[ns] = bucket
+                        bucket[field] = value
+                        continue
+
+                    # no namespace key at top-level
+                    if "." in key:
+                        result[key.replace(".", "_")] = value
+                    else:
+                        result[key] = value
+                    continue
+
+                # nested levels: drop namespace prefix if present, replace '.'
+                colon = key.find(":")
+                clean_key = key[colon + 1 :] if colon != -1 else key
+                if "." in clean_key:
+                    clean_key = clean_key.replace(".", "_")
+                result[clean_key] = value
+
             return result
 
         return process(data)
+
+    @staticmethod
+    def _normalize_nested_keys(obj: Any) -> Any:
+        """Normalize keys recursively for nested dicts/lists.
+
+        This is like the *nested* branch of `_transform_keys`:
+        - remove namespace prefix if present (split on the first ':')
+        - replace '.' with '_'
+        - recurse into dict/list
+
+        Important: unlike `_transform_keys` it does NOT create namespace buckets at the top level.
+        """
+        if isinstance(obj, list):
+            # Fast path: if the list has no dict/list children, nothing to normalize
+            if not any(isinstance(i, (dict, list)) for i in obj):
+                return obj
+            return [InitialFillStep._normalize_nested_keys(i) for i in obj]
+
+        if not isinstance(obj, dict):
+            return obj
+
+        # Fast path: if no key contains ':' or '.' AND there are no nested containers, return as-is
+        needs_key_change = False
+        has_child_containers = False
+        for k, v in obj.items():
+            if (':' in k) or ('.' in k):
+                needs_key_change = True
+                break
+            if isinstance(v, (dict, list)):
+                has_child_containers = True
+
+        if not needs_key_change and not has_child_containers:
+            return obj
+
+        out: Dict[str, Any] = {}
+        for k, v in obj.items():
+            colon = k.find(":")
+            k2 = k[colon + 1 :] if colon != -1 else k
+            if "." in k2:
+                k2 = k2.replace(".", "_")
+            out[k2] = InitialFillStep._normalize_nested_keys(v)
+        return out
 
     @staticmethod
     def _extract_wkt_from_obj(obj: Dict[str, Any]) -> Optional[str]:
@@ -677,7 +846,7 @@ class InitialFillStep:
                         coords = geom_container['DtcCoord.lambert72']
                         wkt_string = f"POINT Z ({coords['DtcCoordLambert72.xcoordinaat']} {coords['DtcCoordLambert72.ycoordinaat']} {coords['DtcCoordLambert72.zcoordinaat']})"
                     elif 'DtcCoord.lambert2008' in geom_container:
-                        coords = geom_container['DtcCoordLambert2008']
+                        coords = geom_container['DtcCoord.lambert2008']
                         wkt_string = f"POINT Z ({coords['DtcCoordLambert2008.xcoordinaat']} {coords['DtcCoordLambert2008.ycoordinaat']} {coords['DtcCoordLambert2008.zcoordinaat']})"
                     else:
                         logging.error(f"Unknown geometry type: {geom_container}")
@@ -720,17 +889,35 @@ class InitialFillStep:
     def _normalize_asset_top_level_keys(raw: Dict[str, Any]) -> Dict[str, Any]:
         """Faster key normalization for assets.
 
-        Assets are big and `@id/@type` are top-level, while dotted keys occur mostly at top-level.
-        For assets we keep the semantics of:
-        - replace '.' with '_'
-        - keep '@id' and '@type' verbatim
+        For assets we need the same *top-level* semantics as `_transform_keys` (namespace grouping + '.'→'_'),
+        but we avoid deep recursion for performance.
 
-        We do NOT do the expensive namespace nesting here; assets don't rely on that.
-        Nested dicts/lists are left as-is because we access them with existing keys.
+        Rules:
+        - keep '@id' and '@type' verbatim
+        - top-level 'ns:field' -> out['ns'][field] = value (field also '.'→'_')
+        - otherwise, replace '.' with '_' in the key
+        - nested dicts/lists are left as-is (we access them through their container namespaces)
         """
         out: Dict[str, Any] = {}
         for k, v in raw.items():
-            if k and ("." in k) and not k.startswith("@"):
+            if not k or k.startswith("@"):
+                out[k] = v
+                continue
+
+            colon = k.find(":")
+            if colon != -1:
+                ns = k[:colon]
+                field = k[colon + 1 :]
+                if "." in field:
+                    field = field.replace(".", "_")
+                bucket = out.get(ns)
+                if bucket is None or not isinstance(bucket, dict):
+                    bucket = {}
+                    out[ns] = bucket
+                bucket[field] = v
+                continue
+
+            if "." in k:
                 out[k.replace(".", "_")] = v
             else:
                 out[k] = v

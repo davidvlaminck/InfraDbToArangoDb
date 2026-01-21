@@ -9,6 +9,16 @@ from API.CookieRequester import CookieRequester
 
 
 class RequesterFactory:
+    """Factory for authenticated requesters.
+
+    All callers pass:
+    - auth_type (JWT/CERT/COOKIE)
+    - env (PRD/TEI/DEV/AIM)
+    - settings (required for JWT/CERT)
+
+    The returned requester knows the base URL (`first_part_url`) and handles retries.
+    """
+
     first_part_url_dict = {
         Environment.PRD: 'https://services.apps.mow.vlaanderen.be/',
         Environment.TEI: 'https://services.apps-tei.mow.vlaanderen.be/',
@@ -33,12 +43,17 @@ class RequesterFactory:
         specific_settings = settings['authentication'][auth_type.name][env.name.lower()]
 
         if auth_type == AuthType.JWT:
-            return JWTRequester(private_key_path=specific_settings['key_path'],
-                                client_id=specific_settings['client_id'],
-                                first_part_url=first_part_url)
-        elif auth_type == AuthType.CERT:
-            return CertRequester(cert_path=specific_settings['cert_path'],
-                                 key_path=specific_settings['key_path'],
-                                 first_part_url=first_part_url)
-        else:
-            raise ValueError(f"Invalid authentication type: {auth_type}")
+            return JWTRequester(
+                private_key_path=specific_settings['key_path'],
+                client_id=specific_settings['client_id'],
+                first_part_url=first_part_url,
+            )
+
+        if auth_type == AuthType.CERT:
+            return CertRequester(
+                cert_path=specific_settings['cert_path'],
+                key_path=specific_settings['key_path'],
+                first_part_url=first_part_url,
+            )
+
+        raise ValueError(f"Invalid authentication type: {auth_type}")

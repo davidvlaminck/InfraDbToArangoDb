@@ -31,6 +31,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from concurrent.futures import ThreadPoolExecutor
+from queue import Queue
+
 from API.APIEnums import AuthType, Environment
 from API.EMInfraClient import EMInfraClient
 from API.EMSONClient import EMSONClient
@@ -86,8 +89,16 @@ def parse_args() -> argparse.Namespace:
         help="Path to settings_SyncToArangoDB.json",
     )
     p.add_argument("--env", default="PRD", choices=["PRD", "TEI", "DEV", "AIM"], help="API environment")
+
+    p.add_argument(
+        "--resource",
+        default="assets",
+        choices=["assets", "assetrelaties", "betrokkenerelaties"],
+        help="Which EMSON resource to benchmark (cursor-based).",
+    )
+
     p.add_argument("--page-size", type=int, default=1000, help="EMSON page size")
-    p.add_argument("--limit", type=int, default=50000, help="Stop after ingesting this many assets")
+    p.add_argument("--limit", type=int, default=50000, help="Stop after ingesting this many records")
 
     p.add_argument("--asset-chunk", type=int, default=initial_fill_mod.ASSET_IMPORT_CHUNK_SIZE, help="Chunk size for assets import_bulk")
     p.add_argument("--bestek-chunk", type=int, default=initial_fill_mod.BESTEK_IMPORT_CHUNK_SIZE, help="Chunk size for bestekkoppelingen import_bulk")
@@ -119,6 +130,22 @@ def parse_args() -> argparse.Namespace:
 
     # Benchmark hygiene / UX
     p.add_argument("--progress-every", type=int, default=5000, help="Print progress every N inserted assets (0 disables)")
+
+    # Overlap network fetch with CPU/DB work (cursor remains sequential)
+    p.add_argument(
+        "--pipeline",
+        action="store_true",
+        help=(
+            "Use a producer/consumer pipeline: one thread fetches pages, another transforms+writes. "
+            "This can improve throughput by overlapping API I/O with CPU/DB time."
+        ),
+    )
+    p.add_argument(
+        "--pipeline-queue",
+        type=int,
+        default=3,
+        help="Max buffered pages in the pipeline queue (memory vs overlap).",
+    )
 
     prep_group = p.add_mutually_exclusive_group()
     prep_group.add_argument(
@@ -202,21 +229,20 @@ def truncate_assets_only(factory: ArangoDBConnectionFactory, truncate_edges: boo
     """
     db = factory.create_connection()
 
-    if not db.has_collection("assets"):
-        raise SystemExit("DB missing 'assets' collection. Did you run CreateDBStep at least once?")
+    # Always ensure params exists
+    if not db.has_collection("params"):
+        db.create_collection("params")
 
-    db.collection("assets").truncate()
+    # Assets is required for assets benchmarking
+    if db.has_collection("assets"):
+        db.collection("assets").truncate()
+        _reset_fill_cursor(db, "assets")
 
     if truncate_edges:
         for name in ("assetrelaties", "betrokkenerelaties", "bestekkoppelingen"):
             if db.has_collection(name):
                 db.collection(name).truncate()
-
-    if not db.has_collection("params"):
-        # CreateDBStep normally creates this, but be defensive.
-        db.create_collection("params")
-
-    _reset_fill_cursor(db, "assets")
+            _reset_fill_cursor(db, name)
 
 
 def run_benchmark(
@@ -233,6 +259,11 @@ def run_benchmark(
     # new
     truncate_assets_only_flag: bool = False,
     truncate_edges: bool = False,
+    # newer
+    pipeline: bool = False,
+    pipeline_queue: int = 3,
+    # newest
+    resource: str = "assets",
 ) -> BenchResult:
     factory = build_factory(settings, env)
     db = factory.create_connection()
@@ -257,6 +288,11 @@ def run_benchmark(
 
     step = InitialFillStep(factory, eminfra_client=eminfra, emson_client=emson, page_size=page_size)
 
+    # Ensure the fill cursor starts from scratch for chosen resource
+    if not db.has_collection('params'):
+        db.create_collection('params')
+    _reset_fill_cursor(db, resource)
+
     prereq_seconds = 0.0
     if reset and prep_small:
         prereq_seconds = _ensure_prerequisites(db, step)
@@ -269,31 +305,73 @@ def run_benchmark(
 
     start_cursor: Optional[str] = None
 
-    # start cursor:
-    # - full reset: always None
-    # - truncate-assets-only: params/fill_assets is reset to None so still None
-    for cursor, assets in step.emson_client.get_resource_by_cursor("assets", cursor=start_cursor, page_size=page_size):
-        if not assets:
-            if cursor is None:
-                break
-            continue
-
-        remaining = limit - inserted
-        batch = assets if remaining >= len(assets) else assets[:remaining]
-
-        step._insert_assets(db, batch)
-        inserted += len(batch)
-
-        if progress_every and inserted % progress_every == 0:
+    def progress_print():
+        if progress_every and inserted and inserted % progress_every == 0:
             elapsed = time.perf_counter() - started
             rate = inserted / elapsed if elapsed else 0.0
-            print(f"progress: {inserted:,}/{limit:,} assets ({rate:,.1f} assets/s)", flush=True)
+            print(f"progress: {inserted:,}/{limit:,} {resource} ({rate:,.1f} rec/s)", flush=True)
 
-        if inserted >= limit:
-            break
+    def ingest_batch(batch: list[dict[str, Any]]):
+        # Route through production handlers to keep semantics identical
+        step._insert_resource_data(db, resource, batch)
 
-        if cursor is None:
-            break
+    if not pipeline:
+        for cursor, rows in step.emson_client.get_resource_by_cursor(resource, cursor=start_cursor, page_size=page_size):
+            if not rows:
+                if cursor is None:
+                    break
+                continue
+
+            remaining = limit - inserted
+            batch = rows if remaining >= len(rows) else rows[:remaining]
+
+            ingest_batch(batch)
+            inserted += len(batch)
+            progress_print()
+
+            if inserted >= limit:
+                break
+
+            if cursor is None:
+                break
+
+    else:
+        q: Queue[Optional[list[dict[str, Any]]]] = Queue(maxsize=max(1, pipeline_queue))
+
+        def producer():
+            nonlocal cursor
+            local_inserted = 0
+            for cursor, rows in step.emson_client.get_resource_by_cursor(resource, cursor=start_cursor, page_size=page_size):
+                if not rows:
+                    if cursor is None:
+                        break
+                    continue
+
+                remaining = limit - local_inserted
+                batch = rows if remaining >= len(rows) else rows[:remaining]
+                q.put(batch)
+                local_inserted += len(batch)
+
+                if local_inserted >= limit or cursor is None:
+                    break
+
+            q.put(None)
+
+        def consumer():
+            nonlocal inserted
+            while True:
+                batch = q.get()
+                if batch is None:
+                    return
+                ingest_batch(batch)
+                inserted += len(batch)
+                progress_print()
+
+        with ThreadPoolExecutor(max_workers=2) as ex:
+            f_prod = ex.submit(producer)
+            f_cons = ex.submit(consumer)
+            f_prod.result()
+            f_cons.result()
 
     seconds = time.perf_counter() - started
     finished_at = datetime.now(timezone.utc).isoformat()
@@ -347,6 +425,9 @@ def main() -> int:
         progress_every=args.progress_every,
         truncate_assets_only_flag=args.truncate_assets_only,
         truncate_edges=args.truncate_edges,
+        pipeline=args.pipeline,
+        pipeline_queue=args.pipeline_queue,
+        resource=args.resource,
     )
 
     ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")

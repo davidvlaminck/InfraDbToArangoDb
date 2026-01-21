@@ -36,7 +36,9 @@ class DBPipelineController:
         ]
 
     def settings_to_clients(self, auth_type, env) -> tuple[ArangoDBConnectionFactory, EMInfraClient, EMSONClient]:
-        db_settings = self.settings['databases'][str(env.value[0])]
+        # Environment.value is a string like 'prd' (historically this used to be a 1-tuple).
+        env_key = env.value[0] if isinstance(env.value, tuple) else env.value
+        db_settings = self.settings['databases'][str(env_key)]
 
         eminfra_client = EMInfraClient(env=env, auth_type=auth_type, settings=self.settings)
         emson_client = EMSONClient(env=env, auth_type=auth_type, settings=self.settings)
