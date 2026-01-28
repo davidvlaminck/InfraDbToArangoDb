@@ -1,5 +1,5 @@
 import os
-import time
+import time as timer
 import logging
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -62,7 +62,7 @@ def run_main_linux_arango():
 
 def main():
     last_run_date = None
-    settings_path = Path('/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json')
+    settings_path = Path('/home/david/Documents/AWV/resources/settings_ArangoDB.json')
     env = Environment.PRD
     auth_type = AuthType.JWT
     while True:
@@ -77,9 +77,12 @@ def main():
                 logging.info("Already ran today, waiting for next window.")
         else:
             logging.info(f"Not within run window ({RUN_WINDOW_START} - {RUN_WINDOW_END}), sleeping.")
-        time.sleep(60)
+        timer.sleep(60)
 
 if __name__ == "__main__":
+    main()
+
+def execute_now():
     """
     Script to run the ArangoDB pipeline at a scheduled time window. If run between 03:01 and 05:00, it will first clear the 'params' collection
     using the same credentials/settings as the main pipeline, then run the full pipeline. Uses the settings file and DBPipelineController logic.
@@ -87,12 +90,14 @@ if __name__ == "__main__":
     now = datetime.now().time()
     start = time(3, 1)
     end = time(5, 0)
-    settings_path = Path('/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json')
+    settings_path = Path('/home/david/Documents/AWV/resources/settings_ArangoDB.json')
     env = Environment.PRD
     auth_type = AuthType.JWT
 
     if start <= now <= end:
         delete_params_collection(settings_path, env, auth_type)
 
-    controller = DBPipelineController(settings_path=settings_path, auth_type=auth_type, env=env)
-    controller.run()
+        controller = DBPipelineController(settings_path=settings_path, auth_type=auth_type, env=env)
+        controller.run()
+
+    print('exit')
