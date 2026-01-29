@@ -13,9 +13,9 @@ from DBPipelineController import DBPipelineController
 BRUSSELS = ZoneInfo("Europe/Brussels")
 PARAMS_COLLECTION_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'params')
 
-RUN_WINDOW_START = "19:18:00"
+RUN_WINDOW_START = "03:01:00"
 RUN_WINDOW_END = "05:00:00"
-SLEEP_TIME = 5
+SLEEP_TIME = 60
 
 # --- Logging setup: both file and console ---
 logging.basicConfig(
@@ -81,7 +81,13 @@ def main():
                 if last_run_date != now.date():
                     logging.info(f"Within run window ({RUN_WINDOW_START} - {RUN_WINDOW_END}), starting job.")
                     delete_params_collection(settings_path, env, auth_type)
+                    logging.info("First run_main_linux_arango call starting.")
                     run_main_linux_arango(settings_path, env, auth_type)
+                    logging.info("First run_main_linux_arango call finished. Waiting 10 seconds before second call.")
+                    timer.sleep(10)
+                    logging.info("Second run_main_linux_arango call starting.")
+                    run_main_linux_arango(settings_path, env, auth_type)
+                    logging.info("Second run_main_linux_arango call finished.")
                     last_run_date = now.date()
                 else:
                     logging.info("Already ran today, waiting for next window.")
