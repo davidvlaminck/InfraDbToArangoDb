@@ -13,9 +13,11 @@ from DBPipelineController import DBPipelineController
 BRUSSELS = ZoneInfo("Europe/Brussels")
 PARAMS_COLLECTION_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'params')
 
-RUN_WINDOW_START = "03:01:00"
+RUN_WINDOW_START = "19:18:00"
 RUN_WINDOW_END = "05:00:00"
+SLEEP_TIME = 5
 
+# --- Logging setup: both file and console ---
 logging.basicConfig(
     filename='arangolooprunner.log',
     filemode='a',
@@ -23,6 +25,12 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',
     level=logging.INFO
 )
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+console.setFormatter(formatter)
+logging.getLogger().addHandler(console)
+# --- End logging setup ---
 
 def parse_hms_to_seconds(hms: str) -> int:
     parts = (hms or "").split(":")
@@ -53,35 +61,40 @@ def delete_params_collection(settings_path, env, auth_type):
     else:
         logging.warning("'params' collection does not exist.")
 
-def run_main_linux_arango():
+def run_main_linux_arango(settings_path, env, auth_type):
     try:
-        result = subprocess.run(["python3", "main_linux_arango.py"], check=True, capture_output=True, text=True)
-        logging.info("main_linux_arango.py executed successfully.\n%s", result.stdout)
+        controller = DBPipelineController(settings_path=settings_path, auth_type=AuthType.JWT, env=Environment.PRD)
+        controller.run()
+        logging.info("main_linux_arango.py executed successfully.\n%s")
     except subprocess.CalledProcessError as e:
         logging.error("main_linux_arango.py failed!\n%s", e.stderr)
 
 def main():
     last_run_date = None
-    settings_path = Path('/home/david/Documents/AWV/resources/settings_ArangoDB.json')
+    settings_path = Path('/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json')
     env = Environment.PRD
     auth_type = AuthType.JWT
     while True:
-        now = datetime.now(tz=pytz.timezone("Europe/Brussels"))
-        if is_within_run_window(now):
-            if last_run_date != now.date():
-                logging.info(f"Within run window ({RUN_WINDOW_START} - {RUN_WINDOW_END}), starting job.")
-                delete_params_collection(settings_path, env, auth_type)
-                run_main_linux_arango()
-                last_run_date = now.date()
+        try:
+            now = datetime.now(tz=pytz.timezone("Europe/Brussels"))
+            if is_within_run_window(now):
+                if last_run_date != now.date():
+                    logging.info(f"Within run window ({RUN_WINDOW_START} - {RUN_WINDOW_END}), starting job.")
+                    delete_params_collection(settings_path, env, auth_type)
+                    run_main_linux_arango(settings_path, env, auth_type)
+                    last_run_date = now.date()
+                else:
+                    logging.info("Already ran today, waiting for next window.")
             else:
-                logging.info("Already ran today, waiting for next window.")
-        else:
-            logging.info(f"Not within run window ({RUN_WINDOW_START} - {RUN_WINDOW_END}), sleeping.")
-        timer.sleep(60)
+                logging.info(f"Not within run window ({now} is not within {RUN_WINDOW_START} - {RUN_WINDOW_END}), sleeping.")
+        except Exception as e:
+            logging.error("Exception occurred:", exc_info=True)
+        timer.sleep(SLEEP_TIME)
 
 if __name__ == "__main__":
     main()
 
+# The execute_now function is not used in the main loop, but left for manual/interactive use if needed.
 def execute_now():
     """
     Script to run the ArangoDB pipeline at a scheduled time window. If run between 03:01 and 05:00, it will first clear the 'params' collection
@@ -96,8 +109,6 @@ def execute_now():
 
     if start <= now <= end:
         delete_params_collection(settings_path, env, auth_type)
-
         controller = DBPipelineController(settings_path=settings_path, auth_type=auth_type, env=env)
         controller.run()
-
     print('exit')
