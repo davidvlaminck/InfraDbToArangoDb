@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+import datetime
 
 from API.EMInfraClient import EMInfraClient
 from API.EMSONClient import EMSONClient
@@ -81,6 +82,15 @@ class DBPipelineController:
                 self._run_syncing()
             elif current_step == DBStep.STOP:
                 logging.info("[6] Stopping...")
+                # Add finished_at document to params collection
+                try:
+                    params_col = db.collection('params')
+                    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+                    params_col.insert({'_key': 'finished_at', 'value': now}, overwrite=True)
+                    logging.info(f"Added finished_at to params collection: {now}")
+                except Exception as e:
+                    logging.error(f"Failed to add finished_at to params collection: {e}")
+                    continue
                 break
 
     def _create_db(self):
