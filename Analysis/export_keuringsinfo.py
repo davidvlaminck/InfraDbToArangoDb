@@ -65,7 +65,7 @@ def _load_settings(path: Path) -> dict[str, Any]:
 
 
 def _create_db_from_settings(settings: dict[str, Any], env: Environment) -> Any:
-    db_settings = settings["databases"][str(env.value[0])]
+    db_settings = settings["databases"][str(env.value)]
     factory = ArangoDBConnectionFactory(
         db_name=db_settings["database"],
         username=db_settings["user"],
@@ -239,20 +239,36 @@ def _is_not_included(record: KeuringsRecord) -> bool:
 def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
     """Return pivot category for this record.
 
-    Rules
-    - A resultaatKeuring counts only when datumLaatsteKeuring > cutoff.
-    - Otherwise this record is categorized as "geen keuring".
-
-    This matches the requirement 'In de andere gevallen telt het resultaat niet en
-    is het hetzelfde als niet ingevuld'.
+    Rules:
+    - If no keuringsdatum: 'geen keuring'
+    - If keuringsdatum <= cutoff:
+        - If resultaat conform/conform met opmerkingen: 'vervallen keuring, conform'
+        - If resultaat niet-conform: 'vervallen keuring, niet conform'
+        - Else: 'geen keuring'
+    - If keuringsdatum > cutoff:
+        - conform: 'conform'
+        - conform met opmerkingen: 'conform met opmerkingen'
+        - niet-conform: 'niet-conform met inbreuken'
+        - Else: 'geen keuring'
     """
-
     d = _parse_iso_date(record.datum_laatste_keuring)
-    if d is None or d <= cutoff:
-        return "geen keuring"
-
-    r = (record.resultaat_keuring or "").strip()
-    return r if r else "geen keuring"
+    r = record.resultaat_keuring
+    r_norm = r.strip().lower() if r else None
+    if d is None:
+        return 'geen keuring'
+    if d <= cutoff:
+        if r_norm in {'conform', 'conform met opmerkingen'}:
+            return 'vervallen keuring, conform'
+        elif r_norm == 'niet-conform':
+            return 'vervallen keuring, niet conform'
+        return 'geen keuring'
+    # d > cutoff
+    mapping = {
+        'conform': 'conform',
+        'conform met opmerkingen': 'conform met opmerkingen',
+        'niet-conform': 'niet-conform met inbreuken',
+    }
+    return mapping.get(r_norm, 'geen keuring')
 
 
 def _pivot_group_name(record: KeuringsRecord) -> str:
@@ -271,33 +287,31 @@ def _build_pivot(
     cutoff: dt.date,
     include_not_meegenomen: bool = False,
 ) -> tuple[list[str], dict[str, Counter[str]]]:
-    """Build pivot data.
-
-    Returns:
-      - sorted unique result columns
-      - mapping pivotGroup -> Counter(result => count)
-
-    Notes:
-    - By default we exclude 'Niet meegenomen' from the pivot.
-    - Every included record contributes exactly 1 to the pivot (either a valid
-      resultaat or 'geen keuring').
-    - Groups are reduced to the 6 target groups + 'Andere'.
-    """
-
+    """Build pivot data with fixed column order and new categories."""
     counters: dict[str, Counter[str]] = defaultdict(Counter)
     all_results: set[str] = set()
 
     for r in records:
         if _is_not_included(r) and (not include_not_meegenomen):
             continue
-
         res = _pivot_result_key(r, cutoff=cutoff)
         grp = _pivot_group_name(r)
-
         counters[grp][res] += 1
         all_results.add(res)
 
-    result_cols = sorted(all_results)
+    # Fixed column order as requested
+    result_cols = [
+        'conform',
+        'conform met opmerkingen',
+        'niet-conform met inbreuken',
+        'vervallen keuring, conform',
+        'vervallen keuring, niet conform',
+        'geen keuring',
+    ]
+    # Ensure all columns are present in all groups
+    for c in counters.values():
+        for col in result_cols:
+            c.setdefault(col, 0)
     return result_cols, counters
 
 
