@@ -13,7 +13,7 @@ from DBPipelineController import DBPipelineController
 BRUSSELS = ZoneInfo("Europe/Brussels")
 PARAMS_COLLECTION_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'params')
 
-RUN_WINDOW_START = "03:01:00"
+RUN_WINDOW_START = "03:00:01"
 RUN_WINDOW_END = "05:00:00"
 SLEEP_TIME = 60
 
@@ -63,7 +63,7 @@ def delete_params_collection(settings_path, env, auth_type):
 
 def run_main_linux_arango(settings_path, env, auth_type):
     try:
-        controller = DBPipelineController(settings_path=settings_path, auth_type=AuthType.JWT, env=Environment.PRD)
+        controller = DBPipelineController(settings_path=settings_path, auth_type=auth_type, env=env)
         controller.run()
         logging.info("main_linux_arango.py executed successfully.\n%s")
     except subprocess.CalledProcessError as e:
@@ -71,7 +71,7 @@ def run_main_linux_arango(settings_path, env, auth_type):
 
 def main():
     last_run_date = None
-    settings_path = Path('/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json')
+    settings_path = Path('/home/david/Documents/AWV/resources/settings_ArangoDB.json')
     env = Environment.PRD
     auth_type = AuthType.JWT
     while True:
@@ -107,7 +107,7 @@ def execute_now():
     using the same credentials/settings as the main pipeline, then run the full pipeline. Uses the settings file and DBPipelineController logic.
     """
     now = datetime.now().time()
-    start = time(3, 1)
+    start = time(3, 0, 0)
     end = time(5, 0)
     settings_path = Path('/home/david/Documents/AWV/resources/settings_ArangoDB.json')
     env = Environment.PRD
