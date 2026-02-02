@@ -1,4 +1,5 @@
 import logging
+import time
 from pathlib import Path
 import datetime
 
@@ -60,38 +61,42 @@ class DBPipelineController:
     def run(self):
         db = self.factory.create_connection()
         while True:
-            current_step = get_db_step(db)
-            logging.info(f"Current DB step: {current_step}")
-            if current_step is None or current_step == DBStep.CREATE_DB:
-                logging.info("[0] Creating the database...")
-                self._create_db()
-            elif current_step == DBStep.INITIAL_FILL:
-                logging.info("[1] Filling the database...")
-                self._run_fill()
-            elif current_step == DBStep.EXTRA_DATA_FILL:
-                logging.info("[2] Do some additional filling...")
-                self._run_extra_fill()
-            elif current_step == DBStep.CREATE_INDEXES:
-                logging.info("[3] Adding indices and graphs...")
-                self._run_indices()
-            elif current_step == DBStep.APPLY_CONSTRAINTS:
-                logging.info("[4] Applying constraints...")
-                self._run_constraints()
-            elif current_step == DBStep.SYNC:
-                logging.info("[5] Synchronising...")
-                self._run_syncing()
-            elif current_step == DBStep.STOP:
-                logging.info("[6] Stopping...")
-                # Add finished_at document to params collection
-                try:
-                    params_col = db.collection('params')
-                    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
-                    params_col.insert({'_key': 'finished_at', 'value': now}, overwrite=True)
-                    logging.info(f"Added finished_at to params collection: {now}")
-                except Exception as e:
-                    logging.error(f"Failed to add finished_at to params collection: {e}")
-                    continue
-                break
+            try:
+                current_step = get_db_step(db)
+                logging.info(f"Current DB step: {current_step}")
+                if current_step is None or current_step == DBStep.CREATE_DB:
+                    logging.info("[0] Creating the database...")
+                    self._create_db()
+                elif current_step == DBStep.INITIAL_FILL:
+                    logging.info("[1] Filling the database...")
+                    self._run_fill()
+                elif current_step == DBStep.EXTRA_DATA_FILL:
+                    logging.info("[2] Do some additional filling...")
+                    self._run_extra_fill()
+                elif current_step == DBStep.CREATE_INDEXES:
+                    logging.info("[3] Adding indices and graphs...")
+                    self._run_indices()
+                elif current_step == DBStep.APPLY_CONSTRAINTS:
+                    logging.info("[4] Applying constraints...")
+                    self._run_constraints()
+                elif current_step == DBStep.SYNC:
+                    logging.info("[5] Synchronising...")
+                    self._run_syncing()
+                elif current_step == DBStep.STOP:
+                    logging.info("[6] Stopping...")
+                    # Add finished_at document to params collection
+                    try:
+                        params_col = db.collection('params')
+                        now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+                        params_col.insert({'_key': 'finished_at', 'value': now}, overwrite=True)
+                        logging.info(f"Added finished_at to params collection: {now}")
+                    except Exception as e:
+                        logging.error(f"Failed to add finished_at to params collection: {e}")
+                        continue
+                    break
+            except Exception as e:
+                logging.error(f"Error during DB pipeline execution: {e}", exc_info=True)
+                time.sleep(10)
 
     def _create_db(self):
         step_runner = CreateDBStep(self.factory)
