@@ -239,11 +239,15 @@ def _is_not_included(record: KeuringsRecord) -> bool:
 def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
     """Return pivot category for this record.
 
+    Robust rules (improved): normalize resultaat_keuring and match with substrings so
+    variants such as 'niet-conform met inbreuken' or 'niet-conform (met inbreuken)'
+    are handled correctly.
+
     Rules:
     - If no keuringsdatum: 'geen keuring'
     - If keuringsdatum <= cutoff:
-        - If resultaat conform/conform met opmerkingen: 'vervallen keuring, conform'
-        - If resultaat niet-conform: 'vervallen keuring, niet conform'
+        - If resultaat indicates conform (or conform met opmerkingen): 'vervallen keuring, conform'
+        - If resultaat indicates niet-conform: 'vervallen keuring, niet conform'
         - Else: 'geen keuring'
     - If keuringsdatum > cutoff:
         - conform: 'conform'
@@ -254,21 +258,46 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
     d = _parse_iso_date(record.datum_laatste_keuring)
     r = record.resultaat_keuring
     r_norm = r.strip().lower() if r else None
+
+    # helper normalizations
+    def _is_not_conform(s: str) -> bool:
+        return 'niet' in s and 'conform' in s or s.startswith('niet-')
+
+    def _is_conform(s: str) -> bool:
+        # ensure we don't misclassify 'niet-conform' as 'conform'
+        return ('conform' in s) and (not _is_not_conform(s))
+
+    def _has_opmerking(s: str) -> bool:
+        return 'opmerking' in s or 'opmerk' in s
+
     if d is None:
         return 'geen keuring'
+
+    if r_norm:
+        # normalize some common synonyms
+        if 'niet gekend' in r_norm or r_norm == 'geen keuring':
+            r_norm = None
+
     if d <= cutoff:
-        if r_norm in {'conform', 'conform met opmerkingen'}:
-            return 'vervallen keuring, conform'
-        elif r_norm == 'niet-conform':
-            return 'vervallen keuring, niet conform'
+        if r_norm:
+            if _is_not_conform(r_norm):
+                return 'vervallen keuring, niet conform'
+            if _is_conform(r_norm):
+                # conform or conform met opmerkingen
+                if _has_opmerking(r_norm):
+                    return 'vervallen keuring, conform'
+                return 'vervallen keuring, conform'
         return 'geen keuring'
+
     # d > cutoff
-    mapping = {
-        'conform': 'conform',
-        'conform met opmerkingen': 'conform met opmerkingen',
-        'niet-conform': 'niet-conform met inbreuken',
-    }
-    return mapping.get(r_norm, 'geen keuring')
+    if r_norm:
+        if _is_not_conform(r_norm):
+            return 'niet-conform met inbreuken'
+        if _has_opmerking(r_norm):
+            return 'conform met opmerkingen'
+        if _is_conform(r_norm):
+            return 'conform'
+    return 'geen keuring'
 
 
 def _pivot_group_name(record: KeuringsRecord) -> str:
