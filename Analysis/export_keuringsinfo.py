@@ -55,6 +55,8 @@ class KeuringsRecord:
     toestand: str | None
     datum_laatste_keuring: str | None
     resultaat_keuring: str | None
+    longitude: float | None = None
+    latitude: float | None = None
 
 
 def _load_settings(path: Path) -> dict[str, Any]:
@@ -105,7 +107,7 @@ def build_aql(
     Match ranking: voedt (1) > single (3)
     """
 
-    limit_clause = "" if limit is None else "\nLIMIT @limit"
+    limit_clause = ""  # LIMIT handled in Python
 
     return f"""
 LET ls_key      = FIRST(FOR at IN assettypes FILTER at.short_uri == @ls_short_uri LIMIT 1 RETURN at._key)
@@ -184,8 +186,11 @@ FOR chosen_doc IN (
     "toestand": chosen.toestand,
 
     "datum_laatste_keuring": ins != null ? ins.EMObject_datumLaatsteKeuring : null,
-    "resultaat_keuring": ins != null ? ins.EMObject_resultaatKeuring : null
-  }}{limit_clause}
+    "resultaat_keuring": ins != null ? ins.EMObject_resultaatKeuring : null,
+
+    "longitude": (chosen.geometry != null ? (LENGTH(chosen.geometry.coordinates) > 0 ? chosen.geometry.coordinates[0] : null) : null),
+    "latitude": (chosen.geometry != null ? (LENGTH(chosen.geometry.coordinates) > 1 ? chosen.geometry.coordinates[1] : null) : null)
+  }}
 """
 
 
@@ -197,14 +202,12 @@ def fetch_records(
     max_runtime_seconds: int = 300,
     limit: int | None = None,
 ) -> list[KeuringsRecord]:
-    aql = build_aql(ls_short_uri=ls_short_uri, lsdeel_short_uri=lsdeel_short_uri, limit=limit)
+    aql = build_aql(ls_short_uri=ls_short_uri, lsdeel_short_uri=lsdeel_short_uri)
     bind_vars: dict[str, Any] = {
         "ls_short_uri": ls_short_uri,
         "lsdeel_short_uri": lsdeel_short_uri,
         "voedt_short": "Voedt",
     }
-    if limit is not None:
-        bind_vars["limit"] = limit
 
     cursor = db.aql.execute(
         aql,
@@ -215,7 +218,15 @@ def fetch_records(
         stream=True,
     )
 
-    return [KeuringsRecord(**row) for row in cursor]
+    if limit is None:
+        return [KeuringsRecord(**row) for row in cursor]
+
+    res = []
+    for i, row in enumerate(cursor):
+        if i >= limit:
+            break
+        res.append(KeuringsRecord(**row))
+    return res
 
 
 def fetch_records_not_meegenomen(*args: Any, **kwargs: Any) -> list[KeuringsRecord]:
@@ -437,6 +448,8 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
         "toestand",
         "datum_laatste_keuring",
         "resultaat_keuring",
+        "longitude",
+        "latitude",
     ]
 
     for sh in sheets.values():
@@ -460,6 +473,8 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
                 r.toestand,
                 r.datum_laatste_keuring,
                 r.resultaat_keuring,
+                r.longitude,
+                r.latitude,
             ]
         )
 
