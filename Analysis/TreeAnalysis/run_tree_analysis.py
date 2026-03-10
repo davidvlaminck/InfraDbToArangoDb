@@ -165,93 +165,97 @@ def main(argv: list[str] | None = None) -> int:
                 if "AIMDBStatus_isActief" in a:
                     v = a.get("AIMDBStatus_isActief")
                     is_active = (v.lower() == "true") if isinstance(v, str) else bool(v)
-                debug_rows.append({
-                    "_key": a.get("_key"),
-                    "beheer_first": first,
-                    "naampad_parts": parts,
-                    "AIMDBStatus_isActief": a.get("AIMDBStatus_isActief"),
-                    "included_in_main_run": (first == beheer and is_active),
-                })
+                debug_rows.append(
+                    {
+                        "_key": a["_key"],
+                        "assettype_key": a.get("assettype_key"),
+                        "beheerobject": beheer,
+                        "first_naampad_part": first,
+                        "is_active": is_active,
+                    }
+                )
         else:
-            # Query DB for all assets where first naampad part == beheer or NaampadObject_naampad starts with beheer
-            DBG_AQL = """
-            LET parts = (
-              FOR a IN assets
-                LET p = (HAS(a, "naampad_parts") && IS_ARRAY(a.naampad_parts) && LENGTH(a.naampad_parts) > 0) ? a.naampad_parts : (HAS(a, "NaampadObject_naampad") ? SPLIT(a.NaampadObject_naampad, "/") : [])
-                FILTER LENGTH(p) > 0 && p[0] == @beheer
-                RETURN { _key: a._key, assettype_key: a.assettype_key, naampad_parts: p, AIMDBStatus_isActief: (HAS(a, "AIMDBStatus_isActief") ? a.AIMDBStatus_isActief : null), NaampadObject_naampad: (HAS(a, "NaampadObject_naampad") ? a.NaampadObject_naampad : null) }
+            # query active beheerobject with matching short_uri
+            AQL = """
+            FOR b IN beheerobject
+              FILTER b.short_uri == @beheer
+              RETURN b
             """
-            # ensure DB is available
-            if db is None:
-                print("DB connection not available for debug query")
-                return 4
             try:
-                cursor = db.aql.execute(DBG_AQL, bind_vars={"beheer": beheer}, batch_size=1000, ttl=300, stream=True)
-                debug_rows = list(cursor)
+                cursor = db.aql.execute(AQL, bind_vars={"beheer": beheer}, batch_size=2000, ttl=600, stream=True)
+                beheer_objects = list(cursor)
             except Exception as e:
-                print("Error executing debug AQL:", e)
-                return 4
-
-        # enrich debug rows with resolved short_uri when possible
-        enriched = []
-        for r in debug_rows:
-            atk = r.get("assettype_key")
-            short = assettype_map.get(atk)
-            r["assettype_short_uri"] = short
-            # determine inclusion reasons
-            parts = r.get("naampad_parts") or []
-            first = parts[0] if parts else None
-            is_active = True
-            if r.get("AIMDBStatus_isActief") is not None:
-                v = r.get("AIMDBStatus_isActief")
-                is_active = (v.lower() == "true") if isinstance(v, str) else bool(v)
-            r["included_in_main_run"] = (first == args.debug_beheer and is_active)
-            reasons = []
-            if not parts:
-                reasons.append("missing_naampad_parts")
-            if not is_active:
-                reasons.append("inactive")
-            r["exclude_reasons"] = reasons
-            enriched.append(r)
-
+                print("Error executing AQL:", e)
+                return 3
+            # enrich with asset info
+            for b in beheer_objects:
+                # find latest asset with this beheerobject as top part
+                parts = b.get("naampad_parts") or []
+                if not parts:
+                    continue
+                top_part = parts[0]
+                asset = next((a for a in assets if a["_key"] == top_part), None)
+                debug_rows.append(
+                    {
+                        "_key": b["_key"],
+                        "assettype_key": asset.get("assettype_key") if asset else None,
+                        "beheerobject": beheer,
+                        "first_naampad_part": top_part,
+                        "is_active": asset.get("AIMDBStatus_isActief") if asset else None,
+                    }
+                )
+        # write debug output
         with debug_out.open("w", encoding="utf-8") as f:
-            json.dump(enriched, f, ensure_ascii=False, indent=2)
-        print(f"Wrote debug file {debug_out} with {len(enriched)} rows")
+            json.dump(debug_rows, f, ensure_ascii=False, indent=2)
+        print(f"Wrote debug info to {debug_out}")
         return 0
 
-    structures, instances = build_structures_and_instances(
-        assets, assettype_map, lsdeel_short_uri=args.lsdeel_short_uri
-    )
+    # regular run: build structures and instances
+    try:
+        structures, instances = build_structures_and_instances(assets, assettype_map, args.lsdeel_short_uri)
+    except Exception as e:
+        print("Error building structures and instances:", e)
+        return 4
 
-    # compute total asset counts per structure id (sum num_assets from instances)
+    # Annotate structures with count (total assets) and occurrence (# unique beheerobjects)
     assets_by_id: dict[str, int] = {}
-    for inst in instances.values():
+    occurrence_by_id: dict[str, int] = {}
+    for beheer, inst in instances.items():
         sid = inst.get("structure_id")
+        if not sid:
+            continue
         try:
             na = int(inst.get("num_assets", 0) or 0)
         except Exception:
             na = 0
-        if sid:
-            assets_by_id[sid] = assets_by_id.get(sid, 0) + na
+        assets_by_id[sid] = assets_by_id.get(sid, 0) + na
+        occurrence_by_id[sid] = occurrence_by_id.get(sid, 0) + 1
 
-    # annotate structures with count and produce list sorted by count desc
-    for s in structures.values():
-        sid = s.get("id")
+    # structures is a dict id -> struct
+    structures_list = []
+    for sid, s in structures.items():
+        # ensure label string
+        if s.get("label") is None:
+            s["label"] = ""
         s["count"] = int(assets_by_id.get(sid, 0))
+        s["occurrence"] = int(occurrence_by_id.get(sid, 0))
+        structures_list.append(s)
 
-    structures_list = sorted(list(structures.values()), key=lambda x: x.get("count", 0), reverse=True)
+    structures_list = sorted(structures_list, key=lambda x: x.get("count", 0), reverse=True)
 
-    # write JSON outputs
-    structures_path = out_dir / "tree_structures.json"
-    instances_path = out_dir / "tree_instances.json"
-    with structures_path.open("w", encoding="utf-8") as f:
-        json.dump(structures_list, f, ensure_ascii=False, indent=2)
-    with instances_path.open("w", encoding="utf-8") as f:
-        json.dump(instances, f, ensure_ascii=False, indent=2)
+    # write output files
+    try:
+        with (out_dir / "tree_structures.json").open("w", encoding="utf-8") as f:
+            json.dump(structures_list, f, ensure_ascii=False, indent=2)
+        with (out_dir / "tree_instances.json").open("w", encoding="utf-8") as f:
+            json.dump(instances, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print("Error writing output files:", e)
+        return 5
 
-    print(f"Wrote {structures_path} ({len(structures_list)} structures) and {instances_path} ({len(instances)} instances)")
+    print(f"Output written to {out_dir}")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())

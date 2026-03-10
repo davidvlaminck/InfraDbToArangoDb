@@ -100,6 +100,9 @@ def build_structures_and_instances(
         level_sets: Dict[int, Set[str]] = defaultdict(set)
         lsdeel_keys: List[str] = []
         asset_keys: List[str] = []
+        # collect exact path -> types so we can infer parent-child relationships
+        exact_map: Dict[str, Set[str]] = defaultdict(set)
+        asset_records: List[Tuple[str, List[str], str]] = []
         for it in items:
             parts = it.get("naampad_parts") or []
             depth = max(0, len(parts) - 1)
@@ -112,6 +115,10 @@ def build_structures_and_instances(
                 asset_keys.append(ak)
             if lsdeel_short_uri and short == lsdeel_short_uri and ak:
                 lsdeel_keys.append(ak)
+            path = "/".join(parts) if parts else ""
+            if short:
+                exact_map[path].add(short)
+            asset_records.append((path, parts, short))
 
         canonical = _canonicalize_structure(level_sets)
         key = _structure_key(canonical)
@@ -121,8 +128,51 @@ def build_structures_and_instances(
                 "id": sid,
                 "structure": canonical,
                 "example": {"beheerobject": beheer, "sample_asset_key": asset_keys[0] if asset_keys else None},
-                "label": None,
+                "label": "",
+                # adjacency tree: parent_short_uri -> sorted list of child short_uris
+                "tree": {},
             }
+        # Build adjacency using exact parent path match constrained by canonical levels
+        adjacency: Dict[str, Set[str]] = defaultdict(set)
+        # map type to its canonical level(s)
+        type_to_levels: Dict[str, Set[int]] = defaultdict(set)
+        for lvl_idx, lvl in enumerate(canonical):
+            for t in lvl:
+                type_to_levels[t].add(lvl_idx)
+
+        for path, parts, short in asset_records:
+            if not parts or short is None:
+                continue
+            # child's canonical level(s)
+            child_levels = type_to_levels.get(short, set())
+            if not child_levels:
+                continue
+            # parent path (immediate parent)
+            parent_path = "/".join(parts[:-1])
+            if not parent_path:
+                continue
+            # parents at that exact parentPath
+            parents = exact_map.get(parent_path, set())
+            for p_short in parents:
+                if p_short == short:
+                    continue
+                parent_levels = type_to_levels.get(p_short, set())
+                # require that parent level is immediately above one of the child's levels
+                matched = any((pl + 1) in child_levels for pl in parent_levels)
+                if matched:
+                    adjacency[p_short].add(short)
+
+        # ensure parent keys exist even if they have no children (empty list)
+        for i in range(0, max(0, len(canonical) - 1)):
+            for p_short in canonical[i]:
+                adjacency.setdefault(p_short, set())
+
+        existing = structures_by_key[key].get("tree") or {}
+        existing_sets: Dict[str, Set[str]] = {k: set(v) for k, v in existing.items()}
+        for p, children in adjacency.items():
+            existing_sets.setdefault(p, set()).update(children)
+        structures_by_key[key]["tree"] = {p: sorted(list(c)) for p, c in existing_sets.items()}
+
         # map instance
         instances[beheer] = {
             "structure_id": structures_by_key[key]["id"],
@@ -134,6 +184,9 @@ def build_structures_and_instances(
     # create final structures dict keyed by id for output convenience
     structures: Dict[str, Dict[str, Any]] = {}
     for val in structures_by_key.values():
+        # ensure label is a string (default to empty string)
+        if val.get("label") is None:
+            val["label"] = ""
         structures[val["id"]] = val
 
     return structures, instances
