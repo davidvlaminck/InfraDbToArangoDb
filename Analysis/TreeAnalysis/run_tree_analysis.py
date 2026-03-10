@@ -17,7 +17,7 @@ except Exception:
     ArangoDBConnectionFactory = None  # type: ignore
     Environment = None  # type: ignore
 
-from tree_analysis import build_assettype_map, build_structures_and_instances
+from tree_analysis import build_assettype_map, run_and_persist_structures
 
 
 SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
@@ -107,6 +107,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--debug-beheer", default=None, help="Write debug JSON for a specific beheerobject and exit")
     p.add_argument("--env", default="prd")
     p.add_argument("--lsdeel-short-uri", default="lgc:installatie#LSDeel")
+    # omit_structure is now the default behavior. Use --keep-structure to preserve the canonical 'structure' field.
+    p.add_argument("--keep-structure", dest="omit_structure", action="store_false", help="Keep the canonical 'structure' field in output (default: omit it)")
+    p.set_defaults(omit_structure=True)
     args = p.parse_args(argv)
 
     out_dir = Path(args.out_dir)
@@ -210,48 +213,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Wrote debug info to {debug_out}")
         return 0
 
-    # regular run: build structures and instances
+    # regular run: build structures and instances and persist using core function
     try:
-        structures, instances = build_structures_and_instances(assets, assettype_map, args.lsdeel_short_uri)
+        run_and_persist_structures(assets, assettype_map, Path(args.out_dir), args.lsdeel_short_uri, omit_structure=bool(args.omit_structure))
     except Exception as e:
-        print("Error building structures and instances:", e)
+        print("Error building/persisting structures and instances:", e)
         return 4
-
-    # Annotate structures with count (total assets) and occurrence (# unique beheerobjects)
-    assets_by_id: dict[str, int] = {}
-    occurrence_by_id: dict[str, int] = {}
-    for beheer, inst in instances.items():
-        sid = inst.get("structure_id")
-        if not sid:
-            continue
-        try:
-            na = int(inst.get("num_assets", 0) or 0)
-        except Exception:
-            na = 0
-        assets_by_id[sid] = assets_by_id.get(sid, 0) + na
-        occurrence_by_id[sid] = occurrence_by_id.get(sid, 0) + 1
-
-    # structures is a dict id -> struct
-    structures_list = []
-    for sid, s in structures.items():
-        # ensure label string
-        if s.get("label") is None:
-            s["label"] = ""
-        s["count"] = int(assets_by_id.get(sid, 0))
-        s["occurrence"] = int(occurrence_by_id.get(sid, 0))
-        structures_list.append(s)
-
-    structures_list = sorted(structures_list, key=lambda x: x.get("count", 0), reverse=True)
-
-    # write output files
-    try:
-        with (out_dir / "tree_structures.json").open("w", encoding="utf-8") as f:
-            json.dump(structures_list, f, ensure_ascii=False, indent=2)
-        with (out_dir / "tree_instances.json").open("w", encoding="utf-8") as f:
-            json.dump(instances, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        print("Error writing output files:", e)
-        return 5
 
     print(f"Output written to {out_dir}")
     return 0
