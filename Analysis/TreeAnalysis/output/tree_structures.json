@@ -10878,7 +10878,7 @@
       "beheerobject": "WO0152",
       "sample_asset_key": "0160ed91-12f8-4c47-8160-ca5e1d08068a"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -10908,7 +10908,7 @@
       "beheerobject": "A2287",
       "sample_asset_key": "006c9ac9-6da0-488b-bab6-a7f174c48492"
     },
-    "label": "",
+    "label": "WV",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -11061,7 +11061,7 @@
       "beheerobject": "WO0154",
       "sample_asset_key": "002f6667-d0a3-48e0-a63d-ebc89e16540d"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11101,7 +11101,7 @@
       "beheerobject": "C1736",
       "sample_asset_key": "00c79bda-4bc1-48ca-a709-44875f8095c8"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPConsole",
@@ -11255,7 +11255,7 @@
       "beheerobject": "WO0074",
       "sample_asset_key": "013d750e-649a-44df-9218-253aa49a262f"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11284,7 +11284,7 @@
       "beheerobject": "849C5",
       "sample_asset_key": "000a2e4f-1464-4925-99bb-30330ba0986c"
     },
-    "label": "",
+    "label": "VRI",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -11342,7 +11342,7 @@
       "beheerobject": "C1918",
       "sample_asset_key": "010dc561-64e5-4cf4-8514-c81af3ce74ed"
     },
-    "label": "",
+    "label": "WV",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11371,7 +11371,7 @@
       "beheerobject": "A2174",
       "sample_asset_key": "0050cb12-2c40-4358-809b-ad3b1b9a6bee"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPConsole",
@@ -11414,7 +11414,7 @@
       "beheerobject": "G2053",
       "sample_asset_key": "00afa180-7002-4e56-96b9-89c01c746d41"
     },
-    "label": "",
+    "label": "WV",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPConsole",
@@ -11540,7 +11540,7 @@
       "beheerobject": "WO0024",
       "sample_asset_key": "00f65358-55b8-4da3-b2e2-11dbc494b9e9"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11587,7 +11587,7 @@
       "beheerobject": "WO0076",
       "sample_asset_key": "00ffc9be-aae2-4177-96f1-b7c64d78ce25"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11616,7 +11616,7 @@
       "beheerobject": "WW0042",
       "sample_asset_key": "0080f354-95dd-4604-96c2-7f0675fea263"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11653,7 +11653,7 @@
       "beheerobject": "WW0033",
       "sample_asset_key": "00f2fbc1-86c9-468c-ac75-668ff87c9315"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11681,7 +11681,7 @@
       "beheerobject": "C1782",
       "sample_asset_key": "00a88fbc-8a78-4e4e-b610-80ddb95e1995"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11724,7 +11724,7 @@
       "beheerobject": "C0473",
       "sample_asset_key": "00806f5b-36f2-4f77-9d47-a0ff606834c4"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11743,13 +11743,14 @@
     "count": 261,
     "occurrence": 1
   },
+
   {
     "id": "7859eb47f93ec03943cc7c5dde72c2672a1cbb32",
     "example": {
       "beheerobject": "WO0088",
       "sample_asset_key": "0034f2df-5e77-4cdb-a8d0-d513ddf68c78"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPConsole",
@@ -11793,7 +11794,7 @@
       "beheerobject": "KO0306",
       "sample_asset_key": "01b82b90-e8f7-4aac-b887-9b6bac9382e7"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -11837,7 +11838,7 @@
       "beheerobject": "G0379",
       "sample_asset_key": "00b597d2-6393-492d-bbac-b88663baa5eb"
     },
-    "label": "",
+    "label": "WV",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPConsole",
@@ -11866,7 +11867,7 @@
       "beheerobject": "WO0169",
       "sample_asset_key": "01539838-e0ca-435f-ac83-48a7a0009a87"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11907,7 +11908,7 @@
       "beheerobject": "WO0046",
       "sample_asset_key": "00d97388-ef64-4c07-aa03-6021ccef9aab"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11942,7 +11943,7 @@
       "beheerobject": "N627X23.1",
       "sample_asset_key": "00237157-b903-41c7-a641-1c07e77c0635"
     },
-    "label": "",
+    "label": "Camera",
     "tree": {
       "onderdeel#Lichtmast": [
         "installatie#CameraGroep"
@@ -11993,7 +11994,7 @@
       "beheerobject": "G0528",
       "sample_asset_key": "00502456-e856-462c-a2bc-a3b97f7eb22c"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#IVSB",
@@ -12032,7 +12033,7 @@
       "beheerobject": "246A3",
       "sample_asset_key": "015652f4-91a9-4f42-b311-6aade083bccf"
     },
-    "label": "",
+    "label": "VRI",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -12094,7 +12095,7 @@
       "beheerobject": "C1725",
       "sample_asset_key": "00e58db2-1276-4b41-91f8-6a776d3f5a4a"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#IVSB",
@@ -12131,7 +12132,7 @@
       "beheerobject": "A10X6.0",
       "sample_asset_key": "00742606-e124-449d-8e62-e048068aa722"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -12193,7 +12194,7 @@
       "beheerobject": "WO0108",
       "sample_asset_key": "0056815b-45e5-4810-b568-804090fb0369"
     },
-    "label": "",
+    "label": "WV",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -12219,7 +12220,7 @@
       "beheerobject": "WO0109",
       "sample_asset_key": "003bd66f-686e-44a5-af47-3d61e6c89bcf"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -12246,7 +12247,7 @@
       "beheerobject": "A2163",
       "sample_asset_key": "0071b8f5-3b79-4947-a31d-84a83835292b"
     },
-    "label": "",
+    "label": "WV",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -12288,7 +12289,7 @@
       "beheerobject": "WO0029",
       "sample_asset_key": "01bbb0af-bba4-43ad-944b-a03bc1db60d0"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -12330,7 +12331,7 @@
       "beheerobject": "A1X8.8",
       "sample_asset_key": "01ab26e1-b87b-4cbb-a3bb-4c206ccc4297"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -12384,7 +12385,7 @@
       "beheerobject": "WO0179",
       "sample_asset_key": "0009513f-5d64-470a-9053-9fc2b1168244"
     },
-    "label": "",
+    "label": "WV+HS",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
