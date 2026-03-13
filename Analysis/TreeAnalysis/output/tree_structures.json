@@ -30118,7 +30118,7 @@
       "beheerobject": "PZ.ARROIEPER",
       "sample_asset_key": "08e737fe-18ad-41a8-80d4-5040d502c6c8"
     },
-    "label": "",
+    "label": "Flits",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Flitscamera"
@@ -36337,7 +36337,7 @@
       "beheerobject": "N76X32.4",
       "sample_asset_key": "16629efc-2317-41fe-bd6b-99e52e257a9f"
     },
-    "label": "",
+    "label": "Camera",
     "tree": {
       "lgc:installatie#Wilddet": [
         "onderdeel#Camera",
@@ -41025,7 +41025,7 @@
       "beheerobject": "PZ.LEUVEN",
       "sample_asset_key": "01734376-4550-4fc3-8c03-cf8062e88cb7"
     },
-    "label": "",
+    "label": "Flits",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Flitscamera",
@@ -42648,7 +42648,7 @@
       "beheerobject": "PZ.AALTER",
       "sample_asset_key": "075f8a55-5e34-49a9-94b7-2ca0e801fe03"
     },
-    "label": "",
+    "label": "Flits",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Flitscamera",
@@ -48176,7 +48176,7 @@
       "beheerobject": "PZ.REGIOPUYENBROECK",
       "sample_asset_key": "276a9990-beed-4c87-9029-c7b4051f6ab0"
     },
-    "label": "",
+    "label": "Flits",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Flitscamera",
