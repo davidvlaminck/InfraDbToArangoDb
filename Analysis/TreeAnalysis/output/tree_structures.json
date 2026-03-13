@@ -15560,7 +15560,9 @@
       "sample_asset_key": "03b3e49d-b632-47f4-9b86-7e2e868323da"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#BiFlashInstallatie": null
+    },
     "lsdeel_uuids": [],
     "count": 171,
     "occurrence": 171
@@ -17527,7 +17529,10 @@
       "sample_asset_key": "038cf074-6b38-438c-89fe-f32ce9d0a290"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Luchtkwaliteitsensor": null,
+      "installatie#Ventilatiecluster": null
+    },
     "lsdeel_uuids": [],
     "count": 136,
     "occurrence": 3
@@ -21368,7 +21373,9 @@
       "sample_asset_key": "00471005-1bbf-4bc3-9823-7abaa6bce17a"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Af": null
+    },
     "lsdeel_uuids": [],
     "count": 81,
     "occurrence": 81
@@ -21936,7 +21943,9 @@
       "sample_asset_key": "0451c3a7-7072-444f-8a92-60896df5ec98"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#RWeg": null
+    },
     "lsdeel_uuids": [],
     "count": 76,
     "occurrence": 76
@@ -24729,7 +24738,9 @@
       "sample_asset_key": "044f8e2c-fce0-49bf-b5e2-1615ad47c59b"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#VLAN": null
+    },
     "lsdeel_uuids": [],
     "count": 55,
     "occurrence": 4
@@ -24741,7 +24752,9 @@
       "sample_asset_key": "0af2a5ca-b6db-4498-a1cc-fe82f766237b"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#AWeg": null
+    },
     "lsdeel_uuids": [],
     "count": 55,
     "occurrence": 55
@@ -28151,7 +28164,9 @@
       "sample_asset_key": "00d34b10-d291-48cd-8ca1-f367ab87f417"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "onderdeel#Seinbrug": null
+    },
     "lsdeel_uuids": [],
     "count": 39,
     "occurrence": 22
@@ -30002,7 +30017,9 @@
       "sample_asset_key": "02c59e39-2d21-4f60-bfda-8a76b795cbc0"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#TWeg": null
+    },
     "lsdeel_uuids": [],
     "count": 34,
     "occurrence": 34
@@ -31431,7 +31448,9 @@
       "sample_asset_key": "0924d5d1-8bd5-4b46-a51d-cdb5974ed4e4"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Ssig": null
+    },
     "lsdeel_uuids": [],
     "count": 31,
     "occurrence": 31
@@ -33093,7 +33112,11 @@
       "sample_asset_key": "065119bb-9e54-405a-b91e-821b642d9ba9"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Kokerventilatie": null,
+      "installatie#Luchtkwaliteitsensor": null,
+      "installatie#Ventilatiecluster": null
+    },
     "lsdeel_uuids": [],
     "count": 27,
     "occurrence": 2
@@ -34063,7 +34086,9 @@
       "sample_asset_key": "05d8643f-1f1e-4202-b6d5-8ac25ebf1330"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Kast": null
+    },
     "lsdeel_uuids": [],
     "count": 25,
     "occurrence": 24
@@ -35250,7 +35275,10 @@
       "sample_asset_key": "1f595218-8d79-482f-a1cf-196e932e5785"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Af": null,
+      "lgc:installatie#VPLMast": null
+    },
     "lsdeel_uuids": [],
     "count": 23,
     "occurrence": 1
@@ -35302,7 +35330,9 @@
       "sample_asset_key": "2adf8158-1a4c-47dc-b026-26ab6c5c2cfe"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#RIOOL": null
+    },
     "lsdeel_uuids": [],
     "count": 23,
     "occurrence": 23
@@ -35457,7 +35487,10 @@
       "sample_asset_key": "010268fe-01df-4577-b574-0a9ac958c625"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#VL": null,
+      "lgc:installatie#VRLegacy": null
+    },
     "lsdeel_uuids": [],
     "count": 22,
     "occurrence": 11
@@ -35469,7 +35502,9 @@
       "sample_asset_key": "017219a3-ca9c-44f1-aa50-d264682717f8"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Ventilatiecluster": null
+    },
     "lsdeel_uuids": [],
     "count": 22,
     "occurrence": 3
@@ -35752,7 +35787,9 @@
       "sample_asset_key": "0e9bdc95-9804-499a-b32d-db3a519e5ce2"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Dummy": null
+    },
     "lsdeel_uuids": [],
     "count": 22,
     "occurrence": 5
@@ -36211,7 +36248,9 @@
       "sample_asset_key": "074e20b6-fb24-493e-8bbc-9153b631aacb"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#VVOPGroep": null
+    },
     "lsdeel_uuids": [],
     "count": 21,
     "occurrence": 21
@@ -37084,7 +37123,9 @@
       "sample_asset_key": "10ae87af-7c90-4a76-a127-7cc01904c453"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#CameraGroep": null
+    },
     "lsdeel_uuids": [],
     "count": 20,
     "occurrence": 20
@@ -37130,7 +37171,10 @@
       "sample_asset_key": "14ecb4cc-4306-44a6-84b9-41e591c88d8f"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#BVE": null,
+      "lgc:installatie#Ssig": null
+    },
     "lsdeel_uuids": [],
     "count": 20,
     "occurrence": 10
@@ -37405,7 +37449,9 @@
       "sample_asset_key": "05bb0d88-c869-4ce4-8091-80eafe9dd385"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#KL": null
+    },
     "lsdeel_uuids": [],
     "count": 19,
     "occurrence": 19
@@ -37735,7 +37781,9 @@
       "sample_asset_key": "1fa4eee8-f8bb-4a0e-86df-cd55bcbb81cb"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#PoS": null
+    },
     "lsdeel_uuids": [],
     "count": 19,
     "occurrence": 19
@@ -40148,7 +40196,10 @@
       "sample_asset_key": "15053882-7017-4c26-9a61-08be5d2e7d5e"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Ramp": null,
+      "lgc:installatie#TT": null
+    },
     "lsdeel_uuids": [],
     "count": 16,
     "occurrence": 8
@@ -41044,7 +41095,9 @@
       "sample_asset_key": "019143ce-5ed8-45fd-bccf-ec89d00a8de5"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Peil": null
+    },
     "lsdeel_uuids": [],
     "count": 14,
     "occurrence": 14
@@ -42083,7 +42136,9 @@
       "sample_asset_key": "1443ec7c-25ca-4968-a237-bec54046aa2b"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#HHW": null
+    },
     "lsdeel_uuids": [],
     "count": 13,
     "occurrence": 13
@@ -42994,7 +43049,9 @@
       "sample_asset_key": "0f50ec79-d6b2-4cd0-baef-d7e14ce6a163"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Luchtkwaliteitsensor": null
+    },
     "lsdeel_uuids": [],
     "count": 12,
     "occurrence": 2
@@ -43172,7 +43229,10 @@
       "sample_asset_key": "178146a6-9a0d-42d1-8ed3-e6ba043ea163"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#LS": null,
+      "lgc:installatie#WKD": null
+    },
     "lsdeel_uuids": [],
     "count": 12,
     "occurrence": 6
@@ -44398,7 +44458,9 @@
       "sample_asset_key": "389ed5d9-3632-43c4-81ac-2269452c58e6"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#SeinRiv": null
+    },
     "lsdeel_uuids": [],
     "count": 11,
     "occurrence": 2
@@ -45088,7 +45150,9 @@
       "sample_asset_key": "11f0b41b-4bb1-48af-899d-43bd55a02c97"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#BVE": null
+    },
     "lsdeel_uuids": [],
     "count": 10,
     "occurrence": 10
@@ -45875,7 +45939,9 @@
       "sample_asset_key": "0346a3e3-829d-44a0-9c92-f587290c83e0"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Brug": null
+    },
     "lsdeel_uuids": [],
     "count": 9,
     "occurrence": 9
@@ -46125,7 +46191,11 @@
       "sample_asset_key": "0922358f-bea9-4e21-8d6a-73118282d57a"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#LS": null,
+      "lgc:installatie#VL": null,
+      "lgc:installatie#VRLegacy": null
+    },
     "lsdeel_uuids": [],
     "count": 9,
     "occurrence": 3
@@ -46167,7 +46237,17 @@
       "sample_asset_key": "09a8f276-1ed6-407a-a7fb-28bdf830f7ab"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Asweger": null,
+      "installatie#Flitsgroep": null,
+      "installatie#Tunneluitrusting": null,
+      "lgc:installatie#Bus": null,
+      "lgc:installatie#HSCabineLegacy": null,
+      "lgc:installatie#PoS": null,
+      "lgc:installatie#VL": null,
+      "lgc:installatie#VRLegacy": null,
+      "lgc:installatie#WV": null
+    },
     "lsdeel_uuids": [],
     "count": 9,
     "occurrence": 1
@@ -46235,7 +46315,11 @@
       "sample_asset_key": "0afa438c-3c80-412d-9538-256504122ced"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Kast": null,
+      "lgc:installatie#VL": null,
+      "lgc:installatie#VRLegacy": null
+    },
     "lsdeel_uuids": [],
     "count": 9,
     "occurrence": 3
@@ -47184,7 +47268,10 @@
       "sample_asset_key": "01040106-4b74-4644-a269-63be49ac24fc"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Gebouw": null,
+      "lgc:installatie#Tel": null
+    },
     "lsdeel_uuids": [],
     "count": 8,
     "occurrence": 4
@@ -47243,7 +47330,10 @@
       "sample_asset_key": "02674f96-8c2e-4510-af21-ed3abd88dbae"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Kast": null,
+      "lgc:installatie#WV": null
+    },
     "lsdeel_uuids": [],
     "count": 8,
     "occurrence": 4
@@ -47661,7 +47751,12 @@
       "sample_asset_key": "0b5bdb3b-7735-4630-a702-bf2af128fdd3"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Tunneluitrusting": null,
+      "lgc:installatie#Kast": null,
+      "lgc:installatie#PoS": null,
+      "onderdeel#Netwerkelement": null
+    },
     "lsdeel_uuids": [],
     "count": 8,
     "occurrence": 2
@@ -48348,7 +48443,10 @@
       "sample_asset_key": "2e7b365a-6dd1-4638-b7c4-217346526d4a"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#SegC": null,
+      "lgc:installatie#WV": null
+    },
     "lsdeel_uuids": [],
     "count": 8,
     "occurrence": 4
@@ -48360,7 +48458,10 @@
       "sample_asset_key": "2fb0477f-41f9-4e0e-ab77-0cfda50937b2"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#SegC": null,
+      "lgc:installatie#VVOPGroep": null
+    },
     "lsdeel_uuids": [],
     "count": 8,
     "occurrence": 4
@@ -48735,7 +48836,9 @@
       "sample_asset_key": "053db5e7-c5cd-4dbf-be58-5b82d52ab8e7"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Slagboom": null
+    },
     "lsdeel_uuids": [],
     "count": 7,
     "occurrence": 2
@@ -49018,7 +49121,9 @@
       "sample_asset_key": "0e29cddc-ad22-4f12-9b83-fd10268a5560"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#TT": null
+    },
     "lsdeel_uuids": [],
     "count": 7,
     "occurrence": 7
@@ -50051,7 +50156,9 @@
       "sample_asset_key": "02874927-a861-4442-bae8-fd6959408c63"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Stuw": null
+    },
     "lsdeel_uuids": [],
     "count": 6,
     "occurrence": 6
@@ -50457,7 +50564,10 @@
       "sample_asset_key": "175b1f06-711c-49eb-9ffb-9dd329e61073"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Af": null,
+      "lgc:installatie#KL": null
+    },
     "lsdeel_uuids": [],
     "count": 6,
     "occurrence": 3
@@ -50622,7 +50732,10 @@
       "sample_asset_key": "1da58df7-8f5a-4e4c-a850-b9da13ffa794"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Kokerventilatie": null,
+      "installatie#Ventilatiecluster": null
+    },
     "lsdeel_uuids": [],
     "count": 6,
     "occurrence": 1
@@ -51070,7 +51183,9 @@
       "sample_asset_key": "3e57f3fd-ab4a-482f-897a-084b2d4d3f4c"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Tunnelverlichting": null
+    },
     "lsdeel_uuids": [],
     "count": 6,
     "occurrence": 3
@@ -51105,7 +51220,11 @@
       "sample_asset_key": "471f7507-b310-4a90-a54d-5238556f063f"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Bus": null,
+      "lgc:installatie#VL": null,
+      "lgc:installatie#VRLegacy": null
+    },
     "lsdeel_uuids": [],
     "count": 6,
     "occurrence": 2
@@ -51358,7 +51477,10 @@
       "sample_asset_key": "08275618-e52d-40f8-97b9-530f25bc330c"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Kast": null,
+      "onderdeel#Lichtmast": null
+    },
     "lsdeel_uuids": [],
     "count": 5,
     "occurrence": 2
@@ -51370,7 +51492,11 @@
       "sample_asset_key": "08d5e87f-2b99-4dea-8f8b-c11278923367"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Instal": null,
+      "lgc:installatie#Int": null,
+      "lgc:installatie#UPSLegacy": null
+    },
     "lsdeel_uuids": [],
     "count": 5,
     "occurrence": 1
@@ -51488,7 +51614,9 @@
       "sample_asset_key": "0be216df-e140-4095-b4b7-7e82c448764c"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#IVSB": null
+    },
     "lsdeel_uuids": [],
     "count": 5,
     "occurrence": 5
@@ -51815,7 +51943,13 @@
       "sample_asset_key": "1667aa03-0b1e-4443-8a51-a03210c390af"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Gebouw": null,
+      "lgc:installatie#Peil": null,
+      "lgc:installatie#TT": null,
+      "lgc:installatie#Wind": null,
+      "onderdeel#Netwerkelement": null
+    },
     "lsdeel_uuids": [],
     "count": 5,
     "occurrence": 1
@@ -52020,7 +52154,9 @@
       "sample_asset_key": "20a9ce62-f4c0-42c3-858a-b590787d96be"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Meteostation": null
+    },
     "lsdeel_uuids": [],
     "count": 5,
     "occurrence": 5
@@ -52226,7 +52362,9 @@
       "sample_asset_key": "35ee14e3-3631-43c5-b150-6c1d1366c8c1"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Pompstation": null
+    },
     "lsdeel_uuids": [],
     "count": 5,
     "occurrence": 3
@@ -52449,7 +52587,9 @@
       "sample_asset_key": "078295ff-8667-4d40-8f55-edb05a93a7f1"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Ramp": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 4
@@ -52495,7 +52635,10 @@
       "sample_asset_key": "0b8d3646-d39e-4192-9c79-eb660b0c6be0"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#BiFlashInstallatie": null,
+      "lgc:installatie#VVOPGroep": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 2
@@ -52527,7 +52670,10 @@
       "sample_asset_key": "0cc07004-0253-4ebf-b9d3-2ce20c835d69"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#HHW": null,
+      "lgc:installatie#Lift": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 2
@@ -52717,7 +52863,10 @@
       "sample_asset_key": "14fbbe37-9716-4f8b-866d-53ad53d1fe35"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Af": null,
+      "lgc:installatie#VVOPGroep": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 2
@@ -52729,7 +52878,12 @@
       "sample_asset_key": "1617b97f-b235-4577-a6ac-b227b1f783b2"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Tunnelverlichting": null,
+      "lgc:installatie#Kast": null,
+      "lgc:installatie#LSDeel": null,
+      "lgc:installatie#PoS": null
+    },
     "lsdeel_uuids": [
       "1617b97f-b235-4577-a6ac-b227b1f783b2"
     ],
@@ -52783,7 +52937,12 @@
       "sample_asset_key": "1b3b071c-7598-4a0a-a1c6-b720ac48fa8f"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Kast": null,
+      "lgc:installatie#PoS": null,
+      "onderdeel#Netwerkelement": null,
+      "onderdeel#Pomp": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 1
@@ -52815,7 +52974,9 @@
       "sample_asset_key": "20da0bec-cc4b-4a6b-85e6-2aef960f8c51"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#BWeg": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 4
@@ -52867,7 +53028,9 @@
       "sample_asset_key": "22f496ca-3db2-4185-8e2a-1ca86357ef4a"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "onderdeel#Netwerkelement": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 2
@@ -52922,7 +53085,10 @@
       "sample_asset_key": "25a267b6-744e-47c6-96cd-7c197e0e677a"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Peil": null,
+      "lgc:installatie#Wind": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 2
@@ -53074,7 +53240,9 @@
       "sample_asset_key": "2f267764-291c-4d29-958a-c78798b236e2"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "onderdeel#DynBordOpMaat": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 4
@@ -53086,7 +53254,12 @@
       "sample_asset_key": "30464efa-3006-4824-bf7a-f634a2895bfa"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Kast": null,
+      "lgc:installatie#MDeC": null,
+      "lgc:installatie#TT": null,
+      "onderdeel#Netwerkelement": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 1
@@ -53098,7 +53271,9 @@
       "sample_asset_key": "309306b1-02bf-4f44-85ea-39449cc28a9e"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#WV": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 4
@@ -53151,7 +53326,9 @@
       "sample_asset_key": "34d4cf64-15b6-4638-a82f-8cf96973564f"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#L2AccessStructuur": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 1
@@ -53327,7 +53504,12 @@
       "sample_asset_key": "4731f977-e39d-44f0-91f5-177df4dfd65c"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#BVE": null,
+      "lgc:installatie#Brug": null,
+      "lgc:installatie#PLCLegacy": null,
+      "lgc:installatie#Ssig": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 1
@@ -53436,7 +53618,12 @@
       "sample_asset_key": "87f4bd9a-3460-4493-9d70-94f8a8ff5bda"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Bus": null,
+      "lgc:installatie#VL": null,
+      "lgc:installatie#VRLegacy": null,
+      "onderdeel#ITSapp": null
+    },
     "lsdeel_uuids": [],
     "count": 4,
     "occurrence": 1
@@ -53528,7 +53715,9 @@
       "sample_asset_key": "01658fc6-53bd-4148-b597-8375e5a9342d"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Z30Groep": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 3
@@ -53559,7 +53748,9 @@
       "sample_asset_key": "05ae726f-34c8-4b46-8ca2-3b8d1aa82c28"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#SoftwareLegacy": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 2
@@ -53571,7 +53762,11 @@
       "sample_asset_key": "075bfc32-2cec-494b-b35c-aa2a10c5e538"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Af": null,
+      "lgc:installatie#SegC": null,
+      "lgc:installatie#VVOPGroep": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53583,7 +53778,9 @@
       "sample_asset_key": "08340631-eee9-4d39-83b5-c885637309e8"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#ServerGrp": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 3
@@ -53631,7 +53828,11 @@
       "sample_asset_key": "0e50a7ae-2ef5-425c-b710-10e75e328451"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Tunnelverlichting": null,
+      "lgc:installatie#Kast": null,
+      "lgc:installatie#PoS": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53660,7 +53861,9 @@
       "sample_asset_key": "120a5183-c4cd-42f6-a742-bee1726c126f"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Sluis": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 3
@@ -53672,7 +53875,11 @@
       "sample_asset_key": "13a6d165-c3e7-4b9d-8822-330cb26b836e"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#SegC": null,
+      "lgc:installatie#TT": null,
+      "lgc:installatie#WV": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53684,7 +53891,9 @@
       "sample_asset_key": "13ee66b8-b1d4-4ec8-9208-b806afacee30"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Zoutbijlaadplaats": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 3
@@ -53732,7 +53941,9 @@
       "sample_asset_key": "1aedad04-9fa9-4ce8-9800-f0709e25fc4c"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Tunneluitrusting": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 3
@@ -53775,7 +53986,11 @@
       "sample_asset_key": "1e3da558-6863-4ae6-ada8-62e710f7cc6a"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Kast": null,
+      "lgc:installatie#VVOPGroep": null,
+      "lgc:installatie#WV": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53787,7 +54002,11 @@
       "sample_asset_key": "217418b5-1322-493a-97c6-bb4d7ed11921"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#BVE": null,
+      "lgc:installatie#Ssig": null,
+      "lgc:installatie#Str": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53818,7 +54037,11 @@
       "sample_asset_key": "23c056a8-e1aa-4f58-9070-5def52de183b"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#ADRBuffer": null,
+      "lgc:installatie#PLCLegacy": null,
+      "lgc:installatie#PoS": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53830,7 +54053,11 @@
       "sample_asset_key": "24ad3cc3-dd6a-4059-9e7a-af59a55c10ae"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Af": null,
+      "lgc:installatie#IVSB": null,
+      "lgc:installatie#VVOPGroep": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53842,7 +54069,11 @@
       "sample_asset_key": "25cc3c56-fb6e-497e-90ae-426fe4910209"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Brug": null,
+      "lgc:installatie#Int": null,
+      "onderdeel#Camera": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53873,7 +54104,11 @@
       "sample_asset_key": "2a05257f-5b68-483c-bd1e-7df7e9e539f1"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Gebouw": null,
+      "lgc:installatie#ServerGrp": null,
+      "onderdeel#Toegangscontroller": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53919,7 +54154,11 @@
       "sample_asset_key": "340af9b5-a366-436f-bdba-7e70f3c462a6"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#KAR": null,
+      "lgc:installatie#VL": null,
+      "lgc:installatie#VRLegacy": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53948,7 +54187,9 @@
       "sample_asset_key": "37227a60-5417-46a4-9282-6065ba8097e9"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Schuiven": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 3
@@ -53960,7 +54201,11 @@
       "sample_asset_key": "3c9487b2-7af2-4eb3-af7c-7cffbcf310c2"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Tunneluitrusting": null,
+      "installatie#Tunnelverlichting": null,
+      "lgc:installatie#PoS": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53972,7 +54217,11 @@
       "sample_asset_key": "40a77450-d833-4e90-8af0-4c86c5031209"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Tunnelverlichting": null,
+      "lgc:installatie#SegC": null,
+      "lgc:installatie#WV": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53984,7 +54233,10 @@
       "sample_asset_key": "414ac9f5-0cfb-42a7-b76f-2b22b016acfc"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Flitsgroep": null,
+      "onderdeel#Lichtmast": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -53996,7 +54248,11 @@
       "sample_asset_key": "50fdd74d-aaa8-4096-b9f2-8ebd9859a61e"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#BVE": null,
+      "lgc:installatie#Sluis": null,
+      "lgc:installatie#Ssig": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -54027,7 +54283,11 @@
       "sample_asset_key": "62179290-b791-4476-9b59-b07b91ce3d85"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#LS": null,
+      "lgc:installatie#SegC": null,
+      "lgc:installatie#WV": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 1
@@ -54230,7 +54490,9 @@
       "sample_asset_key": "d5393b1c-1ebc-41ce-84ca-95ea35921eaa"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Poortbediening": null
+    },
     "lsdeel_uuids": [],
     "count": 3,
     "occurrence": 3
@@ -54306,7 +54568,10 @@
       "sample_asset_key": "0b6650f2-21d1-4e1e-a09c-643883ba10ec"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Af": null,
+      "lgc:installatie#IVSB": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54318,7 +54583,10 @@
       "sample_asset_key": "0f3f35ce-c895-4ff6-9344-328c680dcb4c"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Brug": null,
+      "onderdeel#Camera": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54346,7 +54614,10 @@
       "sample_asset_key": "1713f671-aa7d-4f78-8180-40b35135785a"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#KL": null,
+      "lgc:installatie#VVOPGroep": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54358,7 +54629,10 @@
       "sample_asset_key": "1d18e88c-3cf3-4f8a-afb1-6a86b6e067a8"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#LS": null,
+      "lgc:installatie#WV": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54370,7 +54644,10 @@
       "sample_asset_key": "21d4f3ce-a4a7-4de0-8d0f-d4eabd2e1a1e"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#LSDeel": null,
+      "lgc:installatie#TT": null
+    },
     "lsdeel_uuids": [
       "c396df0f-f7f7-4aa5-af67-ce0a2e761480"
     ],
@@ -54384,7 +54661,9 @@
       "sample_asset_key": "2597dcc6-b0a3-4495-81e9-f8fc95f342c9"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Flitsgroep": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 2
@@ -54414,7 +54693,10 @@
       "sample_asset_key": "30df6809-c4b2-405b-8646-5f94824b94c0"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#IVSB": null,
+      "lgc:installatie#VVOPGroep": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54426,7 +54708,10 @@
       "sample_asset_key": "32d61a7c-fc45-45cf-9cd6-110641632d82"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Tunnelverlichting": null,
+      "lgc:installatie#AB": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54438,7 +54723,10 @@
       "sample_asset_key": "34d4719a-40b4-4231-b538-9fff9b79c7a8"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Tunnelverlichting": null,
+      "onderdeel#DynBordOpMaat": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54450,7 +54738,10 @@
       "sample_asset_key": "41c18da9-54ef-43ff-9161-c01234f9f029"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#IVSB": null,
+      "lgc:installatie#KL": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54462,7 +54753,9 @@
       "sample_asset_key": "441ba804-77fd-4469-a2b8-ff58d6058930"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#CVL": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 2
@@ -54474,7 +54767,10 @@
       "sample_asset_key": "452b2b05-a70d-4b99-ae35-8b7f92562f35"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Brug": null,
+      "lgc:installatie#Sluis": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54486,7 +54782,10 @@
       "sample_asset_key": "46bd117b-14dd-4566-9eea-ef46100cec16"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Pompstation": null,
+      "lgc:installatie#Kast": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54498,7 +54797,9 @@
       "sample_asset_key": "47781ebb-c98e-4ce7-8714-604a43ead41e"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "onderdeel#Camera": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 2
@@ -54510,7 +54811,10 @@
       "sample_asset_key": "4bceac20-4e44-497a-998c-9b72ad372f6f"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Af": null,
+      "lgc:installatie#Bus": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54538,7 +54842,9 @@
       "sample_asset_key": "51349ab6-b4a5-442f-9983-184861012514"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#VRLegacy": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 2
@@ -54550,7 +54856,10 @@
       "sample_asset_key": "6262a1be-2d07-4df3-81c5-9f279616d95c"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#PoS": null,
+      "onderdeel#DynBordOpMaat": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54562,7 +54871,10 @@
       "sample_asset_key": "64cef6c5-5cf0-47bd-8aee-f927fd4d7709"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#TT": null,
+      "onderdeel#Lichtmast": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54606,7 +54918,10 @@
       "sample_asset_key": "75e243f9-0416-425c-9019-08d302c9207f"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Druk": null,
+      "lgc:installatie#Peil": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54618,7 +54933,10 @@
       "sample_asset_key": "77926886-d3e4-44b7-a1f3-352568c2de5b"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#LSDeel": null,
+      "lgc:installatie#WV": null
+    },
     "lsdeel_uuids": [
       "bd430bdf-9ed9-4ebd-b08d-c814982e553c"
     ],
@@ -54632,7 +54950,10 @@
       "sample_asset_key": "79cd362d-9a8e-487c-9a0c-745185a5f486"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#LS": null,
+      "lgc:installatie#LSDeel": null
+    },
     "lsdeel_uuids": [
       "a03fac29-3300-4bbd-b081-256fbd6f32a4"
     ],
@@ -54646,7 +54967,9 @@
       "sample_asset_key": "7f6539b2-335a-4fc5-9989-ef7c8ecc0728"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#TH": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 2
@@ -54658,7 +54981,10 @@
       "sample_asset_key": "858ad3db-b310-4d60-bc18-b676a8162cfd"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#AB": null,
+      "lgc:installatie#Stuw": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54670,7 +54996,10 @@
       "sample_asset_key": "9d3d8a7d-d02f-49b6-a822-9d6aedadecce"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#BiFlashInstallatie": null,
+      "installatie#Z30Groep": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54682,7 +55011,10 @@
       "sample_asset_key": "a7a15f36-3203-4536-af87-8435aa6d31e5"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#CC": null,
+      "lgc:installatie#CVL": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54694,7 +55026,10 @@
       "sample_asset_key": "b599e0e9-e170-4bd4-9e25-47123acccc4d"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#LSDeel": null,
+      "lgc:installatie#Peil": null
+    },
     "lsdeel_uuids": [
       "f7946aff-0085-4c6d-9feb-1488eded0f18"
     ],
@@ -54708,7 +55043,10 @@
       "sample_asset_key": "b6600474-96e0-476a-9627-40ae4f86410e"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Brug": null,
+      "lgc:installatie#CBBS": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54750,7 +55088,10 @@
       "sample_asset_key": "e654525c-5971-4b82-ac12-9c0e525ddfd6"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "installatie#Tunneluitrusting": null,
+      "lgc:installatie#PoS": null
+    },
     "lsdeel_uuids": [],
     "count": 2,
     "occurrence": 1
@@ -54762,7 +55103,9 @@
       "sample_asset_key": "01ee7fd2-9f6a-4b21-82b6-a295488a1e45"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#CC": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54774,7 +55117,9 @@
       "sample_asset_key": "049b7c6f-c4f7-44bc-994b-54a72411784e"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#AfGroep": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54786,7 +55131,9 @@
       "sample_asset_key": "0723f1b6-d295-4c24-9cd2-7948d964c62f"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#TCC": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54798,7 +55145,9 @@
       "sample_asset_key": "15362169-1433-4872-ac17-8c6c1d51fe31"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#CBBS": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54810,7 +55159,9 @@
       "sample_asset_key": "1686e100-8409-4ab9-9791-c41f459634d1"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#MDeC": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54822,7 +55173,9 @@
       "sample_asset_key": "33ad3333-0fc6-4048-be41-675b286c7df1"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Wind": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54834,7 +55187,9 @@
       "sample_asset_key": "39788870-4f5a-4abf-8dd9-448eec7ac1a6"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#WIM": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54858,7 +55213,9 @@
       "sample_asset_key": "72787e5c-e7d8-4d17-837b-6bd936f44fd1"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#VPLMast": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54870,7 +55227,9 @@
       "sample_asset_key": "77442a4b-992e-4d65-be49-1a9e0ed200ef"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#VL": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54882,7 +55241,9 @@
       "sample_asset_key": "90edc9fc-e164-4d92-bbc8-c2f27eb7403e"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Wilddet": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54894,7 +55255,9 @@
       "sample_asset_key": "adec0939-03e3-4da0-b086-90fd601fefae"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Rooster": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54906,7 +55269,9 @@
       "sample_asset_key": "bfb251d5-e188-450c-9696-888acdac92db"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#BAf": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54918,7 +55283,9 @@
       "sample_asset_key": "c54a5262-f6f3-43bc-94cb-fe43d9f65024"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "onderdeel#Wegkantkast": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54930,7 +55297,9 @@
       "sample_asset_key": "caeb60b6-6470-4193-9808-e6ef53e2be47"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#Radio": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
@@ -54942,7 +55311,9 @@
       "sample_asset_key": "f0fac383-6d16-4d8a-8668-7369eea5406f"
     },
     "label": "",
-    "tree": {},
+    "tree": {
+      "lgc:installatie#HSCabineLegacy": null
+    },
     "lsdeel_uuids": [],
     "count": 1,
     "occurrence": 1
