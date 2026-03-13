@@ -924,7 +924,7 @@
       "beheerobject": "CRA.TUNNEL",
       "sample_asset_key": "00108431-b15f-46b2-b5c7-06a31cc3afa6"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -4757,7 +4757,7 @@
       "beheerobject": "KEN.TUNNEL",
       "sample_asset_key": "000f103b-c1a1-4c6b-85bd-b82615e41ef7"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -6064,7 +6064,7 @@
       "beheerobject": "KRI.TUNNEL",
       "sample_asset_key": "00813aed-07e1-4843-9a0f-1d0654b3ff83"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -6301,7 +6301,7 @@
       "beheerobject": "MAR.Tunnel",
       "sample_asset_key": "01368d2b-d467-4cf1-9855-cbb7859b8cef"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "installatie#Tunneluitrusting": [
         "installatie#ASTRIDInstallatie",
@@ -11145,7 +11145,7 @@
       "beheerobject": "VIE.TUNNEL",
       "sample_asset_key": "00ebca94-6552-4eca-960a-bcbc880df9fd"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "installatie#Tunneluitrusting": [
         "installatie#CameraGroep",
@@ -12422,7 +12422,7 @@
       "beheerobject": "BRA.TUNNEL",
       "sample_asset_key": "007b7bb6-7067-4153-ae29-8c7595ac8aa2"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -14616,7 +14616,7 @@
       "beheerobject": "LEO.TUNNEL",
       "sample_asset_key": "01c64cbf-f42c-4e41-9b15-a10f56e6baa7"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "installatie#CameraGroep": [
         "lgc:installatie#Server",
@@ -15639,7 +15639,7 @@
       "beheerobject": "BVR.TUNNEL",
       "sample_asset_key": "002574eb-8623-4ac1-9d2d-96ffe8a8c224"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "installatie#Tunneluitrusting": [
         "installatie#ASTRIDInstallatie",
@@ -16837,7 +16837,7 @@
       "beheerobject": "OOS.TUNNEL",
       "sample_asset_key": "00025272-dfcd-4d1f-b129-126c7a2b8162"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -16982,7 +16982,7 @@
       "beheerobject": "DEB.TUNNEL",
       "sample_asset_key": "01075f5e-25d1-4726-a8d1-14d58b37c61a"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "lgc:installatie#HS": [
         "lgc:installatie#HSDeel",
@@ -19717,7 +19717,7 @@
       "beheerobject": "BEV.OLD.TUNNEL",
       "sample_asset_key": "00371328-70c2-4416-8610-663a62b63a6f"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "installatie#Tunneluitrusting": [
         "installatie#Kokerventilatie",
@@ -22021,7 +22021,7 @@
       "beheerobject": "SAT.TUNNEL",
       "sample_asset_key": "02f762d8-09dd-4f7d-984b-962e0424488a"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -50268,7 +50268,7 @@
       "beheerobject": "LIE.TUNNEL",
       "sample_asset_key": "062d8c9c-a0bf-476c-aa13-cfea26df0919"
     },
-    "label": "TUNNEL",
+    "label": "Tunnel",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
