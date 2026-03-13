@@ -25658,7 +25658,7 @@
       "beheerobject": "789A5",
       "sample_asset_key": "017c16d1-f30f-4810-a380-e19375f12aa5"
     },
-    "label": "",
+    "label": "WV",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -38179,7 +38179,7 @@
       "beheerobject": "817G2",
       "sample_asset_key": "0b8b7a5f-8835-4d1d-86d6-d8e993235e4c"
     },
-    "label": "",
+    "label": "WV",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -50512,7 +50512,7 @@
       "beheerobject": "173G4",
       "sample_asset_key": "18a420f3-0980-4e86-8df7-dd209c08f834"
     },
-    "label": "",
+    "label": "WV",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -51562,7 +51562,7 @@
       "beheerobject": "WO0542",
       "sample_asset_key": "109386f0-31e4-4fae-b232-29497b9355e6"
     },
-    "label": "",
+    "label": "WV",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -54719,7 +54719,7 @@
       "beheerobject": "069G4",
       "sample_asset_key": "d0481fd5-4a79-46cd-8b62-5cc526e622d2"
     },
-    "label": "",
+    "label": "WV",
     "tree": {
       "lgc:installatie#KL": []
     },
