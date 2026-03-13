@@ -13141,7 +13141,7 @@
       "beheerobject": "A18X14.6",
       "sample_asset_key": "01572f6b-f1b9-4382-8982-b2cb5ead7396"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -15483,7 +15483,7 @@
       "beheerobject": "R0X62.5",
       "sample_asset_key": "02406731-ef94-4843-8b93-ca671bdae79f"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -16654,7 +16654,7 @@
       "beheerobject": "R1X3.30",
       "sample_asset_key": "09a8d188-2884-41bf-adbc-6edb8f50f252"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -18334,7 +18334,7 @@
       "beheerobject": "A13X3.4",
       "sample_asset_key": "00a36243-64a4-4238-8413-d78c33fc6f6c"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep"
@@ -18583,7 +18583,7 @@
       "beheerobject": "R1X5.15",
       "sample_asset_key": "05b438b3-ce03-4bf0-9fad-67f9a4ed6b73"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -19102,7 +19102,7 @@
       "beheerobject": "R2X88.0",
       "sample_asset_key": "0459e236-ee45-4567-84b1-b12651df5f25"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -19587,7 +19587,7 @@
       "beheerobject": "A1X23.2",
       "sample_asset_key": "013f94cf-9a2e-4214-b8ce-40f058d6f9e9"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -19993,7 +19993,7 @@
       "beheerobject": "R0X65.1",
       "sample_asset_key": "00ac4933-8795-48d6-8a37-945a666410bd"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -20231,7 +20231,7 @@
       "beheerobject": "A14X56.9",
       "sample_asset_key": "014f5850-8d8d-4e6d-bb17-d0c4ed614fe2"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -20316,7 +20316,7 @@
       "beheerobject": "R1X14.7",
       "sample_asset_key": "075b8807-8743-4017-94d8-c419e8172105"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -20393,7 +20393,7 @@
       "beheerobject": "A13X2.7",
       "sample_asset_key": "05e19903-f9f6-4877-af20-e89626fa28b4"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -20876,7 +20876,7 @@
       "beheerobject": "R4X33.8",
       "sample_asset_key": "00ec8aa1-16ed-476d-ab15-77d1cd37038c"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -20920,7 +20920,7 @@
       "beheerobject": "A10X2.4",
       "sample_asset_key": "01e5ea54-f1b7-49e6-b7cc-5ad369d9b416"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -20978,7 +20978,7 @@
       "beheerobject": "R2X79.4",
       "sample_asset_key": "026c96f4-d0cc-45d1-99c1-d03aab415a15"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -21379,7 +21379,7 @@
       "beheerobject": "R1X16.1",
       "sample_asset_key": "01760cb9-82a3-4589-8f7f-6623a76321b9"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -22195,7 +22195,7 @@
       "beheerobject": "R0X50.0",
       "sample_asset_key": "033d499c-6b27-460f-b5f1-03209fc4b9c6"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -22236,7 +22236,7 @@
       "beheerobject": "A1X67.9",
       "sample_asset_key": "03709da0-1330-41f0-b318-4a117f81af8c"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -22302,7 +22302,7 @@
       "beheerobject": "A10X41.5",
       "sample_asset_key": "005ed816-4443-49a7-a2ff-859d16cf0b7f"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -22605,7 +22605,7 @@
       "beheerobject": "A14X94.7",
       "sample_asset_key": "0320409d-002b-4ca4-9d1d-9fa096169868"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -22692,7 +22692,7 @@
       "beheerobject": "A13X7.3",
       "sample_asset_key": "08041b7e-056c-43f3-9132-b208d7caecfb"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -22768,7 +22768,7 @@
       "beheerobject": "R0X40.1",
       "sample_asset_key": "00c95d3b-dbdc-4394-822e-d4e9fd6e6988"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -22843,7 +22843,7 @@
       "beheerobject": "A1X72.3",
       "sample_asset_key": "07cdad23-9945-44c1-8c35-0a59ab0fcfc7"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -22925,7 +22925,7 @@
       "beheerobject": "A14X48.4",
       "sample_asset_key": "01614395-14aa-432c-8553-b2545e579c76"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -23096,7 +23096,7 @@
       "beheerobject": "R2X80.4",
       "sample_asset_key": "01838f9e-165a-4fe8-91c4-ff68396402ad"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -23374,7 +23374,7 @@
       "beheerobject": "A14X44.4",
       "sample_asset_key": "03b30fa5-7ba4-4745-9c67-71d1f8bb5ed8"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -23579,7 +23579,7 @@
       "beheerobject": "R2X81.9",
       "sample_asset_key": "02557c7b-a9df-45e0-81ee-699ff3e9b945"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -23995,7 +23995,7 @@
       "beheerobject": "R1X14.6",
       "sample_asset_key": "03602e98-5701-4f81-af27-d1aa35f558e8"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -24035,7 +24035,7 @@
       "beheerobject": "A1X12.3",
       "sample_asset_key": "07241cd3-c4ac-480c-83f2-8ca3f287e1cb"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -24136,7 +24136,7 @@
       "beheerobject": "A2X69.0",
       "sample_asset_key": "0414e676-c99f-4824-8c3c-a6c6243a703f"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24254,7 +24254,7 @@
       "beheerobject": "A14X47.8",
       "sample_asset_key": "00ff7b8a-587e-492d-b5ed-34a321acfa97"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -24392,7 +24392,7 @@
       "beheerobject": "A1X51.4",
       "sample_asset_key": "0c4aa94e-8baa-4c8f-ab24-9107af19274e"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -24527,7 +24527,7 @@
       "beheerobject": "A13X0.4",
       "sample_asset_key": "00d14174-9a11-45c9-ac3a-204c1b2f706a"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24573,7 +24573,7 @@
       "beheerobject": "R2X83.6",
       "sample_asset_key": "00dfbd75-1698-4eb5-8bec-315af5c0c31c"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "onderdeel#Galgpaal": [
         "onderdeel#DynBordRVMS"
@@ -24688,7 +24688,7 @@
       "beheerobject": "R1X6.2",
       "sample_asset_key": "033d9e70-ee28-4913-b1d2-795f771dcae1"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24782,7 +24782,7 @@
       "beheerobject": "R0X22.5",
       "sample_asset_key": "047502e1-46b3-4370-b124-cad7ce0f7462"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -24835,7 +24835,7 @@
       "beheerobject": "R2X88.3",
       "sample_asset_key": "06090345-e67a-4bfb-9115-ab12a7666911"
     },
-    "label": "",
+    "label": "Asweger",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24977,7 +24977,7 @@
       "beheerobject": "ZEL.Voorsignalisatie",
       "sample_asset_key": "03158e4a-1830-4229-8f3a-cd5ca0656d13"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -25075,7 +25075,7 @@
       "beheerobject": "A14X52.2",
       "sample_asset_key": "00553685-0be9-4a8c-be79-f0f24ee48a1f"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -25114,7 +25114,7 @@
       "beheerobject": "A1X32.4",
       "sample_asset_key": "011a6918-5e69-41fe-abb7-72a08344bb50"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -25229,7 +25229,7 @@
       "beheerobject": "A3X13.1",
       "sample_asset_key": "0a5b143a-df28-45e0-b943-cbd43a613f04"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -25293,7 +25293,7 @@
       "beheerobject": "A3X40.4",
       "sample_asset_key": "003b57e2-a14c-4f40-acf9-547c9b9062c2"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -25360,7 +25360,7 @@
       "beheerobject": "A8X7.2",
       "sample_asset_key": "0284237c-461c-4817-9f1a-7e0a4aca5f1e"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -25538,7 +25538,7 @@
       "beheerobject": "A3X17.4",
       "sample_asset_key": "029fecda-136a-4552-83fe-416994976bbe"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -25689,7 +25689,7 @@
       "beheerobject": "R1X10.6",
       "sample_asset_key": "021954a4-bcc8-4526-8fd6-863026fbad64"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -25758,7 +25758,7 @@
       "beheerobject": "A18X27.4",
       "sample_asset_key": "026da415-2318-4812-b654-31fdce5a08d8"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -25799,7 +25799,7 @@
       "beheerobject": "A14X9.1",
       "sample_asset_key": "0403110f-f295-41d2-8288-5b823956d4cb"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -25883,7 +25883,7 @@
       "beheerobject": "A2X70.3",
       "sample_asset_key": "075ae7b4-3043-45d7-93cd-846f39dc4911"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -26020,7 +26020,7 @@
       "beheerobject": "R1X14.35",
       "sample_asset_key": "04217c08-30f1-4a7e-bcd6-84437b4cecfe"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep",
@@ -26068,7 +26068,7 @@
       "beheerobject": "A10X50.0",
       "sample_asset_key": "053cbbf2-05f8-4728-b08d-cb1bdf22a791"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -26263,7 +26263,7 @@
       "beheerobject": "A14X54.3",
       "sample_asset_key": "055d3286-ba63-4d10-884c-e2715d6a8ea2"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -26398,7 +26398,7 @@
       "beheerobject": "A13X0.8",
       "sample_asset_key": "00e07ab4-7590-4a62-9dd0-1a13449c7435"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -26633,7 +26633,7 @@
       "beheerobject": "R0X51.0",
       "sample_asset_key": "025c5166-a40b-48d8-812c-5be49d55f384"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -26675,7 +26675,7 @@
       "beheerobject": "R0X67.2",
       "sample_asset_key": "026fb6e3-ed1b-495b-9359-cfd32cd46611"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -26803,7 +26803,7 @@
       "beheerobject": "A17X31.9",
       "sample_asset_key": "001f36ec-442a-440e-931a-9b4e83e4114e"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -26861,7 +26861,7 @@
       "beheerobject": "R0X35.0",
       "sample_asset_key": "008af501-3f38-48fd-b05c-5c1a4701a254"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -26899,7 +26899,7 @@
       "beheerobject": "A10X44.9",
       "sample_asset_key": "00f18ff3-e56f-4d31-9112-a4eefc80bff9"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -27012,7 +27012,7 @@
       "beheerobject": "A12X53.4",
       "sample_asset_key": "053a8a1c-13f3-46c8-90e5-420d2e775285"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "onderdeel#Lichtmast": [
         "installatie#CameraGroep",
@@ -27618,7 +27618,7 @@
       "beheerobject": "R2X88.9",
       "sample_asset_key": "02fccffe-4093-448b-9807-6f56c1d27c7c"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -27660,7 +27660,7 @@
       "beheerobject": "A10X92.5",
       "sample_asset_key": "0348b527-9f82-4554-b30c-99b16e61da36"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -27779,7 +27779,7 @@
       "beheerobject": "A10X2.8",
       "sample_asset_key": "0069d4de-d5ac-45a5-af41-c2d8ea872d4d"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Paal": [
         "onderdeel#Camera",
@@ -27964,7 +27964,7 @@
       "beheerobject": "A18X36.0",
       "sample_asset_key": "06dbb6c9-f2cb-4ac9-a048-72e0ceabd1be"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "lgc:installatie#KeuringLegacy",
@@ -28162,7 +28162,7 @@
       "beheerobject": "A14X98.6",
       "sample_asset_key": "013f9bdb-f9b1-42b9-adc3-16b266d87174"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -28305,7 +28305,7 @@
       "beheerobject": "A19X0.9",
       "sample_asset_key": "1217bafc-0b9e-4a8f-bad1-57f4cce69cf6"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -28565,7 +28565,7 @@
       "beheerobject": "R0X69.2",
       "sample_asset_key": "077c51b8-ce03-4e75-bac5-7ff08798e39a"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -28673,7 +28673,7 @@
       "beheerobject": "A11X84.9",
       "sample_asset_key": "0c574bf8-1796-4de2-8bf2-1cf75415a9b7"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -28879,7 +28879,7 @@
       "beheerobject": "A14X17.8",
       "sample_asset_key": "0e9b37ff-2f95-4d19-be31-82081cd663fd"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "lgc:installatie#Pluvio",
@@ -29020,7 +29020,7 @@
       "beheerobject": "R2X84.5",
       "sample_asset_key": "00dc7874-a82e-4ece-8c0d-649870eb9758"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordPK",
@@ -29117,7 +29117,7 @@
       "beheerobject": "A18X46.9",
       "sample_asset_key": "022d82a7-d628-4fc9-b573-5fb1b33677f5"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "lgc:installatie#KeuringLegacy",
@@ -29239,7 +29239,7 @@
       "beheerobject": "A14X19.6",
       "sample_asset_key": "0e1bb1fb-183f-4d47-b5a9-b1087a6d57bd"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -29287,7 +29287,7 @@
       "beheerobject": "A13X38.5",
       "sample_asset_key": "209ca7f6-3247-48fb-90f5-185424ca424a"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -29377,7 +29377,7 @@
       "beheerobject": "A12X23.6",
       "sample_asset_key": "00b35349-f75f-499b-816c-c7e9a21c398c"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -29442,7 +29442,7 @@
       "beheerobject": "A3X11.5",
       "sample_asset_key": "02f34216-3747-44df-bae6-bad26a719f22"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -29580,7 +29580,7 @@
       "beheerobject": "R2X86.3",
       "sample_asset_key": "04670223-63f6-4e1b-aa2c-b935c27bfd8e"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#Kokerafsluiting": [
         "installatie#Slagboom"
@@ -29727,7 +29727,7 @@
       "beheerobject": "R1X11.2",
       "sample_asset_key": "0a518684-94b9-4637-857f-1346f3a611a4"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Omvormer"
@@ -29859,7 +29859,7 @@
       "beheerobject": "A14X1.1",
       "sample_asset_key": "014132c6-ef20-4eed-855b-a6dd35486e5c"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -29935,7 +29935,7 @@
       "beheerobject": "R1X1.68",
       "sample_asset_key": "01c8815e-9f2c-4fd7-955f-592255684fb3"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS",
@@ -30040,7 +30040,7 @@
       "beheerobject": "A14X79.8",
       "sample_asset_key": "05fd957b-0037-48a8-ab85-7e17c2fbdb51"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#CameraGroep",
@@ -30073,7 +30073,7 @@
       "beheerobject": "R0X43.0",
       "sample_asset_key": "06628ca0-18ae-4bfd-8c18-404847629c7b"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -30170,7 +30170,7 @@
       "beheerobject": "A13X59.2",
       "sample_asset_key": "0091e1bb-72c9-422b-a41a-e9f74d5801ed"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -30279,7 +30279,7 @@
       "beheerobject": "R2X86.5",
       "sample_asset_key": "0344cf81-4493-4397-a36d-5576d74df08b"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -30331,7 +30331,7 @@
       "beheerobject": "A14X34.0",
       "sample_asset_key": "056652e9-637e-4178-97a6-d83945a7250e"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -30454,7 +30454,7 @@
       "beheerobject": "R0X23.7",
       "sample_asset_key": "08149b40-77f4-4629-ba83-849335339815"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -30681,7 +30681,7 @@
       "beheerobject": "A14X10.45",
       "sample_asset_key": "0321d8a2-ca81-4912-8d59-b3ddb085e66f"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -30900,7 +30900,7 @@
       "beheerobject": "A11X102.6",
       "sample_asset_key": "081b669b-1309-445b-a95d-0e196c5eec61"
     },
-    "label": "",
+    "label": "Asweger",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -30984,7 +30984,7 @@
       "beheerobject": "R1X10.5",
       "sample_asset_key": "0c200845-f743-47eb-8d0f-6629478e2ea2"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -31055,7 +31055,7 @@
       "beheerobject": "R1X13.3",
       "sample_asset_key": "0d807cfb-3c35-4200-abf5-e2af8238f090"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -31097,7 +31097,7 @@
       "beheerobject": "R0X25.0",
       "sample_asset_key": "18b5d936-299f-4a00-b10c-cfd4d610a556"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -31148,7 +31148,7 @@
       "beheerobject": "A13X68.5",
       "sample_asset_key": "02898127-2cbd-44c0-9f8e-fdf0dcfdaa83"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31229,7 +31229,7 @@
       "beheerobject": "A14X45.0",
       "sample_asset_key": "03edc63d-631a-4cf5-9c32-d686cb2ddb01"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31280,7 +31280,7 @@
       "beheerobject": "A1X46.9",
       "sample_asset_key": "049ca230-6999-424f-ba1d-363cc7c4f45e"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31326,7 +31326,7 @@
       "beheerobject": "A3X16.4",
       "sample_asset_key": "052d62a6-e37c-427e-8a57-27263c05a39c"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31390,7 +31390,7 @@
       "beheerobject": "A14X50.6",
       "sample_asset_key": "0720585d-f3fe-4a34-b9aa-84de28b10940"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31843,7 +31843,7 @@
       "beheerobject": "A8X4.7",
       "sample_asset_key": "0a43d80a-98fd-451b-9ad7-fa1510395541"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31955,7 +31955,7 @@
       "beheerobject": "A14X7.0",
       "sample_asset_key": "0f05d410-6b85-42ef-b5a0-afdb0759f6bd"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -32087,7 +32087,7 @@
       "beheerobject": "R2X86.1",
       "sample_asset_key": "02974a37-c400-4608-9594-b12066bc26e3"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -32132,7 +32132,7 @@
       "beheerobject": "R0X22.8",
       "sample_asset_key": "02d05e0f-4abc-4a58-99b4-40c101c3f6d5"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -32176,7 +32176,7 @@
       "beheerobject": "A12X14.7",
       "sample_asset_key": "034e01af-25c7-4dc3-a58e-3c4967233b32"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -32210,7 +32210,7 @@
       "beheerobject": "A18X13.1",
       "sample_asset_key": "039a237b-9a4e-4d1b-bd0e-8b546c54b26d"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -32341,7 +32341,7 @@
       "beheerobject": "A2X77.3",
       "sample_asset_key": "0cc9a314-83a8-42a3-b7ea-b45dcdae2f11"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -32462,7 +32462,7 @@
       "beheerobject": "N19X22.4",
       "sample_asset_key": "029cd783-6d41-40e1-b47a-3754c6bddf45"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -32488,7 +32488,7 @@
       "beheerobject": "A19X1.5",
       "sample_asset_key": "02a3f152-7379-4bee-84e4-0477b4eac0a8"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -32712,7 +32712,7 @@
       "beheerobject": "A1X31.8",
       "sample_asset_key": "07c0130c-d8ec-47a9-a2d9-110f1e1c98aa"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -32753,7 +32753,7 @@
       "beheerobject": "A1X62.9",
       "sample_asset_key": "09ef7750-4722-4191-b069-9a3c7535dc84"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -32863,7 +32863,7 @@
       "beheerobject": "A3X13.9",
       "sample_asset_key": "0ced8d0a-568f-4e8b-a050-2ef32a1e52a5"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -32956,7 +32956,7 @@
       "beheerobject": "A3X7.2",
       "sample_asset_key": "0014e719-5ad0-42f8-921b-40c0f0cb3d75"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -33024,7 +33024,7 @@
       "beheerobject": "R0X34.3",
       "sample_asset_key": "01df6053-91bb-48f6-a172-b1a4df30d853"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -33212,7 +33212,7 @@
       "beheerobject": "A1X48.2",
       "sample_asset_key": "0aa7c284-1dcc-45d0-9311-057e295c12fe"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -33378,7 +33378,7 @@
       "beheerobject": "A21X49.4",
       "sample_asset_key": "0f22d95d-d1e9-4cda-81d5-f3a2268883c9"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -33527,7 +33527,7 @@
       "beheerobject": "A12X7.0",
       "sample_asset_key": "01aa40eb-bc81-4fef-9168-d528794c999b"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -33640,7 +33640,7 @@
       "beheerobject": "A12X6.3",
       "sample_asset_key": "04d19c1a-d1ee-472d-95c4-e9a385b7ca31"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -33679,7 +33679,7 @@
       "beheerobject": "A3X31.1",
       "sample_asset_key": "0608e5ae-6282-41fe-90eb-dc230345040a"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -33794,7 +33794,7 @@
       "beheerobject": "A10X64.8",
       "sample_asset_key": "07a9993b-a9b5-4722-a673-862edc257852"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -33856,7 +33856,7 @@
       "beheerobject": "A1X46.4",
       "sample_asset_key": "0d26ced8-059e-436a-851a-9192df212e43"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -33914,7 +33914,7 @@
       "beheerobject": "A13X64.4",
       "sample_asset_key": "0f5515e4-eb7f-4f6d-9dc5-355aea025f2b"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -33953,7 +33953,7 @@
       "beheerobject": "A10X42.05",
       "sample_asset_key": "26fbd801-0450-44e0-a5e1-337efefe89a1"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -34025,7 +34025,7 @@
       "beheerobject": "A11X94.1",
       "sample_asset_key": "049e8a01-a6de-475c-9201-567261e09c68"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -34229,7 +34229,7 @@
       "beheerobject": "N19X23.0",
       "sample_asset_key": "168ceabd-53f4-4d35-8003-7e6eccdd6ba3"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -34260,7 +34260,7 @@
       "beheerobject": "A10X25.8",
       "sample_asset_key": "1e7b0982-cc3b-4b56-95b0-060e360217d2"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -34626,7 +34626,7 @@
       "beheerobject": "A14X70.0",
       "sample_asset_key": "0c89f776-83f3-4b9e-9761-492eaa93046b"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#DIZV": [
         "lgc:installatie#WIM",
@@ -34724,7 +34724,7 @@
       "beheerobject": "A12X42.9",
       "sample_asset_key": "11b7b049-74c0-4b01-9ccc-4986c6c92e69"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -34818,7 +34818,7 @@
       "beheerobject": "A13X39.3",
       "sample_asset_key": "1df6a52d-cf28-4ed4-b772-ebf3f688eafd"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#DIZV": [
         "lgc:installatie#WIM",
@@ -35020,7 +35020,7 @@
       "beheerobject": "R2X85.9",
       "sample_asset_key": "03c22e79-a11d-4c64-a413-2bdee6613c52"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -35142,7 +35142,7 @@
       "beheerobject": "A10X52.2",
       "sample_asset_key": "05a42d35-6c59-4694-8705-07eac9662a79"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -35178,7 +35178,7 @@
       "beheerobject": "XTMEA",
       "sample_asset_key": "0a155cb6-b502-4f17-8fe8-b8d1a7b862cb"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Omvormer"
@@ -35261,7 +35261,7 @@
       "beheerobject": "R1X5.1",
       "sample_asset_key": "2330e446-fcaa-4763-9311-ff6cf8125a29"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -35422,7 +35422,7 @@
       "beheerobject": "A12X34.8",
       "sample_asset_key": "00d9cec6-7751-450d-a958-fdf664578ccb"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -35480,7 +35480,7 @@
       "beheerobject": "A10X64.5",
       "sample_asset_key": "01c31fcd-d219-4ea9-affb-5d35fa8afc8e"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -35540,7 +35540,7 @@
       "beheerobject": "A11X66.5",
       "sample_asset_key": "02089c30-2dd0-46f3-911f-399f26bea02f"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -35645,7 +35645,7 @@
       "beheerobject": "A1X54.4",
       "sample_asset_key": "0645cbc6-356d-4270-9984-aca3e3c1eab5"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -35688,7 +35688,7 @@
       "beheerobject": "R1X2.64",
       "sample_asset_key": "08752313-0ed9-4b06-9ccd-19cdc1ebc3f3"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -35763,7 +35763,7 @@
       "beheerobject": "N31X5.8",
       "sample_asset_key": "0fd1e9b2-d7a4-40c6-8d01-9120cde80259"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -35800,7 +35800,7 @@
       "beheerobject": "A14X87.6",
       "sample_asset_key": "1032de4d-4481-4bb0-9016-89d1bb22099b"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -36083,7 +36083,7 @@
       "beheerobject": "A10X33.2",
       "sample_asset_key": "02a4f3d2-4237-4dad-88ac-c94c2fc07c2a"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -36458,7 +36458,7 @@
       "beheerobject": "A10X22.8",
       "sample_asset_key": "1e7a2733-b796-43f0-9cae-0ee784b2ab84"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -36951,7 +36951,7 @@
       "beheerobject": "A12X50.5",
       "sample_asset_key": "095b2a1a-1ba4-46a6-ac61-19b6dae053ab"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -37295,7 +37295,7 @@
       "beheerobject": "R1X15.9",
       "sample_asset_key": "01e3f49e-c3ae-42e6-8c44-7079a2b167d1"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -37514,7 +37514,7 @@
       "beheerobject": "A10X61.9",
       "sample_asset_key": "0f4b07cf-e7f1-4a5b-b889-095dc3568f22"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -37617,7 +37617,7 @@
       "beheerobject": "A10X44.5",
       "sample_asset_key": "1ac5e304-2914-4702-8f54-fd87c463e8c2"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -37700,7 +37700,7 @@
       "beheerobject": "A201X2.0",
       "sample_asset_key": "1be9c503-a56d-4900-b1e1-7f107cd028c8"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -38049,7 +38049,7 @@
       "beheerobject": "R0X21.4",
       "sample_asset_key": "0851e489-d0c6-45b6-8b65-5917199b0c69"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -38086,7 +38086,7 @@
       "beheerobject": "R14X1.0",
       "sample_asset_key": "094e4a72-6967-493e-a5dd-2583b82b24e4"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -38113,7 +38113,7 @@
       "beheerobject": "A1X68.7",
       "sample_asset_key": "0b2f3925-295f-4a4c-82bb-3cf71b3f3116"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt",
@@ -38293,7 +38293,7 @@
       "beheerobject": "A13X7.8",
       "sample_asset_key": "10438623-9ff6-419b-abad-4187d72bdc06"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -38450,7 +38450,7 @@
       "beheerobject": "A12X4.6",
       "sample_asset_key": "15f6b2bd-0cbe-4a54-a7e7-7ba7843015ea"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -38513,7 +38513,7 @@
       "beheerobject": "A1X29.5",
       "sample_asset_key": "1bca9cbc-b48d-4d5c-a099-ca3a1442687e"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Omvormer"
@@ -38585,7 +38585,7 @@
       "beheerobject": "R0X23.8",
       "sample_asset_key": "20acc281-d25e-4227-8716-afdaf2c84c39"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -38652,7 +38652,7 @@
       "beheerobject": "A12X34.1",
       "sample_asset_key": "28a1ea7f-865a-405e-a0a2-4ddf125ac14d"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -38690,7 +38690,7 @@
       "beheerobject": "A1X13.3",
       "sample_asset_key": "404f8e8d-e060-4c5f-9f48-f8a24bafabaa"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -38781,7 +38781,7 @@
       "beheerobject": "R0X41.4",
       "sample_asset_key": "00ed3b37-2f05-4fbd-b6d7-d67205dd95d9"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -38860,7 +38860,7 @@
       "beheerobject": "A2X3.7",
       "sample_asset_key": "0b34752c-d567-4060-ba8f-b8a5fe032232"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -38914,7 +38914,7 @@
       "beheerobject": "A13X63.4",
       "sample_asset_key": "0c3bd6ea-6c1e-46e4-9b39-e83e6fd20283"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -39105,7 +39105,7 @@
       "beheerobject": "A13X59.3",
       "sample_asset_key": "1d0ada5d-86a1-41ab-9ed6-df092b69187e"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#DIZV": [
         "installatie#CameraGroep",
@@ -39271,7 +39271,7 @@
       "beheerobject": "A13X20.9",
       "sample_asset_key": "019e4ca7-a686-4f3e-97c1-0f51e17704a5"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -39727,7 +39727,7 @@
       "beheerobject": "R1X17.0",
       "sample_asset_key": "06c91a6d-1a9d-42e6-8b85-68e65e5a3bc6"
     },
-    "label": "",
+    "label": "MIV+RSS",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep"
@@ -40116,7 +40116,7 @@
       "beheerobject": "A10X0.2",
       "sample_asset_key": "13cba797-5c71-455c-97be-af6b0b2535d7"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -40194,7 +40194,7 @@
       "beheerobject": "A1X78.3",
       "sample_asset_key": "175935ff-95b5-48b4-aef4-415f4cbe8741"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -42442,7 +42442,7 @@
       "beheerobject": "A1X13.5",
       "sample_asset_key": "2ddf1ea0-bade-42fa-96bf-b26bdea0ba61"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -42831,7 +42831,7 @@
       "beheerobject": "B401X1.6",
       "sample_asset_key": "08a45dd1-461f-449c-8f95-04400f2bbbeb"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -43421,7 +43421,7 @@
       "beheerobject": "N19X21.5",
       "sample_asset_key": "2aba5a38-90aa-4e2b-a515-4f94c6390115"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -43676,7 +43676,7 @@
       "beheerobject": "A14X0.1",
       "sample_asset_key": "066b8795-97ab-4c89-afd5-87e8382c7843"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -43730,7 +43730,7 @@
       "beheerobject": "A18X5.5",
       "sample_asset_key": "071a6acd-7226-4a43-9375-0686c024743f"
     },
-    "label": "",
+    "label": "MIV+Camera",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -45886,7 +45886,7 @@
       "beheerobject": "A14X84.9",
       "sample_asset_key": "04458509-4400-410e-8423-6e983312327b"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -47195,7 +47195,7 @@
       "beheerobject": "R1X5.80",
       "sample_asset_key": "01850cdc-d889-4bae-8858-d089a8d26dfd"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -48127,7 +48127,7 @@
       "beheerobject": "R4X48.2",
       "sample_asset_key": "26e7ef07-78e1-4046-a37c-07cf9ecac793"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -48196,7 +48196,7 @@
       "beheerobject": "XTPEU",
       "sample_asset_key": "286f4401-10a8-4b34-8f8b-04e05d14327e"
     },
-    "label": "",
+    "label": "MIV",
     "tree": {
       "onderdeel#Cabine": [
         "installatie#MIVModule",
