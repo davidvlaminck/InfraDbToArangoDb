@@ -49,12 +49,13 @@ class KeuringsRecord:
     type: str  # LS | LSDeel
     match: str
     uuid: str
-    naam: str | None
-    naampad: str | None
-    isActief: bool | None
-    toestand: str | None
-    datum_laatste_keuring: str | None
-    resultaat_keuring: str | None
+    lsdeel_uuid: str | None = None
+    naam: str | None = None
+    naampad: str | None = None
+    isActief: bool | None = None
+    toestand: str | None = None
+    datum_laatste_keuring: str | None = None
+    resultaat_keuring: str | None = None
     longitude: float | None = None
     latitude: float | None = None
 
@@ -83,6 +84,33 @@ def _parse_iso_date(s: str | None) -> dt.date | None:
         return dt.date.fromisoformat(s)
     except ValueError:
         return None
+
+
+def _load_technique_map(tree_structures_path: Path) -> dict[str, str]:
+    """Load tree_structures.json and return a map lsdeel_uuid -> label.
+
+    If the file doesn't exist or is malformed, return an empty map.
+    """
+    import json
+
+    mapping: dict[str, str] = {}
+    try:
+        if not tree_structures_path.exists():
+            return mapping
+        data = json.loads(tree_structures_path.read_text(encoding="utf-8"))
+    except Exception:
+        return mapping
+
+    # tree_structures.json can be a list or an object map
+    entries = data if isinstance(data, list) else list(data.values())
+    for e in entries:
+        if not isinstance(e, dict):
+            continue
+        label = e.get("label") or ""
+        for u in e.get("lsdeel_uuids") or []:
+            if isinstance(u, str) and u:
+                mapping[u] = label
+    return mapping
 
 
 def build_aql(
@@ -179,6 +207,7 @@ FOR chosen_doc IN (
     "match": chosen_doc.match,
 
     "uuid": chosen._key,
+    "lsdeel_uuid": (chosen_doc.lsdeel != null ? chosen_doc.lsdeel._key : null),
     "naam": chosen.AIMNaamObject_naam,
     "naampad": chosen.NaampadObject_naampad,
 
@@ -444,6 +473,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
         "uuid",
         "naam",
         "naampad",
+        "techniek",
         "isActief",
         "toestand",
         "datum_laatste_keuring",
@@ -455,11 +485,22 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
     for sh in sheets.values():
         sh.append(headers)
 
+    # load technique mapping (lsdeel_uuid -> label) from tree_structures.json
+    tree_structures_file = Path(__file__).parent / "TreeAnalysis" / "output" / "tree_structures.json"
+    techniek_map = _load_technique_map(tree_structures_file)
+
     for r in records_list:
         if _is_not_included(r):
             sh = sheets[EXCLUDED_SHEET]
         else:
             sh = sheets[_sheet_name(r.toezichtgroep)]
+
+        # map techniek by lsdeel uuid (preferred). fallback to the chosen uuid.
+        techniek = ""
+        if getattr(r, 'lsdeel_uuid', None):
+            techniek = techniek_map.get(r.lsdeel_uuid, "")
+        if not techniek:
+            techniek = techniek_map.get(r.uuid, "")
 
         sh.append(
             [
@@ -469,6 +510,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
                 r.uuid,
                 r.naam,
                 r.naampad,
+                techniek,
                 r.isActief,
                 r.toestand,
                 r.datum_laatste_keuring,

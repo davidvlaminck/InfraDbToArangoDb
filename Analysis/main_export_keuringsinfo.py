@@ -16,6 +16,17 @@ Note
 from __future__ import annotations
 
 import datetime as dt
+import sys
+import os
+
+# Ensure repository root is on sys.path so imports like `from Analysis.export_keuringsinfo`
+# and `from API.APIEnums` work when this file is run directly in PyCharm (working dir may
+# not include the project root). We compute two levels up from this file (repo root)
+# and insert it at the front of sys.path.
+_repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _repo_root not in sys.path:
+    sys.path.insert(0, _repo_root)
+
 from collections import Counter
 from pathlib import Path
 
