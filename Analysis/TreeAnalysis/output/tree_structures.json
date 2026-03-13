@@ -1319,7 +1319,7 @@
       "beheerobject": "A11.PPS",
       "sample_asset_key": "00007219-efbe-40bd-8f5a-ef2369cac4da"
     },
-    "label": "PPS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -3859,7 +3859,7 @@
       "beheerobject": "A3X9.7",
       "sample_asset_key": "001c1e9c-f1ff-478a-96df-42d845f4e9aa"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -3966,7 +3966,7 @@
       "beheerobject": "A10X38.8",
       "sample_asset_key": "000536f7-f46b-4cf4-913e-64ec03313083"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -4605,7 +4605,7 @@
       "beheerobject": "R1X7.2",
       "sample_asset_key": "000ad70e-0b16-437f-b591-4754716dea67"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -4963,7 +4963,7 @@
       "beheerobject": "C0096",
       "sample_asset_key": "0028373c-b53e-46cf-a4e4-c2d005da6f42"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -5008,7 +5008,7 @@
       "beheerobject": "BEV.TUNNEL",
       "sample_asset_key": "000062ad-a218-4743-8af1-be3fcf25db97"
     },
-    "label": "TUNNEL",
+    "label": "Water",
     "tree": {
       "installatie#Tunneluitrusting": [
         "installatie#CalamiteitendoorsteekGroep",
@@ -5281,7 +5281,7 @@
       "beheerobject": "A1X49.7",
       "sample_asset_key": "006548c6-7099-4f1b-9e70-3d0fb6017d84"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -6914,7 +6914,7 @@
       "beheerobject": "WO0176",
       "sample_asset_key": "0012a0f2-d22e-4376-bbd2-3911ba59397e"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -6963,7 +6963,7 @@
       "beheerobject": "TYS.TUNNEL",
       "sample_asset_key": "000509c4-d6c0-41a3-b2a0-5a0c5005d9c1"
     },
-    "label": "TUNNEL",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -7474,7 +7474,7 @@
       "beheerobject": "WO0186",
       "sample_asset_key": "0056fe52-e6d5-4346-ad69-bf0e91be29c9"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -7642,7 +7642,7 @@
       "beheerobject": "WW0083",
       "sample_asset_key": "009d4282-9684-44b1-9501-bd548f071e4c"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -7833,7 +7833,7 @@
       "beheerobject": "C1793",
       "sample_asset_key": "002bd3ab-e832-4977-86a8-f86bb8fef9cf"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -7876,7 +7876,7 @@
       "beheerobject": "A14X99.6",
       "sample_asset_key": "00263d14-9d62-439a-b1e4-f97975ab259d"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -8077,7 +8077,7 @@
       "beheerobject": "G0563",
       "sample_asset_key": "01311cb8-c6af-4f15-81be-f64c0ee92405"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -8401,7 +8401,7 @@
       "beheerobject": "WW0051",
       "sample_asset_key": "0019c98d-5beb-45fe-bb3e-0043e0fbc37c"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -8747,7 +8747,7 @@
       "beheerobject": "C1758",
       "sample_asset_key": "03286720-542c-42ca-b08c-c982dd2ab380"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -8792,7 +8792,7 @@
       "beheerobject": "WAA.TUNNEL",
       "sample_asset_key": "00007385-4a07-4ad5-8fe7-41f603fc7f61"
     },
-    "label": "TUNNEL",
+    "label": "Water",
     "tree": {
       "installatie#Tunneluitrusting": [
         "installatie#Kokerventilatie",
@@ -9243,7 +9243,7 @@
       "beheerobject": "WO0030",
       "sample_asset_key": "009f99fb-854d-4cc6-895c-1312586890d9"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -9293,7 +9293,7 @@
       "beheerobject": "WW0080",
       "sample_asset_key": "00959219-f4dc-4b8e-bd0a-7e1bb0017bc5"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -9362,7 +9362,7 @@
       "beheerobject": "WO0158",
       "sample_asset_key": "00030a8b-41b9-495d-af52-1f7a131b41e7"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -9918,7 +9918,7 @@
       "beheerobject": "C1612",
       "sample_asset_key": "002555a8-53d4-409e-aacb-0858ff8f348f"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -9960,7 +9960,7 @@
       "beheerobject": "WO0049",
       "sample_asset_key": "00054c83-cf27-44b0-8e7b-8c2ae49bdcb1"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#IVSBGroep": [
         "lgc:installatie#IVSB"
@@ -10392,7 +10392,7 @@
       "beheerobject": "WO0027",
       "sample_asset_key": "00ceec90-27d0-4e75-a2ba-12a039579cd7"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#SeinbrugIVS": [
         "lgc:installatie#IVSBGroep"
@@ -10436,7 +10436,7 @@
       "beheerobject": "A2094",
       "sample_asset_key": "000c960e-b694-4f96-bf56-51872325c714"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -10483,7 +10483,7 @@
       "beheerobject": "WW0104",
       "sample_asset_key": "004e6cd3-dc0c-4ca1-997b-024579476a5c"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -10668,7 +10668,7 @@
       "beheerobject": "WO0161",
       "sample_asset_key": "005e393f-2b89-4417-acaa-029c9100bda0"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -10723,7 +10723,7 @@
       "beheerobject": "WW0103",
       "sample_asset_key": "00dd77c6-db83-41be-9fba-7cc77749dc6a"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -10762,7 +10762,7 @@
       "beheerobject": "WO0039",
       "sample_asset_key": "0198269d-4960-4a9c-8f4d-4ff7eb0581d9"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#IVSBGroep": [
         "lgc:installatie#IVSB"
@@ -10908,7 +10908,7 @@
       "beheerobject": "A2287",
       "sample_asset_key": "006c9ac9-6da0-488b-bab6-a7f174c48492"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -10955,7 +10955,7 @@
       "beheerobject": "JDV.TUNNEL",
       "sample_asset_key": "009d0083-afdb-4959-9f38-eeb5ae239ffa"
     },
-    "label": "TUNNEL",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -11101,7 +11101,7 @@
       "beheerobject": "C1736",
       "sample_asset_key": "00c79bda-4bc1-48ca-a709-44875f8095c8"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPConsole",
@@ -11371,7 +11371,7 @@
       "beheerobject": "A2174",
       "sample_asset_key": "0050cb12-2c40-4358-809b-ad3b1b9a6bee"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPConsole",
@@ -11540,7 +11540,7 @@
       "beheerobject": "WO0024",
       "sample_asset_key": "00f65358-55b8-4da3-b2e2-11dbc494b9e9"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -11681,7 +11681,7 @@
       "beheerobject": "C1782",
       "sample_asset_key": "00a88fbc-8a78-4e4e-b610-80ddb95e1995"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -12131,7 +12131,7 @@
       "beheerobject": "A10X6.0",
       "sample_asset_key": "00742606-e124-449d-8e62-e048068aa722"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -12246,7 +12246,7 @@
       "beheerobject": "A2163",
       "sample_asset_key": "0071b8f5-3b79-4947-a31d-84a83835292b"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -12608,7 +12608,7 @@
       "beheerobject": "A2232",
       "sample_asset_key": "000687df-063e-42d2-9e85-d03ab349cf71"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -12771,7 +12771,7 @@
       "beheerobject": "A4688",
       "sample_asset_key": "0319dc78-3dc1-40a4-8746-2b77b09adb57"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#IVSBGroep": [
         "lgc:installatie#IVSB"
@@ -12844,7 +12844,7 @@
       "beheerobject": "C0837",
       "sample_asset_key": "0099657e-8ac5-41cd-996b-84872fbcd75c"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -12881,7 +12881,7 @@
       "beheerobject": "WW0006",
       "sample_asset_key": "0133feff-fc76-460f-9250-6e8628a702c7"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -12925,7 +12925,7 @@
       "beheerobject": "C1942",
       "sample_asset_key": "01a1a640-3d24-4c8a-ab1b-f3423aa89239"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -13102,7 +13102,7 @@
       "beheerobject": "A0079",
       "sample_asset_key": "00a23dbe-7404-4eac-a314-b4964c7cf2f7"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -13294,7 +13294,7 @@
       "beheerobject": "C0165",
       "sample_asset_key": "00d0ee26-52ce-4430-994b-e1ebd43d98fb"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -13363,7 +13363,7 @@
       "beheerobject": "WO0134",
       "sample_asset_key": "000920d6-a611-4798-bfe6-1ddb778e006d"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -13627,7 +13627,7 @@
       "beheerobject": "WO0160",
       "sample_asset_key": "00a9bbce-ccc6-4c14-8ea5-cc9d5b8a5ee9"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -14065,7 +14065,7 @@
       "beheerobject": "R1X1.7",
       "sample_asset_key": "00663451-faf4-4b8d-9781-2e17627718fa"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -14261,7 +14261,7 @@
       "beheerobject": "A2926",
       "sample_asset_key": "005c90b2-29ea-4d9b-8887-9174a7133b22"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#AfGroep": [
         "lgc:installatie#Af"
@@ -14568,7 +14568,7 @@
       "beheerobject": "WO0159",
       "sample_asset_key": "003eb556-01e7-468d-9981-6dc93f9aba16"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -14776,7 +14776,7 @@
       "beheerobject": "A112X1.0",
       "sample_asset_key": "00073b86-b957-434b-a1e1-514726d7217c"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -14904,7 +14904,7 @@
       "beheerobject": "C1623",
       "sample_asset_key": "023cab1c-e10c-4e5c-a207-e040ba7057d9"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -15032,7 +15032,7 @@
       "beheerobject": "WW0057",
       "sample_asset_key": "031c5438-fc6b-4cf8-873b-b5b04278d0d9"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -15137,7 +15137,7 @@
       "beheerobject": "C0063",
       "sample_asset_key": "00e89370-615c-4f58-9ca8-9d6a1be338e7"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#VPLMast": [
         "installatie#CameraGroep"
@@ -15176,7 +15176,7 @@
       "beheerobject": "WO0101",
       "sample_asset_key": "01e57075-4558-4efc-804c-f94b069e9b6a"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -15293,7 +15293,7 @@
       "beheerobject": "A2378",
       "sample_asset_key": "003a9583-85f4-4e05-ae5c-41ebe58e081f"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "installatie#CameraGroep",
@@ -15387,7 +15387,7 @@
       "beheerobject": "A5258",
       "sample_asset_key": "003245ba-491e-4405-8995-93470a63d7f3"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -15772,7 +15772,7 @@
       "beheerobject": "C1691",
       "sample_asset_key": "0060882e-c3f3-410b-8f43-207cb2025093"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPConsole",
@@ -15811,7 +15811,7 @@
       "beheerobject": "A2458",
       "sample_asset_key": "01070d7d-29e1-4190-9da2-67e5dbd29acc"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -15912,7 +15912,7 @@
       "beheerobject": "A5359",
       "sample_asset_key": "00244828-a40a-421c-b5cc-2ba3b7651b74"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPConsole",
@@ -16194,7 +16194,7 @@
       "beheerobject": "A1589",
       "sample_asset_key": "0103f7b6-cd21-40d6-931b-7d3e71945724"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#IVSBGroep": [
         "lgc:installatie#IVSB"
@@ -16287,7 +16287,7 @@
       "beheerobject": "C1565",
       "sample_asset_key": "00d07239-72af-4419-9bb2-a5f1bc246475"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -16334,7 +16334,7 @@
       "beheerobject": "C1601",
       "sample_asset_key": "038e573b-f7fa-43c2-b94c-c17868fe84e2"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -16522,7 +16522,7 @@
       "beheerobject": "A14X50.1",
       "sample_asset_key": "00a554ff-3dd7-48f3-b5e0-aa65fe2c8aca"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -16603,7 +16603,7 @@
       "beheerobject": "WO0190",
       "sample_asset_key": "024bd7e4-4cce-4f5f-985b-ba66e49d1081"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -16654,7 +16654,7 @@
       "beheerobject": "R1X3.30",
       "sample_asset_key": "09a8d188-2884-41bf-adbc-6edb8f50f252"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -16695,7 +16695,7 @@
       "beheerobject": "A1641",
       "sample_asset_key": "0011d522-9281-4c20-ac87-7fbfa3177f10"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -16738,7 +16738,7 @@
       "beheerobject": "A0068",
       "sample_asset_key": "037ffadc-99eb-4f4b-a350-ba65ece7fd17"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPConsole",
@@ -17294,7 +17294,7 @@
       "beheerobject": "A0126",
       "sample_asset_key": "00702511-27c2-4e0e-9ea5-299a06c7cda0"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPConsole",
@@ -17345,7 +17345,7 @@
       "beheerobject": "C1656",
       "sample_asset_key": "0090f07a-df41-46e4-bd4d-67b2c8b025b5"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#VPLMast": [
         "installatie#CameraGroep"
@@ -17641,7 +17641,7 @@
       "beheerobject": "A2972",
       "sample_asset_key": "043c1a47-534b-4e08-aa0a-016b051d319b"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -17923,7 +17923,7 @@
       "beheerobject": "KO9339",
       "sample_asset_key": "01291ec3-922f-4344-a598-62dcf61c3807"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#SeinRiv": []
     },
@@ -17971,7 +17971,7 @@
       "beheerobject": "A2139",
       "sample_asset_key": "019e0b9b-b5e8-4a56-8e35-3a87b2a4c9cf"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -18016,7 +18016,7 @@
       "beheerobject": "WW0077",
       "sample_asset_key": "02e93893-a9ab-4e91-8d08-37ff3be77b09"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -18054,7 +18054,7 @@
       "beheerobject": "C3625",
       "sample_asset_key": "02a940d0-ab70-4bc5-bed8-396b85057cc5"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -18224,7 +18224,7 @@
       "beheerobject": "A2802",
       "sample_asset_key": "03aea028-4990-4e10-a60c-6ad9f746c6b6"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordPK"
@@ -18270,7 +18270,7 @@
       "beheerobject": "WW0090",
       "sample_asset_key": "00646ba6-81f7-4ffd-862a-9784694ac153"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -18334,7 +18334,7 @@
       "beheerobject": "A13X3.4",
       "sample_asset_key": "00a36243-64a4-4238-8413-d78c33fc6f6c"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep"
@@ -18476,7 +18476,7 @@
       "beheerobject": "WW0055",
       "sample_asset_key": "05549b1b-a974-4838-bbdb-182115853430"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -18516,7 +18516,7 @@
       "beheerobject": "C1827",
       "sample_asset_key": "00198bb5-f955-4580-a3b7-fb9d75711620"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -18583,7 +18583,7 @@
       "beheerobject": "R1X5.15",
       "sample_asset_key": "05b438b3-ce03-4bf0-9fad-67f9a4ed6b73"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -18619,7 +18619,7 @@
       "beheerobject": "WO0313",
       "sample_asset_key": "00279cab-a530-4b7b-9e5a-32755d2dd7e3"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -18657,7 +18657,7 @@
       "beheerobject": "A2243",
       "sample_asset_key": "017e867f-8b36-43b2-91ed-8ea7ae76c223"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#IVSBGroep": [
         "lgc:installatie#IVSB"
@@ -19064,7 +19064,7 @@
       "beheerobject": "C1929",
       "sample_asset_key": "04148254-e58d-4d32-b606-a5ef3d867b26"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -19102,7 +19102,7 @@
       "beheerobject": "R2X88.0",
       "sample_asset_key": "0459e236-ee45-4567-84b1-b12651df5f25"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -19261,7 +19261,7 @@
       "beheerobject": "KW0536",
       "sample_asset_key": "0a3bf1a3-3967-4975-a679-966285be9fdb"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -19336,7 +19336,7 @@
       "beheerobject": "WW0093",
       "sample_asset_key": "0015d19e-c18b-41ee-8e17-676409515284"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -19541,7 +19541,7 @@
       "beheerobject": "WO0157",
       "sample_asset_key": "021fd7b3-b871-42ba-8632-64510d5c789a"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -19678,7 +19678,7 @@
       "beheerobject": "C0132",
       "sample_asset_key": "0177b1c2-f721-4453-8a47-281279746e38"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -19771,7 +19771,7 @@
       "beheerobject": "A1402",
       "sample_asset_key": "00bd6c74-f7e2-44a5-9300-09c6819cf625"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -20103,7 +20103,7 @@
       "beheerobject": "A14X3.6",
       "sample_asset_key": "0326e6ca-de5c-4485-a9b4-458d90ffd73f"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -20271,7 +20271,7 @@
       "beheerobject": "WO0191",
       "sample_asset_key": "01c2fe4c-0857-4846-95ea-8b70314a5746"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -20316,7 +20316,7 @@
       "beheerobject": "R1X14.7",
       "sample_asset_key": "075b8807-8743-4017-94d8-c419e8172105"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -20393,7 +20393,7 @@
       "beheerobject": "A13X2.7",
       "sample_asset_key": "05e19903-f9f6-4877-af20-e89626fa28b4"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -20843,7 +20843,7 @@
       "beheerobject": "WW0123",
       "sample_asset_key": "0ca9126a-9af3-45cf-b3ca-75e2af77f2b4"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -20920,7 +20920,7 @@
       "beheerobject": "A10X2.4",
       "sample_asset_key": "01e5ea54-f1b7-49e6-b7cc-5ad369d9b416"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -20978,7 +20978,7 @@
       "beheerobject": "R2X79.4",
       "sample_asset_key": "026c96f4-d0cc-45d1-99c1-d03aab415a15"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -21122,7 +21122,7 @@
       "beheerobject": "C0234",
       "sample_asset_key": "02060117-fc5f-4944-8657-6d8831fbabbc"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -21379,7 +21379,7 @@
       "beheerobject": "R1X16.1",
       "sample_asset_key": "01760cb9-82a3-4589-8f7f-6623a76321b9"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -21451,7 +21451,7 @@
       "beheerobject": "WO0044",
       "sample_asset_key": "09ff44f4-78a7-4b06-86b2-2c5e092b72c0"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -22195,7 +22195,7 @@
       "beheerobject": "R0X50.0",
       "sample_asset_key": "033d499c-6b27-460f-b5f1-03209fc4b9c6"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -22302,7 +22302,7 @@
       "beheerobject": "A10X41.5",
       "sample_asset_key": "005ed816-4443-49a7-a2ff-859d16cf0b7f"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -22422,7 +22422,7 @@
       "beheerobject": "A1708",
       "sample_asset_key": "072d1633-3dcf-4420-8173-df4eb77bf2ba"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -22525,7 +22525,7 @@
       "beheerobject": "A2265",
       "sample_asset_key": "05a56f97-3d45-4943-b9c3-0352494968d7"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -22605,7 +22605,7 @@
       "beheerobject": "A14X94.7",
       "sample_asset_key": "0320409d-002b-4ca4-9d1d-9fa096169868"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -22692,7 +22692,7 @@
       "beheerobject": "A13X7.3",
       "sample_asset_key": "08041b7e-056c-43f3-9132-b208d7caecfb"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -22768,7 +22768,7 @@
       "beheerobject": "R0X40.1",
       "sample_asset_key": "00c95d3b-dbdc-4394-822e-d4e9fd6e6988"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -22925,7 +22925,7 @@
       "beheerobject": "A14X48.4",
       "sample_asset_key": "01614395-14aa-432c-8553-b2545e579c76"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -23096,7 +23096,7 @@
       "beheerobject": "R2X80.4",
       "sample_asset_key": "01838f9e-165a-4fe8-91c4-ff68396402ad"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -23374,7 +23374,7 @@
       "beheerobject": "A14X44.4",
       "sample_asset_key": "03b30fa5-7ba4-4745-9c67-71d1f8bb5ed8"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -23547,7 +23547,7 @@
       "beheerobject": "R0X65.2",
       "sample_asset_key": "01734e46-eff5-435b-8941-495bf4a51950"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -23579,7 +23579,7 @@
       "beheerobject": "R2X81.9",
       "sample_asset_key": "02557c7b-a9df-45e0-81ee-699ff3e9b945"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -23755,7 +23755,7 @@
       "beheerobject": "KO0007",
       "sample_asset_key": "05182eb5-59b0-4948-ad03-e53adc00be39"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#DynBordOpMaat": [
         "lgc:installatie#Kast",
@@ -23892,7 +23892,7 @@
       "beheerobject": "R1X1.1",
       "sample_asset_key": "03bc80cd-07cf-4a32-9437-684b97a8cabe"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -23930,7 +23930,7 @@
       "beheerobject": "A1X32.7",
       "sample_asset_key": "24ca945f-4d71-4e1b-827e-a66b7413c97e"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -23995,7 +23995,7 @@
       "beheerobject": "R1X14.6",
       "sample_asset_key": "03602e98-5701-4f81-af27-d1aa35f558e8"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -24136,7 +24136,7 @@
       "beheerobject": "A2X69.0",
       "sample_asset_key": "0414e676-c99f-4824-8c3c-a6c6243a703f"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24254,7 +24254,7 @@
       "beheerobject": "A14X47.8",
       "sample_asset_key": "00ff7b8a-587e-492d-b5ed-34a321acfa97"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -24392,7 +24392,7 @@
       "beheerobject": "A1X51.4",
       "sample_asset_key": "0c4aa94e-8baa-4c8f-ab24-9107af19274e"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -24527,7 +24527,7 @@
       "beheerobject": "A13X0.4",
       "sample_asset_key": "00d14174-9a11-45c9-ac3a-204c1b2f706a"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24573,7 +24573,7 @@
       "beheerobject": "R2X83.6",
       "sample_asset_key": "00dfbd75-1698-4eb5-8bec-315af5c0c31c"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "onderdeel#Galgpaal": [
         "onderdeel#DynBordRVMS"
@@ -24644,7 +24644,7 @@
       "beheerobject": "WW0101",
       "sample_asset_key": "02f0d815-02cd-454d-95f5-a2f655154ae7"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#SeinbrugIVS": [
         "lgc:installatie#IVSBGroep"
@@ -24688,7 +24688,7 @@
       "beheerobject": "R1X6.2",
       "sample_asset_key": "033d9e70-ee28-4913-b1d2-795f771dcae1"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24782,7 +24782,7 @@
       "beheerobject": "R0X22.5",
       "sample_asset_key": "047502e1-46b3-4370-b124-cad7ce0f7462"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -24835,7 +24835,7 @@
       "beheerobject": "R2X88.3",
       "sample_asset_key": "06090345-e67a-4bfb-9115-ab12a7666911"
     },
-    "label": "Asweger",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24977,7 +24977,7 @@
       "beheerobject": "ZEL.Voorsignalisatie",
       "sample_asset_key": "03158e4a-1830-4229-8f3a-cd5ca0656d13"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -25075,7 +25075,7 @@
       "beheerobject": "A14X52.2",
       "sample_asset_key": "00553685-0be9-4a8c-be79-f0f24ee48a1f"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -25114,7 +25114,7 @@
       "beheerobject": "A1X32.4",
       "sample_asset_key": "011a6918-5e69-41fe-abb7-72a08344bb50"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -25439,7 +25439,7 @@
       "beheerobject": "WW0066",
       "sample_asset_key": "088101b4-5ddf-4d44-871e-6846cf4cdcfc"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -25538,7 +25538,7 @@
       "beheerobject": "A3X17.4",
       "sample_asset_key": "029fecda-136a-4552-83fe-416994976bbe"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -25689,7 +25689,7 @@
       "beheerobject": "R1X10.6",
       "sample_asset_key": "021954a4-bcc8-4526-8fd6-863026fbad64"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -25883,7 +25883,7 @@
       "beheerobject": "A2X70.3",
       "sample_asset_key": "075ae7b4-3043-45d7-93cd-846f39dc4911"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -26020,7 +26020,7 @@
       "beheerobject": "R1X14.35",
       "sample_asset_key": "04217c08-30f1-4a7e-bcd6-84437b4cecfe"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep",
@@ -26068,7 +26068,7 @@
       "beheerobject": "A10X50.0",
       "sample_asset_key": "053cbbf2-05f8-4728-b08d-cb1bdf22a791"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -26143,7 +26143,7 @@
       "beheerobject": "A1X34.5",
       "sample_asset_key": "1901f99d-3c8b-4e7e-9540-134dc6cb0d9f"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#Slagboom": [
         "onderdeel#NietSelectieveDetectielus"
@@ -26263,7 +26263,7 @@
       "beheerobject": "A14X54.3",
       "sample_asset_key": "055d3286-ba63-4d10-884c-e2715d6a8ea2"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -26363,7 +26363,7 @@
       "beheerobject": "R1X10.5.Z",
       "sample_asset_key": "00bfcd1e-da7e-4ef0-9f48-a74bfe065bcb"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -26398,7 +26398,7 @@
       "beheerobject": "A13X0.8",
       "sample_asset_key": "00e07ab4-7590-4a62-9dd0-1a13449c7435"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -26774,7 +26774,7 @@
       "beheerobject": "N420X13.7",
       "sample_asset_key": "0a5893ec-1e7f-43bb-a7a3-0f85c950b35c"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -26899,7 +26899,7 @@
       "beheerobject": "A10X44.9",
       "sample_asset_key": "00f18ff3-e56f-4d31-9112-a4eefc80bff9"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -27455,7 +27455,7 @@
       "beheerobject": "A1639",
       "sample_asset_key": "016927c2-b50d-4069-8524-5862214d7be1"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -27618,7 +27618,7 @@
       "beheerobject": "R2X88.9",
       "sample_asset_key": "02fccffe-4093-448b-9807-6f56c1d27c7c"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -27779,7 +27779,7 @@
       "beheerobject": "A10X2.8",
       "sample_asset_key": "0069d4de-d5ac-45a5-af41-c2d8ea872d4d"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Paal": [
         "onderdeel#Camera",
@@ -28162,7 +28162,7 @@
       "beheerobject": "A14X98.6",
       "sample_asset_key": "013f9bdb-f9b1-42b9-adc3-16b266d87174"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -28496,7 +28496,7 @@
       "beheerobject": "KO0211",
       "sample_asset_key": "0527714f-a2d2-479c-b81f-b0e5997eb91d"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -28544,7 +28544,7 @@
       "beheerobject": "KO0270",
       "sample_asset_key": "055f49a9-dd5b-4999-90ff-734b54c7905a"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -28565,7 +28565,7 @@
       "beheerobject": "R0X69.2",
       "sample_asset_key": "077c51b8-ce03-4e75-bac5-7ff08798e39a"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -29020,7 +29020,7 @@
       "beheerobject": "R2X84.5",
       "sample_asset_key": "00dc7874-a82e-4ece-8c0d-649870eb9758"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordPK",
@@ -29287,7 +29287,7 @@
       "beheerobject": "A13X38.5",
       "sample_asset_key": "209ca7f6-3247-48fb-90f5-185424ca424a"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -29337,7 +29337,7 @@
       "beheerobject": "KO0110",
       "sample_asset_key": "002cc925-8b1c-4447-8c51-0bbbb25005de"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -29415,7 +29415,7 @@
       "beheerobject": "A9461",
       "sample_asset_key": "01e7b7ce-a970-4ebb-9d4d-35fbc01e230c"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -29442,7 +29442,7 @@
       "beheerobject": "A3X11.5",
       "sample_asset_key": "02f34216-3747-44df-bae6-bad26a719f22"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -29580,7 +29580,7 @@
       "beheerobject": "R2X86.3",
       "sample_asset_key": "04670223-63f6-4e1b-aa2c-b935c27bfd8e"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#Kokerafsluiting": [
         "installatie#Slagboom"
@@ -29661,7 +29661,7 @@
       "beheerobject": "KO0002",
       "sample_asset_key": "070c4788-c9dd-4d91-a33b-b526e499092f"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#ServerGrp": [
         "lgc:installatie#CC",
@@ -29727,7 +29727,7 @@
       "beheerobject": "R1X11.2",
       "sample_asset_key": "0a518684-94b9-4637-857f-1346f3a611a4"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Omvormer"
@@ -29935,7 +29935,7 @@
       "beheerobject": "R1X1.68",
       "sample_asset_key": "01c8815e-9f2c-4fd7-955f-592255684fb3"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS",
@@ -30073,7 +30073,7 @@
       "beheerobject": "R0X43.0",
       "sample_asset_key": "06628ca0-18ae-4bfd-8c18-404847629c7b"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -30134,7 +30134,7 @@
       "beheerobject": "A12X39.7",
       "sample_asset_key": "0b1568ad-cae8-428d-9327-e964438fcf3e"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -30170,7 +30170,7 @@
       "beheerobject": "A13X59.2",
       "sample_asset_key": "0091e1bb-72c9-422b-a41a-e9f74d5801ed"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -30279,7 +30279,7 @@
       "beheerobject": "R2X86.5",
       "sample_asset_key": "0344cf81-4493-4397-a36d-5576d74df08b"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -30454,7 +30454,7 @@
       "beheerobject": "R0X23.7",
       "sample_asset_key": "08149b40-77f4-4629-ba83-849335339815"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -30839,7 +30839,7 @@
       "beheerobject": "KO0114",
       "sample_asset_key": "05386868-556a-4bca-8f03-256cee90a4b5"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#ServerGrp": [
         "lgc:installatie#CC",
@@ -30877,7 +30877,7 @@
       "beheerobject": "KO0274",
       "sample_asset_key": "07f12c00-cf22-4db1-bd81-e80bd67570cb"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -30984,7 +30984,7 @@
       "beheerobject": "R1X10.5",
       "sample_asset_key": "0c200845-f743-47eb-8d0f-6629478e2ea2"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -31055,7 +31055,7 @@
       "beheerobject": "R1X13.3",
       "sample_asset_key": "0d807cfb-3c35-4200-abf5-e2af8238f090"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -31097,7 +31097,7 @@
       "beheerobject": "R0X25.0",
       "sample_asset_key": "18b5d936-299f-4a00-b10c-cfd4d610a556"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -31195,7 +31195,7 @@
       "beheerobject": "KO0112",
       "sample_asset_key": "02ec0489-aa2f-40d4-a3ee-1c0ab4de3a5b"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -31229,7 +31229,7 @@
       "beheerobject": "A14X45.0",
       "sample_asset_key": "03edc63d-631a-4cf5-9c32-d686cb2ddb01"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31280,7 +31280,7 @@
       "beheerobject": "A1X46.9",
       "sample_asset_key": "049ca230-6999-424f-ba1d-363cc7c4f45e"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31390,7 +31390,7 @@
       "beheerobject": "A14X50.6",
       "sample_asset_key": "0720585d-f3fe-4a34-b9aa-84de28b10940"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31469,7 +31469,7 @@
       "beheerobject": "R2X88.7",
       "sample_asset_key": "11f8ae03-9496-4325-b61e-76215a2ede9d"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Paal": [
         "onderdeel#Codeklavier"
@@ -31559,7 +31559,7 @@
       "beheerobject": "KO0113",
       "sample_asset_key": "0067f309-13eb-4289-a198-e0e850bfc63d"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -31728,7 +31728,7 @@
       "beheerobject": "KO0100",
       "sample_asset_key": "065535f6-b9a3-4a70-9dbb-d4b40fd4e3b6"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -31771,7 +31771,7 @@
       "beheerobject": "KO0115",
       "sample_asset_key": "0776417e-7ed7-4d86-9e0a-6292c3c6ae8e"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -31905,7 +31905,7 @@
       "beheerobject": "A3X8.9",
       "sample_asset_key": "0e3d3526-90bd-47d7-b08b-52522962d813"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -32053,7 +32053,7 @@
       "beheerobject": "KO0010",
       "sample_asset_key": "0253f827-6b09-4431-a884-20a98cc9724c"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#ServerGrp": [
         "lgc:installatie#CC",
@@ -32087,7 +32087,7 @@
       "beheerobject": "R2X86.1",
       "sample_asset_key": "02974a37-c400-4608-9594-b12066bc26e3"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -32132,7 +32132,7 @@
       "beheerobject": "R0X22.8",
       "sample_asset_key": "02d05e0f-4abc-4a58-99b4-40c101c3f6d5"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -32712,7 +32712,7 @@
       "beheerobject": "A1X31.8",
       "sample_asset_key": "07c0130c-d8ec-47a9-a2d9-110f1e1c98aa"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -32753,7 +32753,7 @@
       "beheerobject": "A1X62.9",
       "sample_asset_key": "09ef7750-4722-4191-b069-9a3c7535dc84"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -32956,7 +32956,7 @@
       "beheerobject": "A3X7.2",
       "sample_asset_key": "0014e719-5ad0-42f8-921b-40c0f0cb3d75"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -33132,7 +33132,7 @@
       "beheerobject": "KW0017",
       "sample_asset_key": "090bbd24-3dfc-41ae-b172-77bba0fc9a5f"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "installatie#SlagboomGroep": [
         "installatie#Slagboom"
@@ -33212,7 +33212,7 @@
       "beheerobject": "A1X48.2",
       "sample_asset_key": "0aa7c284-1dcc-45d0-9311-057e295c12fe"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -33304,7 +33304,7 @@
       "beheerobject": "A12X21.1",
       "sample_asset_key": "0bd8b248-9a4d-4c64-b3a5-11fad6ec2ce3"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordVMS"
@@ -33856,7 +33856,7 @@
       "beheerobject": "A1X46.4",
       "sample_asset_key": "0d26ced8-059e-436a-851a-9192df212e43"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -33953,7 +33953,7 @@
       "beheerobject": "A10X42.05",
       "sample_asset_key": "26fbd801-0450-44e0-a5e1-337efefe89a1"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -34195,7 +34195,7 @@
       "beheerobject": "R2X82.9",
       "sample_asset_key": "0d24a655-c94d-4583-ad93-4edd2ffcd031"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -34229,7 +34229,7 @@
       "beheerobject": "N19X23.0",
       "sample_asset_key": "168ceabd-53f4-4d35-8003-7e6eccdd6ba3"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -34347,7 +34347,7 @@
       "beheerobject": "A11X65.3",
       "sample_asset_key": "0273eabf-e707-4dec-b262-c5838f3d7499"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep",
@@ -34441,7 +34441,7 @@
       "beheerobject": "C9187",
       "sample_asset_key": "05633f2f-a35e-4aab-a957-4be4d2823efa"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -34492,7 +34492,7 @@
       "beheerobject": "KO0180",
       "sample_asset_key": "0615df86-4165-4d11-ab41-3d64ab0d3447"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#SlagboomGroep": [
         "installatie#Slagboom"
@@ -34724,7 +34724,7 @@
       "beheerobject": "A12X42.9",
       "sample_asset_key": "11b7b049-74c0-4b01-9ccc-4986c6c92e69"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -34866,7 +34866,7 @@
       "beheerobject": "R2X79.3",
       "sample_asset_key": "20a639e0-b9eb-4d2e-bf03-42ac3822bb52"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -34947,7 +34947,7 @@
       "beheerobject": "R0X33.8",
       "sample_asset_key": "0060a0ff-9514-47e5-82fe-fa06389b5539"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -34982,7 +34982,7 @@
       "beheerobject": "A14X52.4",
       "sample_asset_key": "006deb78-58f3-45c1-a876-2923b67fb161"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -35020,7 +35020,7 @@
       "beheerobject": "R2X85.9",
       "sample_asset_key": "03c22e79-a11d-4c64-a413-2bdee6613c52"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -35060,7 +35060,7 @@
       "beheerobject": "R1X11.8",
       "sample_asset_key": "04ce20d5-4839-4eea-905a-eb82e70b68d3"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -35261,7 +35261,7 @@
       "beheerobject": "R1X5.1",
       "sample_asset_key": "2330e446-fcaa-4763-9311-ff6cf8125a29"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -35373,7 +35373,7 @@
       "beheerobject": "A14X94.9",
       "sample_asset_key": "00b397ad-3f03-41e0-b1ab-d3a35c4a6496"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#Gebouw": [
         "installatie#Gebouwuitrusting",
@@ -35540,7 +35540,7 @@
       "beheerobject": "A11X66.5",
       "sample_asset_key": "02089c30-2dd0-46f3-911f-399f26bea02f"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -35581,7 +35581,7 @@
       "beheerobject": "A10X84.8",
       "sample_asset_key": "03cebc54-9a93-4113-8f1f-b2105e0e16d0"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -35620,7 +35620,7 @@
       "beheerobject": "KO0204",
       "sample_asset_key": "05d4165e-9b57-48ae-a171-fb3fa8f6ab88"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -35645,7 +35645,7 @@
       "beheerobject": "A1X54.4",
       "sample_asset_key": "0645cbc6-356d-4270-9984-aca3e3c1eab5"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -35835,7 +35835,7 @@
       "beheerobject": "002A5",
       "sample_asset_key": "12a162b4-8b24-4a49-9c39-8888d7c77176"
     },
-    "label": "VRI",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -35959,7 +35959,7 @@
       "beheerobject": "KW0139",
       "sample_asset_key": "0063a62e-7622-4e4c-ab59-50025965e2a5"
     },
-    "label": "Kunstwerk",
+    "label": "Water",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#BIB",
@@ -36386,7 +36386,7 @@
       "beheerobject": "KO0231",
       "sample_asset_key": "17ca1487-11d9-44a7-b0b3-4da29cbd631a"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#ServerGrp": [
         "lgc:installatie#CC",
@@ -36523,7 +36523,7 @@
       "beheerobject": "KO0131",
       "sample_asset_key": "27fe82d4-f2ee-420c-9e30-2272170e5527"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#ServerGrp": [
         "lgc:installatie#CC",
@@ -37095,7 +37095,7 @@
       "beheerobject": "R2X84.0",
       "sample_asset_key": "11520d28-7b9d-493d-b9b9-9ece5d977d6c"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordPK"
@@ -37165,7 +37165,7 @@
       "beheerobject": "KO0248",
       "sample_asset_key": "22d5ba56-ddc9-400b-b28d-fbb170891f59"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#ServerGrp": [
         "lgc:installatie#CC",
@@ -37295,7 +37295,7 @@
       "beheerobject": "R1X15.9",
       "sample_asset_key": "01e3f49e-c3ae-42e6-8c44-7079a2b167d1"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -37330,7 +37330,7 @@
       "beheerobject": "R2X83.3",
       "sample_asset_key": "038389ca-6fca-4017-82a2-0d46779cc580"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#Slagboom": [
         "lgc:installatie#VOTLus"
@@ -37416,7 +37416,7 @@
       "beheerobject": "WO0368",
       "sample_asset_key": "0614af76-9dd1-4d7c-92d8-8a94ad1a87cc"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -37617,7 +37617,7 @@
       "beheerobject": "A10X44.5",
       "sample_asset_key": "1ac5e304-2914-4702-8f54-fd87c463e8c2"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -37700,7 +37700,7 @@
       "beheerobject": "A201X2.0",
       "sample_asset_key": "1be9c503-a56d-4900-b1e1-7f107cd028c8"
     },
-    "label": "MIV",
+    "label": "Water",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -38025,7 +38025,7 @@
       "beheerobject": "KO0166",
       "sample_asset_key": "081267b6-5345-45b5-966d-5a2fdd409e12"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -38049,7 +38049,7 @@
       "beheerobject": "R0X21.4",
       "sample_asset_key": "0851e489-d0c6-45b6-8b65-5917199b0c69"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -38142,7 +38142,7 @@
       "beheerobject": "A13X9.4",
       "sample_asset_key": "0b7cfb20-81a0-4f13-a11f-ee26baf2039f"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -38293,7 +38293,7 @@
       "beheerobject": "A13X7.8",
       "sample_asset_key": "10438623-9ff6-419b-abad-4187d72bdc06"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -38450,7 +38450,7 @@
       "beheerobject": "A12X4.6",
       "sample_asset_key": "15f6b2bd-0cbe-4a54-a7e7-7ba7843015ea"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -38513,7 +38513,7 @@
       "beheerobject": "A1X29.5",
       "sample_asset_key": "1bca9cbc-b48d-4d5c-a099-ca3a1442687e"
     },
-    "label": "MIV+Camera",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Omvormer"
@@ -38914,7 +38914,7 @@
       "beheerobject": "A13X63.4",
       "sample_asset_key": "0c3bd6ea-6c1e-46e4-9b39-e83e6fd20283"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -39271,7 +39271,7 @@
       "beheerobject": "A13X20.9",
       "sample_asset_key": "019e4ca7-a686-4f3e-97c1-0f51e17704a5"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -39360,7 +39360,7 @@
       "beheerobject": "A10X81.45",
       "sample_asset_key": "02882199-c5bc-4cc5-b470-9df10f3d9b1d"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -39727,7 +39727,7 @@
       "beheerobject": "R1X17.0",
       "sample_asset_key": "06c91a6d-1a9d-42e6-8b85-68e65e5a3bc6"
     },
-    "label": "MIV+RSS",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep"
@@ -39938,7 +39938,7 @@
       "beheerobject": "A1X32.6",
       "sample_asset_key": "0f6fd0e9-3f94-4a7e-88d6-176db680b4f7"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "lgc:installatie#VL",
@@ -40116,7 +40116,7 @@
       "beheerobject": "A10X0.2",
       "sample_asset_key": "13cba797-5c71-455c-97be-af6b0b2535d7"
     },
-    "label": "MIV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -40326,7 +40326,7 @@
       "beheerobject": "R0X46.2",
       "sample_asset_key": "380319e5-af01-4b40-819d-3962c0ffa66e"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -40517,7 +40517,7 @@
       "beheerobject": "C3636",
       "sample_asset_key": "0196171a-6e75-40d4-9c80-3c1612380067"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -40698,7 +40698,7 @@
       "beheerobject": "DVMTEST",
       "sample_asset_key": "0581aa40-ca25-4d2c-9156-b5e43828bfcc"
     },
-    "label": "Z30",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordPK",
@@ -40782,7 +40782,7 @@
       "beheerobject": "KW0022",
       "sample_asset_key": "1244692b-aef3-4804-8020-91d7f49445db"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#LSDeel",
@@ -40901,7 +40901,7 @@
       "beheerobject": "001A3",
       "sample_asset_key": "2ebf8685-3d48-45c4-b158-1b88dc6ba6d2"
     },
-    "label": "VRI",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -41144,7 +41144,7 @@
       "beheerobject": "A10X37.7",
       "sample_asset_key": "07b49a98-11f3-4a8a-9b0f-13b7b946b23b"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -41449,7 +41449,7 @@
       "beheerobject": "C9143",
       "sample_asset_key": "0f215c1a-80aa-4787-b336-13fe7d59b663"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -41497,7 +41497,7 @@
       "beheerobject": "KO0001",
       "sample_asset_key": "12373486-0b96-4fd8-8c9f-718307cd7440"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -41743,7 +41743,7 @@
       "beheerobject": "A11X99.1",
       "sample_asset_key": "319dfb73-da0c-486b-bf3c-6801c63edc41"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -41781,7 +41781,7 @@
       "beheerobject": "KW0170",
       "sample_asset_key": "37e32a86-fa87-4936-88c4-03f9f246d597"
     },
-    "label": "Kunstwerk",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -41805,7 +41805,7 @@
       "beheerobject": "KW0119",
       "sample_asset_key": "0009ba51-e082-472b-bdb3-07a16b79be6d"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#BIB",
@@ -42199,7 +42199,7 @@
       "beheerobject": "R1X15.8",
       "sample_asset_key": "1e051a0b-7725-47ee-a4f1-b9ed5152ee30"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep"
@@ -42232,7 +42232,7 @@
       "beheerobject": "KO0033",
       "sample_asset_key": "1ee92d9b-6bea-4977-bfb7-a30584a48420"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#LS": [
         "lgc:installatie#SeinRiv",
@@ -42348,7 +42348,7 @@
       "beheerobject": "R1X10.4.Z",
       "sample_asset_key": "243056a8-e0ac-47c9-aea0-091e0640beed"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -42603,7 +42603,7 @@
       "beheerobject": "KO9069",
       "sample_asset_key": "04e5c421-686c-4fbd-97b2-d6e45bdf4d7a"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -42677,7 +42677,7 @@
       "beheerobject": "A8X1.0",
       "sample_asset_key": "0786f072-6390-4ba0-bd6d-78284683bf01"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -42945,7 +42945,7 @@
       "beheerobject": "KO0246",
       "sample_asset_key": "0c722107-0569-4b40-8bdb-d011d4d226ef"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -43110,7 +43110,7 @@
       "beheerobject": "N31X0.3",
       "sample_asset_key": "14694ae1-29bd-4bd9-a793-803d2fd30bb2"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -43348,7 +43348,7 @@
       "beheerobject": "C1634",
       "sample_asset_key": "269c293f-f4ac-4251-8e55-b8a716bbed7c"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPLMast"
@@ -43565,7 +43565,7 @@
       "beheerobject": "A17X31.2",
       "sample_asset_key": "0209792d-c1b3-4ef8-92b7-d1ab089a9729"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -43627,7 +43627,7 @@
       "beheerobject": "KW0002B3_Kapellebrug",
       "sample_asset_key": "026948e2-37ed-4b00-baa5-e9e768973869"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -43763,7 +43763,7 @@
       "beheerobject": "R2X82.0",
       "sample_asset_key": "08b0ce05-4d5f-498f-82d8-17802ad5e55d"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -43884,7 +43884,7 @@
       "beheerobject": "KW0171",
       "sample_asset_key": "0c310839-b2fc-4f8d-af01-7bfaf0534e6c"
     },
-    "label": "Kunstwerk",
+    "label": "Water",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#BIB",
@@ -44025,7 +44025,7 @@
       "beheerobject": "A17X22.3",
       "sample_asset_key": "15a4e5c5-e788-4fed-a7de-6797c5023bf5"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Lichtmast": [
         "installatie#CameraGroep"
@@ -44366,7 +44366,7 @@
       "beheerobject": "R2X80.2",
       "sample_asset_key": "35a7714e-7135-4863-8661-13e0fbf80c29"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -44551,7 +44551,7 @@
       "beheerobject": "A12X31.4",
       "sample_asset_key": "01f61c59-30ab-4b44-8e56-2876f1ad6c76"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -44864,7 +44864,7 @@
       "beheerobject": "A4X6.3",
       "sample_asset_key": "0a3738ba-eceb-4804-85bf-e0181228174a"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -45226,7 +45226,7 @@
       "beheerobject": "KW0132",
       "sample_asset_key": "1ac9ecd2-3f77-45c1-b88e-08665da76799"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -45613,7 +45613,7 @@
       "beheerobject": "A12X33.3",
       "sample_asset_key": "3a340d17-435d-4931-8117-498817c4ece5"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -45780,7 +45780,7 @@
       "beheerobject": "A18X22.92",
       "sample_asset_key": "007143c8-41c7-4afa-95dc-e87ec044a257"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -46019,7 +46019,7 @@
       "beheerobject": "A14X50.7",
       "sample_asset_key": "07f3080a-747d-4adf-b148-eb37a19d1d1b"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -46312,7 +46312,7 @@
       "beheerobject": "A14X98.7",
       "sample_asset_key": "0c7a4864-dab2-4477-b64a-944a586afefd"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -46634,7 +46634,7 @@
       "beheerobject": "R1X14.56",
       "sample_asset_key": "17cfd11d-3541-4378-961a-175d9ecdd35b"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -46749,7 +46749,7 @@
       "beheerobject": "490A9",
       "sample_asset_key": "1e4a1509-aeda-4f7e-a3bd-863cb9561c9d"
     },
-    "label": "VRI",
+    "label": "Water",
     "tree": {
       "lgc:installatie#SeinbrugIVS": [
         "lgc:installatie#IVSBGroep"
@@ -46779,7 +46779,7 @@
       "beheerobject": "A112X1.3.Z",
       "sample_asset_key": "215bf169-03a1-4386-a3d4-94f2038929d5"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -46887,7 +46887,7 @@
       "beheerobject": "A14X93.8",
       "sample_asset_key": "28d08544-9bbd-4b2c-875a-3e9a785ca48a"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordVMS"
@@ -48003,7 +48003,7 @@
       "beheerobject": "R1X7.8",
       "sample_asset_key": "1d7a38c1-9adb-4416-98ce-6bb2f542b991"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Omvormer"
@@ -48685,7 +48685,7 @@
       "beheerobject": "KW0073",
       "sample_asset_key": "0431fef9-0ea0-4eda-84ef-ebb4e93287d3"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -49167,7 +49167,7 @@
       "beheerobject": "A9092",
       "sample_asset_key": "160d2978-22a6-4809-8dbc-91a5e5ffca0e"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -49422,7 +49422,7 @@
       "beheerobject": "R1X16.19",
       "sample_asset_key": "26d51808-f79b-44e5-8ee0-1491690bd0a8"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -49589,7 +49589,7 @@
       "beheerobject": "R1X5.95",
       "sample_asset_key": "368f03bb-1b72-4153-b2d0-03f057711f1d"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -49617,7 +49617,7 @@
       "beheerobject": "A11X72.9",
       "sample_asset_key": "3811881c-62e9-4d95-a08e-528bef1c84b8"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -49641,7 +49641,7 @@
       "beheerobject": "R1tX0.45",
       "sample_asset_key": "38dac96e-873c-491e-a864-d89bb57c63fb"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -49714,7 +49714,7 @@
       "beheerobject": "A10X81.3",
       "sample_asset_key": "3ef04a98-4135-4550-b47b-375f1b6f2a64"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordVMS"
@@ -50062,7 +50062,7 @@
       "beheerobject": "FAT25",
       "sample_asset_key": "02d3db66-6b26-4202-b1cc-7e339ba9e9c5"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordRSS",
@@ -50413,7 +50413,7 @@
       "beheerobject": "A14X99.2",
       "sample_asset_key": "148bdc3c-3888-4e66-8e5b-13e12739d67e"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -50490,7 +50490,7 @@
       "beheerobject": "N49X1.3",
       "sample_asset_key": "1850c5bd-265e-4c0e-82cc-f6480e669932"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -50532,7 +50532,7 @@
       "beheerobject": "KW0102BR2_Groot",
       "sample_asset_key": "198a6cc1-75a9-456e-99d1-a23fb7441a6c"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Brug": [
         "installatie#SlagboomGroep",
@@ -51205,7 +51205,7 @@
       "beheerobject": "A9002",
       "sample_asset_key": "72e42e52-a046-40c9-947a-e75cc78fa734"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -51315,7 +51315,7 @@
       "beheerobject": "KO0124",
       "sample_asset_key": "06d9549e-1711-44b3-9c3a-4d2f600f077c"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -51583,7 +51583,7 @@
       "beheerobject": "R2X82.7.OP",
       "sample_asset_key": "112494f3-44fa-4a69-8083-464207b57263"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#SeinbrugIVS": [
         "installatie#CameraGroep",
@@ -51604,7 +51604,7 @@
       "beheerobject": "KW0512",
       "sample_asset_key": "1217ec9e-e5f0-4b84-90d3-0c20207b35ba"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -51773,7 +51773,7 @@
       "beheerobject": "A14X99.0",
       "sample_asset_key": "15a3347e-5556-4821-aff2-d1eff2c44cff"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordVMS"
@@ -52094,7 +52094,7 @@
       "beheerobject": "A12X45.3",
       "sample_asset_key": "28e14e61-ab97-4fb7-8801-9e1c705f62cd"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordRVMS"
@@ -52538,7 +52538,7 @@
       "beheerobject": "A9398",
       "sample_asset_key": "0e2392c2-3567-4201-bb35-ce03e2617f86"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -53395,7 +53395,7 @@
       "beheerobject": "KO0320",
       "sample_asset_key": "5bda6d00-be1c-438e-a990-98b514493669"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -53712,7 +53712,7 @@
       "beheerobject": "R2X80.3",
       "sample_asset_key": "19983043-41ab-4021-bc6a-bebfbe5428d6"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#SeinbrugIVS": [
         "installatie#CameraGroep"
@@ -53884,7 +53884,7 @@
       "beheerobject": "KW0544",
       "sample_asset_key": "2d44c6e7-336a-4e5f-9da5-b5c7c8fd5a32"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#BVE": [],
       "lgc:installatie#Ssig": []
