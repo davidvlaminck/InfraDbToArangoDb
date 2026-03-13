@@ -14776,7 +14776,7 @@
       "beheerobject": "A112X1.0",
       "sample_asset_key": "00073b86-b957-434b-a1e1-514726d7217c"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -16522,7 +16522,7 @@
       "beheerobject": "A14X50.1",
       "sample_asset_key": "00a554ff-3dd7-48f3-b5e0-aa65fe2c8aca"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -23221,7 +23221,7 @@
       "beheerobject": "WVTEST",
       "sample_asset_key": "01365071-a6ad-43b7-bbed-12f85d4139d9"
     },
-    "label": "WV+HS",
+    "label": "Test",
     "tree": {
       "lgc:installatie#WV": [
         "lgc:installatie#VPBevestig",
@@ -23892,7 +23892,7 @@
       "beheerobject": "R1X1.1",
       "sample_asset_key": "03bc80cd-07cf-4a32-9437-684b97a8cabe"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -23930,7 +23930,7 @@
       "beheerobject": "A1X32.7",
       "sample_asset_key": "24ca945f-4d71-4e1b-827e-a66b7413c97e"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -26363,7 +26363,7 @@
       "beheerobject": "R1X10.5.Z",
       "sample_asset_key": "00bfcd1e-da7e-4ef0-9f48-a74bfe065bcb"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -31905,7 +31905,7 @@
       "beheerobject": "A3X8.9",
       "sample_asset_key": "0e3d3526-90bd-47d7-b08b-52522962d813"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -34347,7 +34347,7 @@
       "beheerobject": "A11X65.3",
       "sample_asset_key": "0273eabf-e707-4dec-b262-c5838f3d7499"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep",
@@ -34982,7 +34982,7 @@
       "beheerobject": "A14X52.4",
       "sample_asset_key": "006deb78-58f3-45c1-a876-2923b67fb161"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -37095,7 +37095,7 @@
       "beheerobject": "R2X84.0",
       "sample_asset_key": "11520d28-7b9d-493d-b9b9-9ece5d977d6c"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordPK"
@@ -38142,7 +38142,7 @@
       "beheerobject": "A13X9.4",
       "sample_asset_key": "0b7cfb20-81a0-4f13-a11f-ee26baf2039f"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -38623,7 +38623,7 @@
       "beheerobject": "R1X2.51",
       "sample_asset_key": "22cbfab8-623d-409d-852d-89519179fd8d"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -40698,7 +40698,7 @@
       "beheerobject": "DVMTEST",
       "sample_asset_key": "0581aa40-ca25-4d2c-9156-b5e43828bfcc"
     },
-    "label": "",
+    "label": "Test",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordPK",
@@ -41663,7 +41663,7 @@
       "beheerobject": "T70.SIM",
       "sample_asset_key": "25e4a54f-9cac-4e37-b1be-837367742443"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -42199,7 +42199,7 @@
       "beheerobject": "R1X15.8",
       "sample_asset_key": "1e051a0b-7725-47ee-a4f1-b9ed5152ee30"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep"
@@ -42348,7 +42348,7 @@
       "beheerobject": "R1X10.4.Z",
       "sample_asset_key": "243056a8-e0ac-47c9-aea0-091e0640beed"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -43763,7 +43763,7 @@
       "beheerobject": "R2X82.0",
       "sample_asset_key": "08b0ce05-4d5f-498f-82d8-17802ad5e55d"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -44366,7 +44366,7 @@
       "beheerobject": "R2X80.2",
       "sample_asset_key": "35a7714e-7135-4863-8661-13e0fbf80c29"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -46019,7 +46019,7 @@
       "beheerobject": "A14X50.7",
       "sample_asset_key": "07f3080a-747d-4adf-b148-eb37a19d1d1b"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -46779,7 +46779,7 @@
       "beheerobject": "A112X1.3.Z",
       "sample_asset_key": "215bf169-03a1-4386-a3d4-94f2038929d5"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -48330,7 +48330,7 @@
       "beheerobject": "T70.TESTBORD",
       "sample_asset_key": "2e53b50c-5705-4f38-afa2-1c1d9d6d1944"
     },
-    "label": "",
+    "label": "Test",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -49589,7 +49589,7 @@
       "beheerobject": "R1X5.95",
       "sample_asset_key": "368f03bb-1b72-4153-b2d0-03f057711f1d"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -49641,7 +49641,7 @@
       "beheerobject": "R1tX0.45",
       "sample_asset_key": "38dac96e-873c-491e-a864-d89bb57c63fb"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -50062,7 +50062,7 @@
       "beheerobject": "FAT25",
       "sample_asset_key": "02d3db66-6b26-4202-b1cc-7e339ba9e9c5"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordRSS",
@@ -50832,7 +50832,7 @@
       "beheerobject": "A12X42.1",
       "sample_asset_key": "23ba0a46-526f-4801-b564-c62c94ab08e5"
     },
-    "label": "",
+    "label": "RSS",
     "tree": {
       "onderdeel#Galgpaal": [
         "installatie#DynBordGroep"
