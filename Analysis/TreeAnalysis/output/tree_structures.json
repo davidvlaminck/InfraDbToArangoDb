@@ -22077,7 +22077,7 @@
       "beheerobject": "KO0221",
       "sample_asset_key": "07a9b6cc-570c-4b48-baa9-52eb0355e096"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -24458,7 +24458,7 @@
       "beheerobject": "KO0021",
       "sample_asset_key": "0011c5ad-086b-4eb9-b8b3-52cc25a7d261"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -25393,7 +25393,7 @@
       "beheerobject": "KO0012",
       "sample_asset_key": "054766c8-a921-41db-98e9-180c82a14ef4"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#ServerGrp": [
         "lgc:installatie#CC",
@@ -25614,7 +25614,7 @@
       "beheerobject": "KO0031",
       "sample_asset_key": "04a23568-e066-4458-97c6-5aaad5447da9"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Sluis": [
         "lgc:installatie#HY.CI",
@@ -26220,7 +26220,7 @@
       "beheerobject": "KO0242",
       "sample_asset_key": "03ce4374-8335-4c5c-ac2d-a070e80a5c63"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -27090,7 +27090,7 @@
       "beheerobject": "KO0051",
       "sample_asset_key": "0f707c5b-b703-4c7c-a02a-1da1d9649968"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -28239,7 +28239,7 @@
       "beheerobject": "KO0052",
       "sample_asset_key": "06605b98-4260-483a-8b4a-6923c638992f"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -28982,7 +28982,7 @@
       "beheerobject": "KW0057",
       "sample_asset_key": "009f209c-4364-4a81-84d5-c6d2ba7260ac"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#PoS": [
         "lgc:installatie#LSDeel",
@@ -29088,7 +29088,7 @@
       "beheerobject": "KW0161",
       "sample_asset_key": "01371d18-9035-4d10-9392-df2570a17e70"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -29513,7 +29513,7 @@
       "beheerobject": "KO0030",
       "sample_asset_key": "03625bed-d39c-48b7-8333-00b1cb3a9dc5"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#ServerGrp": [
         "lgc:installatie#CC",
@@ -29553,7 +29553,7 @@
       "beheerobject": "KW0511",
       "sample_asset_key": "043b5475-19d5-454b-8d53-b8db0fbe03f4"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -30376,7 +30376,7 @@
       "beheerobject": "KO0127",
       "sample_asset_key": "069544d8-9c69-4a32-96e0-f615f82a02ef"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -30418,7 +30418,7 @@
       "beheerobject": "KW0059",
       "sample_asset_key": "073252ea-ab84-4105-bc5a-658842674b64"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Sluis": [
         "lgc:installatie#HY.CI",
@@ -30780,7 +30780,7 @@
       "beheerobject": "KO0219",
       "sample_asset_key": "0375a8bf-2abc-4a9f-a7fd-cbe367bc6bc9"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -32016,7 +32016,7 @@
       "beheerobject": "KW0054",
       "sample_asset_key": "0015c0d9-7f8f-4b4b-bbf8-95c02f85251d"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#PoS": [
         "lgc:installatie#LSDeel",
@@ -32314,7 +32314,7 @@
       "beheerobject": "A4325",
       "sample_asset_key": "0afc268f-262a-4b5e-a8cf-acb987e5119f"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "installatie#Tunnelverlichting": [
         "lgc:installatie#VPBevestig"
@@ -32930,7 +32930,7 @@
       "beheerobject": "K01_351",
       "sample_asset_key": "1495135b-8305-4f01-8d72-858a7235224f"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -33465,7 +33465,7 @@
       "beheerobject": "A6431",
       "sample_asset_key": "007f52ed-23b7-4197-901d-d6dab1d39e7b"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "installatie#Tunnelverlichting": [
         "lgc:installatie#VPBevestig"
@@ -33993,7 +33993,7 @@
       "beheerobject": "KO0234",
       "sample_asset_key": "02089a9e-e5d1-43b3-bbd7-71db07266560"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#ServerGrp": [
         "lgc:installatie#CC",
@@ -34152,7 +34152,7 @@
       "beheerobject": "KW0065",
       "sample_asset_key": "0cf4a659-ed12-4134-b900-c2aca2ffec1f"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -34466,7 +34466,7 @@
       "beheerobject": "C9052",
       "sample_asset_key": "0602109b-a3bc-4bbf-be46-0cc7dbfdfb50"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -34548,7 +34548,7 @@
       "beheerobject": "KO0021S3",
       "sample_asset_key": "08102eb8-c89b-4e4c-8991-3cfaff96e7eb"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#ServerGrp": [
         "lgc:installatie#CC",
@@ -34764,7 +34764,7 @@
       "beheerobject": "A4143",
       "sample_asset_key": "14c4a965-32ee-481c-82e2-fea950fb9c3b"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#PoS": [
         "lgc:installatie#AB",
@@ -35337,7 +35337,7 @@
       "beheerobject": "KW0005",
       "sample_asset_key": "00718c22-721c-4812-9928-daaed08fd82b"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#BIB",
@@ -35899,7 +35899,7 @@
       "beheerobject": "KW0168",
       "sample_asset_key": "2e11e959-f1d1-4681-88db-3a6d63eb1ba0"
     },
-    "label": "WV",
+    "label": "Water",
     "tree": {
       "lgc:installatie#ServerGrp": [
         "lgc:installatie#CC",
@@ -36623,7 +36623,7 @@
       "beheerobject": "KW0117",
       "sample_asset_key": "012dc021-c2a0-41ec-ac7a-72d0bf80d4fb"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -36726,7 +36726,7 @@
       "beheerobject": "A9148",
       "sample_asset_key": "033be2f6-8297-4532-a0f4-cafbe53e0150"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -37011,7 +37011,7 @@
       "beheerobject": "816G9",
       "sample_asset_key": "0c949d33-75ac-4737-ac02-416b348b0f84"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -37141,7 +37141,7 @@
       "beheerobject": "KW0116",
       "sample_asset_key": "18aec6ec-28c0-478e-bdcb-916f4f5a3041"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -37880,7 +37880,7 @@
       "beheerobject": "KW0066",
       "sample_asset_key": "0320d7c5-228a-4a4c-8341-559f1cc3e924"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Sluis": [
         "lgc:installatie#Schuiven"
@@ -38240,7 +38240,7 @@
       "beheerobject": "KW0050",
       "sample_asset_key": "0ee2d027-b1d7-4dec-af16-63857af2c261"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -38335,7 +38335,7 @@
       "beheerobject": "C9096",
       "sample_asset_key": "104503b8-cf5a-4cfa-acfb-9963403a57b8"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -39070,7 +39070,7 @@
       "beheerobject": "KO0005",
       "sample_asset_key": "14ec69df-f89c-4c91-bd56-0315886e43a7"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Audio": [
         "lgc:installatie#Int"
@@ -39552,7 +39552,7 @@
       "beheerobject": "KW0180",
       "sample_asset_key": "044d02f1-d580-4d9d-9e66-68d3848ebe5c"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#LSDeel"
@@ -39758,7 +39758,7 @@
       "beheerobject": "A4622",
       "sample_asset_key": "07032371-bdfd-4c82-b1bf-adaca6d3c534"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#PoS": [
         "lgc:installatie#AB",
@@ -40494,7 +40494,7 @@
       "beheerobject": "A4041",
       "sample_asset_key": "01012cda-dbb0-40af-af5e-326280c92231"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -40555,7 +40555,7 @@
       "beheerobject": "KW0010",
       "sample_asset_key": "022d8fa6-3f9f-4ecd-a73f-62aff27b1398"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -41473,7 +41473,7 @@
       "beheerobject": "G2689",
       "sample_asset_key": "1079f679-c333-456b-bac6-a939a28a45c1"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#AB",
@@ -41843,7 +41843,7 @@
       "beheerobject": "KW0022.4_Ijzer",
       "sample_asset_key": "00a45e9a-1602-4433-a64f-138a2e485d26"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -41975,7 +41975,7 @@
       "beheerobject": "KW0022.6_Veurnevaart",
       "sample_asset_key": "0c667b30-023a-4c50-92c1-dcdb5d2eeef8"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -42025,7 +42025,7 @@
       "beheerobject": "KW0055",
       "sample_asset_key": "1023b38d-26ee-47e7-a973-c089ccfc9c6b"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -42140,7 +42140,7 @@
       "beheerobject": "KW0053",
       "sample_asset_key": "191642be-676c-4ca8-bba5-8b2dfa3ef886"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -43005,7 +43005,7 @@
       "beheerobject": "KO0567",
       "sample_asset_key": "1079ca03-5ac4-414c-bf79-720ec5e2925f"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -43145,7 +43145,7 @@
       "beheerobject": "A3084",
       "sample_asset_key": "14796836-efae-4306-8f52-77bc7262c1a8"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "installatie#Tunnelverlichting": [
         "lgc:installatie#VPConsole"
@@ -43279,7 +43279,7 @@
       "beheerobject": "KO0013",
       "sample_asset_key": "2528cf38-f04a-4629-a6ef-f2ded9ba0739"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -44144,7 +44144,7 @@
       "beheerobject": "KW0160",
       "sample_asset_key": "1f11eefd-80e2-4dc9-9778-72dfc9c6e0fa"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -44233,7 +44233,7 @@
       "beheerobject": "KW0052",
       "sample_asset_key": "2134e9fe-55b7-4141-80dd-75b334f40693"
     },
-    "label": "WV+HS",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -45010,7 +45010,7 @@
       "beheerobject": "KW0112",
       "sample_asset_key": "10c4b429-8efd-47ba-a9fb-e49789366723"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Stuw": [
         "lgc:installatie#Schuiven"
@@ -45060,7 +45060,7 @@
       "beheerobject": "KW0173",
       "sample_asset_key": "11efee71-82ef-455c-806a-a2516d7758fe"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -45180,7 +45180,7 @@
       "beheerobject": "A9252",
       "sample_asset_key": "16f6f7e8-bd08-46b0-bbd3-aaeeca2e6c68"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -45591,7 +45591,7 @@
       "beheerobject": "KW0530",
       "sample_asset_key": "3677759c-75bf-4087-b365-f010850f3098"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -45684,7 +45684,7 @@
       "beheerobject": "C2705",
       "sample_asset_key": "41430d40-24fd-4434-ba00-dca310d20e91"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -45827,7 +45827,7 @@
       "beheerobject": "KW0002",
       "sample_asset_key": "01985e89-4f56-4c8f-8292-158422fd428f"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -45969,7 +45969,7 @@
       "beheerobject": "A3142",
       "sample_asset_key": "063edf29-21f5-4dea-97b9-e1a90b0b517c"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#PoS": [
         "lgc:installatie#Deb"
@@ -46178,7 +46178,7 @@
       "beheerobject": "A2629",
       "sample_asset_key": "0a177ec5-0c3d-4775-a7b8-4685889f6abe"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -46837,7 +46837,7 @@
       "beheerobject": "272A7",
       "sample_asset_key": "25abc22a-6d26-41e7-ad83-fdb3b3e621e8"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#AB",
@@ -46862,7 +46862,7 @@
       "beheerobject": "711A9",
       "sample_asset_key": "267f5c84-1d7b-4154-bacd-71043affb4d2"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -47504,7 +47504,7 @@
       "beheerobject": "A9285",
       "sample_asset_key": "068904ae-2102-46f6-a688-a8c608f8a261"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -48902,7 +48902,7 @@
       "beheerobject": "KO0200",
       "sample_asset_key": "09fca0c4-4348-4494-88e2-d8cceb1c38cf"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -49376,7 +49376,7 @@
       "beheerobject": "KW0006",
       "sample_asset_key": "24534a31-fd98-4fc7-8944-3adb26f4e3bf"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -49517,7 +49517,7 @@
       "beheerobject": "C9108",
       "sample_asset_key": "32eda250-347d-42b7-945d-c065f7164085"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -49691,7 +49691,7 @@
       "beheerobject": "C9154",
       "sample_asset_key": "3cef08e9-f159-4b45-ab54-03177b9d1509"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -49826,7 +49826,7 @@
       "beheerobject": "A9308",
       "sample_asset_key": "4e6a2898-5e92-4e8d-8479-ebb60c84a397"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -50228,7 +50228,7 @@
       "beheerobject": "A2618",
       "sample_asset_key": "084d19d1-483d-4c9d-b093-000e82b66db5"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#PoS": [
         "lgc:installatie#Deb"
@@ -50434,7 +50434,7 @@
       "beheerobject": "A4564",
       "sample_asset_key": "14e21b88-50f7-4e77-b8db-0fbd9fdcbd3a"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -50785,7 +50785,7 @@
       "beheerobject": "G3464",
       "sample_asset_key": "21326e9a-ace0-4ae8-8f4d-9c7b14a6af61"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#AB",
@@ -50941,7 +50941,7 @@
       "beheerobject": "KW0181",
       "sample_asset_key": "2f7a082d-6f07-420f-be48-1b34e7cf14bf"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -50963,7 +50963,7 @@
       "beheerobject": "KO0237",
       "sample_asset_key": "301a74bb-88a3-44f0-add6-d2e0299258cf"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -51336,7 +51336,7 @@
       "beheerobject": "WW0268",
       "sample_asset_key": "07fb8db0-20cf-4acd-9a55-fd57e940fdaa"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -51381,7 +51381,7 @@
       "beheerobject": "KW0179",
       "sample_asset_key": "0941fffc-3a1e-40cd-9164-6affacfbcf65"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -51520,7 +51520,7 @@
       "beheerobject": "A9343",
       "sample_asset_key": "0d49601e-54b4-493d-98fb-72e6b784a4b7"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -51731,7 +51731,7 @@
       "beheerobject": "KW0506",
       "sample_asset_key": "14d1d68c-2251-41ed-b278-a011f982f008"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -51847,7 +51847,7 @@
       "beheerobject": "KO0123",
       "sample_asset_key": "16ba22a6-a2c3-4e52-86d2-f4d127eeca3d"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -51977,7 +51977,7 @@
       "beheerobject": "KO0192",
       "sample_asset_key": "1db65111-dfca-4efd-884f-e27b448d82f4"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -52343,7 +52343,7 @@
       "beheerobject": "KO0214",
       "sample_asset_key": "4af26665-a74b-4212-95a1-6fb9ffba0c16"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -52596,7 +52596,7 @@
       "beheerobject": "K01_312",
       "sample_asset_key": "0eff5f8e-b6d5-4925-94c3-fa7cdbb9cc7b"
     },
-    "label": "",
+    "label": "Water",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -52933,7 +52933,7 @@
       "beheerobject": "236C5",
       "sample_asset_key": "26e9d09c-804c-422c-98d0-e14844dfe106"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -53128,7 +53128,7 @@
       "beheerobject": "KW0217",
       "sample_asset_key": "33b0bb32-b8a6-40a7-bfc7-50737e93f5fd"
     },
-    "label": "",
+    "label": "Pompstation",
     "tree": {
       "lgc:installatie#LSDeel": [
         "onderdeel#Pomp"
