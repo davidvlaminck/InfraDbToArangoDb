@@ -3859,7 +3859,7 @@
       "beheerobject": "A3X9.7",
       "sample_asset_key": "001c1e9c-f1ff-478a-96df-42d845f4e9aa"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -3966,7 +3966,7 @@
       "beheerobject": "A10X38.8",
       "sample_asset_key": "000536f7-f46b-4cf4-913e-64ec03313083"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -4605,7 +4605,7 @@
       "beheerobject": "R1X7.2",
       "sample_asset_key": "000ad70e-0b16-437f-b591-4754716dea67"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -5008,7 +5008,7 @@
       "beheerobject": "BEV.TUNNEL",
       "sample_asset_key": "000062ad-a218-4743-8af1-be3fcf25db97"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#Tunneluitrusting": [
         "installatie#CalamiteitendoorsteekGroep",
@@ -5281,7 +5281,7 @@
       "beheerobject": "A1X49.7",
       "sample_asset_key": "006548c6-7099-4f1b-9e70-3d0fb6017d84"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -7876,7 +7876,7 @@
       "beheerobject": "A14X99.6",
       "sample_asset_key": "00263d14-9d62-439a-b1e4-f97975ab259d"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -8792,7 +8792,7 @@
       "beheerobject": "WAA.TUNNEL",
       "sample_asset_key": "00007385-4a07-4ad5-8fe7-41f603fc7f61"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#Tunneluitrusting": [
         "installatie#Kokerventilatie",
@@ -12131,7 +12131,7 @@
       "beheerobject": "A10X6.0",
       "sample_asset_key": "00742606-e124-449d-8e62-e048068aa722"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -14065,7 +14065,7 @@
       "beheerobject": "R1X1.7",
       "sample_asset_key": "00663451-faf4-4b8d-9781-2e17627718fa"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -14776,7 +14776,7 @@
       "beheerobject": "A112X1.0",
       "sample_asset_key": "00073b86-b957-434b-a1e1-514726d7217c"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -16522,7 +16522,7 @@
       "beheerobject": "A14X50.1",
       "sample_asset_key": "00a554ff-3dd7-48f3-b5e0-aa65fe2c8aca"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -16654,7 +16654,7 @@
       "beheerobject": "R1X3.30",
       "sample_asset_key": "09a8d188-2884-41bf-adbc-6edb8f50f252"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -18334,7 +18334,7 @@
       "beheerobject": "A13X3.4",
       "sample_asset_key": "00a36243-64a4-4238-8413-d78c33fc6f6c"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep"
@@ -18583,7 +18583,7 @@
       "beheerobject": "R1X5.15",
       "sample_asset_key": "05b438b3-ce03-4bf0-9fad-67f9a4ed6b73"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -19102,7 +19102,7 @@
       "beheerobject": "R2X88.0",
       "sample_asset_key": "0459e236-ee45-4567-84b1-b12651df5f25"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -20103,7 +20103,7 @@
       "beheerobject": "A14X3.6",
       "sample_asset_key": "0326e6ca-de5c-4485-a9b4-458d90ffd73f"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -20316,7 +20316,7 @@
       "beheerobject": "R1X14.7",
       "sample_asset_key": "075b8807-8743-4017-94d8-c419e8172105"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -20393,7 +20393,7 @@
       "beheerobject": "A13X2.7",
       "sample_asset_key": "05e19903-f9f6-4877-af20-e89626fa28b4"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -20920,7 +20920,7 @@
       "beheerobject": "A10X2.4",
       "sample_asset_key": "01e5ea54-f1b7-49e6-b7cc-5ad369d9b416"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -20978,7 +20978,7 @@
       "beheerobject": "R2X79.4",
       "sample_asset_key": "026c96f4-d0cc-45d1-99c1-d03aab415a15"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -21379,7 +21379,7 @@
       "beheerobject": "R1X16.1",
       "sample_asset_key": "01760cb9-82a3-4589-8f7f-6623a76321b9"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -22302,7 +22302,7 @@
       "beheerobject": "A10X41.5",
       "sample_asset_key": "005ed816-4443-49a7-a2ff-859d16cf0b7f"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -22605,7 +22605,7 @@
       "beheerobject": "A14X94.7",
       "sample_asset_key": "0320409d-002b-4ca4-9d1d-9fa096169868"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -22692,7 +22692,7 @@
       "beheerobject": "A13X7.3",
       "sample_asset_key": "08041b7e-056c-43f3-9132-b208d7caecfb"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -22925,7 +22925,7 @@
       "beheerobject": "A14X48.4",
       "sample_asset_key": "01614395-14aa-432c-8553-b2545e579c76"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -23096,7 +23096,7 @@
       "beheerobject": "R2X80.4",
       "sample_asset_key": "01838f9e-165a-4fe8-91c4-ff68396402ad"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -23374,7 +23374,7 @@
       "beheerobject": "A14X44.4",
       "sample_asset_key": "03b30fa5-7ba4-4745-9c67-71d1f8bb5ed8"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -23547,7 +23547,7 @@
       "beheerobject": "R0X65.2",
       "sample_asset_key": "01734e46-eff5-435b-8941-495bf4a51950"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -23579,7 +23579,7 @@
       "beheerobject": "R2X81.9",
       "sample_asset_key": "02557c7b-a9df-45e0-81ee-699ff3e9b945"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -23892,7 +23892,7 @@
       "beheerobject": "R1X1.1",
       "sample_asset_key": "03bc80cd-07cf-4a32-9437-684b97a8cabe"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -23930,7 +23930,7 @@
       "beheerobject": "A1X32.7",
       "sample_asset_key": "24ca945f-4d71-4e1b-827e-a66b7413c97e"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -23995,7 +23995,7 @@
       "beheerobject": "R1X14.6",
       "sample_asset_key": "03602e98-5701-4f81-af27-d1aa35f558e8"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -24136,7 +24136,7 @@
       "beheerobject": "A2X69.0",
       "sample_asset_key": "0414e676-c99f-4824-8c3c-a6c6243a703f"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24254,7 +24254,7 @@
       "beheerobject": "A14X47.8",
       "sample_asset_key": "00ff7b8a-587e-492d-b5ed-34a321acfa97"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -24392,7 +24392,7 @@
       "beheerobject": "A1X51.4",
       "sample_asset_key": "0c4aa94e-8baa-4c8f-ab24-9107af19274e"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -24527,7 +24527,7 @@
       "beheerobject": "A13X0.4",
       "sample_asset_key": "00d14174-9a11-45c9-ac3a-204c1b2f706a"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24573,7 +24573,7 @@
       "beheerobject": "R2X83.6",
       "sample_asset_key": "00dfbd75-1698-4eb5-8bec-315af5c0c31c"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "onderdeel#Galgpaal": [
         "onderdeel#DynBordRVMS"
@@ -24688,7 +24688,7 @@
       "beheerobject": "R1X6.2",
       "sample_asset_key": "033d9e70-ee28-4913-b1d2-795f771dcae1"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24835,7 +24835,7 @@
       "beheerobject": "R2X88.3",
       "sample_asset_key": "06090345-e67a-4bfb-9115-ab12a7666911"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -24977,7 +24977,7 @@
       "beheerobject": "ZEL.Voorsignalisatie",
       "sample_asset_key": "03158e4a-1830-4229-8f3a-cd5ca0656d13"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -25114,7 +25114,7 @@
       "beheerobject": "A1X32.4",
       "sample_asset_key": "011a6918-5e69-41fe-abb7-72a08344bb50"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -25538,7 +25538,7 @@
       "beheerobject": "A3X17.4",
       "sample_asset_key": "029fecda-136a-4552-83fe-416994976bbe"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -25689,7 +25689,7 @@
       "beheerobject": "R1X10.6",
       "sample_asset_key": "021954a4-bcc8-4526-8fd6-863026fbad64"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -25883,7 +25883,7 @@
       "beheerobject": "A2X70.3",
       "sample_asset_key": "075ae7b4-3043-45d7-93cd-846f39dc4911"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -26020,7 +26020,7 @@
       "beheerobject": "R1X14.35",
       "sample_asset_key": "04217c08-30f1-4a7e-bcd6-84437b4cecfe"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep",
@@ -26068,7 +26068,7 @@
       "beheerobject": "A10X50.0",
       "sample_asset_key": "053cbbf2-05f8-4728-b08d-cb1bdf22a791"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -26263,7 +26263,7 @@
       "beheerobject": "A14X54.3",
       "sample_asset_key": "055d3286-ba63-4d10-884c-e2715d6a8ea2"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -26363,7 +26363,7 @@
       "beheerobject": "R1X10.5.Z",
       "sample_asset_key": "00bfcd1e-da7e-4ef0-9f48-a74bfe065bcb"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -26398,7 +26398,7 @@
       "beheerobject": "A13X0.8",
       "sample_asset_key": "00e07ab4-7590-4a62-9dd0-1a13449c7435"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -26899,7 +26899,7 @@
       "beheerobject": "A10X44.9",
       "sample_asset_key": "00f18ff3-e56f-4d31-9112-a4eefc80bff9"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -27618,7 +27618,7 @@
       "beheerobject": "R2X88.9",
       "sample_asset_key": "02fccffe-4093-448b-9807-6f56c1d27c7c"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -27779,7 +27779,7 @@
       "beheerobject": "A10X2.8",
       "sample_asset_key": "0069d4de-d5ac-45a5-af41-c2d8ea872d4d"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Paal": [
         "onderdeel#Camera",
@@ -28162,7 +28162,7 @@
       "beheerobject": "A14X98.6",
       "sample_asset_key": "013f9bdb-f9b1-42b9-adc3-16b266d87174"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -29020,7 +29020,7 @@
       "beheerobject": "R2X84.5",
       "sample_asset_key": "00dc7874-a82e-4ece-8c0d-649870eb9758"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordPK",
@@ -29287,7 +29287,7 @@
       "beheerobject": "A13X38.5",
       "sample_asset_key": "209ca7f6-3247-48fb-90f5-185424ca424a"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -29442,7 +29442,7 @@
       "beheerobject": "A3X11.5",
       "sample_asset_key": "02f34216-3747-44df-bae6-bad26a719f22"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera",
@@ -29580,7 +29580,7 @@
       "beheerobject": "R2X86.3",
       "sample_asset_key": "04670223-63f6-4e1b-aa2c-b935c27bfd8e"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#Kokerafsluiting": [
         "installatie#Slagboom"
@@ -29727,7 +29727,7 @@
       "beheerobject": "R1X11.2",
       "sample_asset_key": "0a518684-94b9-4637-857f-1346f3a611a4"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Omvormer"
@@ -29935,7 +29935,7 @@
       "beheerobject": "R1X1.68",
       "sample_asset_key": "01c8815e-9f2c-4fd7-955f-592255684fb3"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS",
@@ -30073,7 +30073,7 @@
       "beheerobject": "R0X43.0",
       "sample_asset_key": "06628ca0-18ae-4bfd-8c18-404847629c7b"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -30134,7 +30134,7 @@
       "beheerobject": "A12X39.7",
       "sample_asset_key": "0b1568ad-cae8-428d-9327-e964438fcf3e"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -30279,7 +30279,7 @@
       "beheerobject": "R2X86.5",
       "sample_asset_key": "0344cf81-4493-4397-a36d-5576d74df08b"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -30454,7 +30454,7 @@
       "beheerobject": "R0X23.7",
       "sample_asset_key": "08149b40-77f4-4629-ba83-849335339815"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -30984,7 +30984,7 @@
       "beheerobject": "R1X10.5",
       "sample_asset_key": "0c200845-f743-47eb-8d0f-6629478e2ea2"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -31055,7 +31055,7 @@
       "beheerobject": "R1X13.3",
       "sample_asset_key": "0d807cfb-3c35-4200-abf5-e2af8238f090"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -31148,7 +31148,7 @@
       "beheerobject": "A13X68.5",
       "sample_asset_key": "02898127-2cbd-44c0-9f8e-fdf0dcfdaa83"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31229,7 +31229,7 @@
       "beheerobject": "A14X45.0",
       "sample_asset_key": "03edc63d-631a-4cf5-9c32-d686cb2ddb01"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31280,7 +31280,7 @@
       "beheerobject": "A1X46.9",
       "sample_asset_key": "049ca230-6999-424f-ba1d-363cc7c4f45e"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31390,7 +31390,7 @@
       "beheerobject": "A14X50.6",
       "sample_asset_key": "0720585d-f3fe-4a34-b9aa-84de28b10940"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -31905,7 +31905,7 @@
       "beheerobject": "A3X8.9",
       "sample_asset_key": "0e3d3526-90bd-47d7-b08b-52522962d813"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -32087,7 +32087,7 @@
       "beheerobject": "R2X86.1",
       "sample_asset_key": "02974a37-c400-4608-9594-b12066bc26e3"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -32132,7 +32132,7 @@
       "beheerobject": "R0X22.8",
       "sample_asset_key": "02d05e0f-4abc-4a58-99b4-40c101c3f6d5"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -32712,7 +32712,7 @@
       "beheerobject": "A1X31.8",
       "sample_asset_key": "07c0130c-d8ec-47a9-a2d9-110f1e1c98aa"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -32753,7 +32753,7 @@
       "beheerobject": "A1X62.9",
       "sample_asset_key": "09ef7750-4722-4191-b069-9a3c7535dc84"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -32956,7 +32956,7 @@
       "beheerobject": "A3X7.2",
       "sample_asset_key": "0014e719-5ad0-42f8-921b-40c0f0cb3d75"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -33212,7 +33212,7 @@
       "beheerobject": "A1X48.2",
       "sample_asset_key": "0aa7c284-1dcc-45d0-9311-057e295c12fe"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -33304,7 +33304,7 @@
       "beheerobject": "A12X21.1",
       "sample_asset_key": "0bd8b248-9a4d-4c64-b3a5-11fad6ec2ce3"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordVMS"
@@ -33856,7 +33856,7 @@
       "beheerobject": "A1X46.4",
       "sample_asset_key": "0d26ced8-059e-436a-851a-9192df212e43"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -33953,7 +33953,7 @@
       "beheerobject": "A10X42.05",
       "sample_asset_key": "26fbd801-0450-44e0-a5e1-337efefe89a1"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -34195,7 +34195,7 @@
       "beheerobject": "R2X82.9",
       "sample_asset_key": "0d24a655-c94d-4583-ad93-4edd2ffcd031"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -34229,7 +34229,7 @@
       "beheerobject": "N19X23.0",
       "sample_asset_key": "168ceabd-53f4-4d35-8003-7e6eccdd6ba3"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -34347,7 +34347,7 @@
       "beheerobject": "A11X65.3",
       "sample_asset_key": "0273eabf-e707-4dec-b262-c5838f3d7499"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep",
@@ -34724,7 +34724,7 @@
       "beheerobject": "A12X42.9",
       "sample_asset_key": "11b7b049-74c0-4b01-9ccc-4986c6c92e69"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -34947,7 +34947,7 @@
       "beheerobject": "R0X33.8",
       "sample_asset_key": "0060a0ff-9514-47e5-82fe-fa06389b5539"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -34982,7 +34982,7 @@
       "beheerobject": "A14X52.4",
       "sample_asset_key": "006deb78-58f3-45c1-a876-2923b67fb161"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -35020,7 +35020,7 @@
       "beheerobject": "R2X85.9",
       "sample_asset_key": "03c22e79-a11d-4c64-a413-2bdee6613c52"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#MIVModule": [
         "installatie#MIVMeetpunt"
@@ -35060,7 +35060,7 @@
       "beheerobject": "R1X11.8",
       "sample_asset_key": "04ce20d5-4839-4eea-905a-eb82e70b68d3"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -35261,7 +35261,7 @@
       "beheerobject": "R1X5.1",
       "sample_asset_key": "2330e446-fcaa-4763-9311-ff6cf8125a29"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -35540,7 +35540,7 @@
       "beheerobject": "A11X66.5",
       "sample_asset_key": "02089c30-2dd0-46f3-911f-399f26bea02f"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -35581,7 +35581,7 @@
       "beheerobject": "A10X84.8",
       "sample_asset_key": "03cebc54-9a93-4113-8f1f-b2105e0e16d0"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -35645,7 +35645,7 @@
       "beheerobject": "A1X54.4",
       "sample_asset_key": "0645cbc6-356d-4270-9984-aca3e3c1eab5"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#CameraGroep",
@@ -37095,7 +37095,7 @@
       "beheerobject": "R2X84.0",
       "sample_asset_key": "11520d28-7b9d-493d-b9b9-9ece5d977d6c"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordPK"
@@ -37295,7 +37295,7 @@
       "beheerobject": "R1X15.9",
       "sample_asset_key": "01e3f49e-c3ae-42e6-8c44-7079a2b167d1"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -37617,7 +37617,7 @@
       "beheerobject": "A10X44.5",
       "sample_asset_key": "1ac5e304-2914-4702-8f54-fd87c463e8c2"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -38049,7 +38049,7 @@
       "beheerobject": "R0X21.4",
       "sample_asset_key": "0851e489-d0c6-45b6-8b65-5917199b0c69"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -38142,7 +38142,7 @@
       "beheerobject": "A13X9.4",
       "sample_asset_key": "0b7cfb20-81a0-4f13-a11f-ee26baf2039f"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -38513,7 +38513,7 @@
       "beheerobject": "A1X29.5",
       "sample_asset_key": "1bca9cbc-b48d-4d5c-a099-ca3a1442687e"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Omvormer"
@@ -38623,7 +38623,7 @@
       "beheerobject": "R1X2.51",
       "sample_asset_key": "22cbfab8-623d-409d-852d-89519179fd8d"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -38914,7 +38914,7 @@
       "beheerobject": "A13X63.4",
       "sample_asset_key": "0c3bd6ea-6c1e-46e4-9b39-e83e6fd20283"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#MIVModule",
@@ -39271,7 +39271,7 @@
       "beheerobject": "A13X20.9",
       "sample_asset_key": "019e4ca7-a686-4f3e-97c1-0f51e17704a5"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -39727,7 +39727,7 @@
       "beheerobject": "R1X17.0",
       "sample_asset_key": "06c91a6d-1a9d-42e6-8b85-68e65e5a3bc6"
     },
-    "label": "MIV+RSS",
+    "label": "MIV+DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep"
@@ -40326,7 +40326,7 @@
       "beheerobject": "R0X46.2",
       "sample_asset_key": "380319e5-af01-4b40-819d-3962c0ffa66e"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -41144,7 +41144,7 @@
       "beheerobject": "A10X37.7",
       "sample_asset_key": "07b49a98-11f3-4a8a-9b0f-13b7b946b23b"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -41663,7 +41663,7 @@
       "beheerobject": "T70.SIM",
       "sample_asset_key": "25e4a54f-9cac-4e37-b1be-837367742443"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -41743,7 +41743,7 @@
       "beheerobject": "A11X99.1",
       "sample_asset_key": "319dfb73-da0c-486b-bf3c-6801c63edc41"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -42199,7 +42199,7 @@
       "beheerobject": "R1X15.8",
       "sample_asset_key": "1e051a0b-7725-47ee-a4f1-b9ed5152ee30"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "installatie#DynBordGroep"
@@ -42348,7 +42348,7 @@
       "beheerobject": "R1X10.4.Z",
       "sample_asset_key": "243056a8-e0ac-47c9-aea0-091e0640beed"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -42677,7 +42677,7 @@
       "beheerobject": "A8X1.0",
       "sample_asset_key": "0786f072-6390-4ba0-bd6d-78284683bf01"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -43110,7 +43110,7 @@
       "beheerobject": "N31X0.3",
       "sample_asset_key": "14694ae1-29bd-4bd9-a793-803d2fd30bb2"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -43565,7 +43565,7 @@
       "beheerobject": "A17X31.2",
       "sample_asset_key": "0209792d-c1b3-4ef8-92b7-d1ab089a9729"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -43763,7 +43763,7 @@
       "beheerobject": "R2X82.0",
       "sample_asset_key": "08b0ce05-4d5f-498f-82d8-17802ad5e55d"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -44025,7 +44025,7 @@
       "beheerobject": "A17X22.3",
       "sample_asset_key": "15a4e5c5-e788-4fed-a7de-6797c5023bf5"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Lichtmast": [
         "installatie#CameraGroep"
@@ -44366,7 +44366,7 @@
       "beheerobject": "R2X80.2",
       "sample_asset_key": "35a7714e-7135-4863-8661-13e0fbf80c29"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -44551,7 +44551,7 @@
       "beheerobject": "A12X31.4",
       "sample_asset_key": "01f61c59-30ab-4b44-8e56-2876f1ad6c76"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -44864,7 +44864,7 @@
       "beheerobject": "A4X6.3",
       "sample_asset_key": "0a3738ba-eceb-4804-85bf-e0181228174a"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -45613,7 +45613,7 @@
       "beheerobject": "A12X33.3",
       "sample_asset_key": "3a340d17-435d-4931-8117-498817c4ece5"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -46019,7 +46019,7 @@
       "beheerobject": "A14X50.7",
       "sample_asset_key": "07f3080a-747d-4adf-b148-eb37a19d1d1b"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -46312,7 +46312,7 @@
       "beheerobject": "A14X98.7",
       "sample_asset_key": "0c7a4864-dab2-4477-b64a-944a586afefd"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -46634,7 +46634,7 @@
       "beheerobject": "R1X14.56",
       "sample_asset_key": "17cfd11d-3541-4378-961a-175d9ecdd35b"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "installatie#CameraGroep",
@@ -46779,7 +46779,7 @@
       "beheerobject": "A112X1.3.Z",
       "sample_asset_key": "215bf169-03a1-4386-a3d4-94f2038929d5"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -46887,7 +46887,7 @@
       "beheerobject": "A14X93.8",
       "sample_asset_key": "28d08544-9bbd-4b2c-875a-3e9a785ca48a"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordVMS"
@@ -48003,7 +48003,7 @@
       "beheerobject": "R1X7.8",
       "sample_asset_key": "1d7a38c1-9adb-4416-98ce-6bb2f542b991"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Omvormer"
@@ -49589,7 +49589,7 @@
       "beheerobject": "R1X5.95",
       "sample_asset_key": "368f03bb-1b72-4153-b2d0-03f057711f1d"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -49617,7 +49617,7 @@
       "beheerobject": "A11X72.9",
       "sample_asset_key": "3811881c-62e9-4d95-a08e-528bef1c84b8"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -49641,7 +49641,7 @@
       "beheerobject": "R1tX0.45",
       "sample_asset_key": "38dac96e-873c-491e-a864-d89bb57c63fb"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "installatie#DynBordGroep": [
         "onderdeel#DynBordRSS"
@@ -49714,7 +49714,7 @@
       "beheerobject": "A10X81.3",
       "sample_asset_key": "3ef04a98-4135-4550-b47b-375f1b6f2a64"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordVMS"
@@ -50062,7 +50062,7 @@
       "beheerobject": "FAT25",
       "sample_asset_key": "02d3db66-6b26-4202-b1cc-7e339ba9e9c5"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordRSS",
@@ -50490,7 +50490,7 @@
       "beheerobject": "N49X1.3",
       "sample_asset_key": "1850c5bd-265e-4c0e-82cc-f6480e669932"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -50832,7 +50832,7 @@
       "beheerobject": "A12X42.1",
       "sample_asset_key": "23ba0a46-526f-4801-b564-c62c94ab08e5"
     },
-    "label": "RSS",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Galgpaal": [
         "installatie#DynBordGroep"
@@ -51773,7 +51773,7 @@
       "beheerobject": "A14X99.0",
       "sample_asset_key": "15a3347e-5556-4821-aff2-d1eff2c44cff"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Seinbrug": [
         "onderdeel#DynBordVMS"
