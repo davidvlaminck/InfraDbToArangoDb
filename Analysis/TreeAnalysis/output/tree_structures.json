@@ -15435,7 +15435,7 @@
       "beheerobject": "BOL.Tunnel.A2117",
       "sample_asset_key": "018febe2-a96c-4a82-a275-326a1e39172c"
     },
-    "label": "",
+    "label": "Tunnel",
     "tree": {
       "installatie#CameraGroep": [
         "onderdeel#Camera"
@@ -15755,7 +15755,7 @@
       "beheerobject": "XTVLY",
       "sample_asset_key": "00266d29-0030-4790-806b-bbfd0aa9329f"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#TT",
@@ -19018,7 +19018,7 @@
       "beheerobject": "XTOLE",
       "sample_asset_key": "0018b924-629d-4372-956e-182b97362d04"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "onderdeel#Netwerkelement"
@@ -19307,7 +19307,7 @@
       "beheerobject": "XTLOP",
       "sample_asset_key": "04cd4674-a065-4077-a718-06387320ac58"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#KlimaLegacy",
@@ -19633,7 +19633,7 @@
       "beheerobject": "XTCON",
       "sample_asset_key": "0435bbcd-7f8b-456c-88ce-6ef60ff0048d"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#Elc",
@@ -22876,7 +22876,7 @@
       "beheerobject": "XTDEU",
       "sample_asset_key": "0ca6dc03-d991-40bc-9129-f6d6619915ab"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#KlimaLegacy",
@@ -26947,7 +26947,7 @@
       "beheerobject": "XTAAL",
       "sample_asset_key": "012358b6-2270-485b-b45c-d354011dc80f"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#KlimaLegacy",
@@ -28280,7 +28280,7 @@
       "beheerobject": "XTOOS",
       "sample_asset_key": "07159f8f-fdb8-4555-bae2-f8b3d4222088"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#KlimaLegacy",
@@ -28620,7 +28620,7 @@
       "beheerobject": "XTHDV",
       "sample_asset_key": "08046170-901b-4a13-8c26-c5475e8688b6"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#LSDeel",
@@ -28804,7 +28804,7 @@
       "beheerobject": "XTGVA",
       "sample_asset_key": "04cb9332-427e-47e3-95f7-3ef633cf7580"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#LSDeel",
@@ -31183,7 +31183,7 @@
       "beheerobject": "XTWHZ",
       "sample_asset_key": "02941762-5734-442c-b915-8dd5fa0de161"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {},
     "lsdeel_uuids": [],
     "count": 31,
@@ -33563,7 +33563,7 @@
       "beheerobject": "XTAHO",
       "sample_asset_key": "01c642bd-d09b-4818-b622-aa929c682331"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#LSDeel",
@@ -33830,7 +33830,7 @@
       "beheerobject": "XTGRI",
       "sample_asset_key": "07d322aa-ebca-40bf-a910-619a7011b195"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#KlimaLegacy",
@@ -33898,7 +33898,7 @@
       "beheerobject": "XTLVP",
       "sample_asset_key": "0eda2521-bc9c-42ff-8e5f-d7a6c9036fa5"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#Elc"
@@ -34074,7 +34074,7 @@
       "beheerobject": "XTHEV",
       "sample_asset_key": "07361650-2aff-42b0-80ff-9c907d0556fe"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#KlimaLegacy",
@@ -34126,7 +34126,7 @@
       "beheerobject": "XTMAD",
       "sample_asset_key": "0c7ace0f-6c14-42c8-9f79-311b5f7240d2"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#KlimaLegacy",
@@ -40672,7 +40672,7 @@
       "beheerobject": "XTSNK",
       "sample_asset_key": "04064ad1-5a03-433d-9c59-b0dc7e85a82e"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#Elc",
@@ -40743,7 +40743,7 @@
       "beheerobject": "XTKER",
       "sample_asset_key": "0957e040-31db-41d6-9b7b-30856f34ed69"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#LSDeel",
@@ -42713,7 +42713,7 @@
       "beheerobject": "XTTAV",
       "sample_asset_key": "07aebe90-d58c-4ec6-b364-7fb496a30499"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#Elc",
@@ -44286,7 +44286,7 @@
       "beheerobject": "XTOUD",
       "sample_asset_key": "2c754b21-1361-4121-8c36-66cf5b62dcef"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#KlimaLegacy",
@@ -45349,7 +45349,7 @@
       "beheerobject": "XTZIZ",
       "sample_asset_key": "1c93f315-9124-42c3-93c0-50fd3a7704ba"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#LSDeel",
@@ -46338,7 +46338,7 @@
       "beheerobject": "XTAWT",
       "sample_asset_key": "0cb52130-fb35-4937-8f7b-ae446a213874"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#LSDeel",
@@ -47552,7 +47552,7 @@
       "beheerobject": "XTAAR",
       "sample_asset_key": "0815097e-0033-40ea-ac2c-4f98acb3ff3b"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#LSDeel"
@@ -47618,7 +47618,7 @@
       "beheerobject": "XTEVG",
       "sample_asset_key": "0a6ece00-74b0-463c-a402-b005a6776db6"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#KlimaLegacy",
@@ -48078,7 +48078,7 @@
       "beheerobject": "XTBOH",
       "sample_asset_key": "202e1aaa-5fdd-4085-b9a1-89f6135781cd"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#KlimaLegacy",
@@ -48292,7 +48292,7 @@
       "beheerobject": "XTVLI",
       "sample_asset_key": "2d1b1195-2475-49f4-a81b-a5f46a3e755b"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -48788,7 +48788,7 @@
       "beheerobject": "XTSPI",
       "sample_asset_key": "068bac2f-539e-4bb2-abe3-dd1c9a7b99b3"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#LS",
@@ -50029,7 +50029,7 @@
       "beheerobject": "XTOSH",
       "sample_asset_key": "01183081-0540-4181-b7ac-fd0b055f2731"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#KlimaLegacy",
@@ -50102,7 +50102,7 @@
       "beheerobject": "XTZKO",
       "sample_asset_key": "02fe8f71-ce49-440c-9981-1252d7cb0d2f"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#LSDeel",
@@ -51998,7 +51998,7 @@
       "beheerobject": "XTHEG",
       "sample_asset_key": "1f02e6c4-8030-40b9-b36c-cd45324a07d5"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#LSDeel",
@@ -52162,7 +52162,7 @@
       "beheerobject": "XTAMM",
       "sample_asset_key": "2fc2bf40-f0bc-4af4-a893-22495951535c"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#LSDeel",
@@ -52406,7 +52406,7 @@
       "beheerobject": "XTOVK",
       "sample_asset_key": "79c20e2f-9f3b-4d14-b57d-dbe8c523c575"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -52676,7 +52676,7 @@
       "beheerobject": "XTPEN",
       "sample_asset_key": "112cfd40-422c-4686-b144-6c9715c18525"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#KlimaLegacy",
@@ -52794,7 +52794,7 @@
       "beheerobject": "XTLMP",
       "sample_asset_key": "1c5d39a7-d230-422e-b099-8c4a6ad26e22"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#LSDeel",
@@ -52826,7 +52826,7 @@
       "beheerobject": "XTLRD",
       "sample_asset_key": "227565b3-30b5-41d2-9778-8c475d232e16"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -52848,7 +52848,7 @@
       "beheerobject": "XTEVW",
       "sample_asset_key": "22edc4e7-d77f-4cba-a023-9433588b1158"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#Elc",
@@ -53246,7 +53246,7 @@
       "beheerobject": "XTHAA",
       "sample_asset_key": "3daaee71-17a1-4402-b3a0-86beca727564"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#LSDeel",
@@ -53447,7 +53447,7 @@
       "beheerobject": "XTKSD",
       "sample_asset_key": "8d9a7a7d-7940-4068-a873-abcdc846e76e"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#Elc",
@@ -53762,7 +53762,7 @@
       "beheerobject": "XTHLP",
       "sample_asset_key": "1e2415ea-78a6-4497-9086-6c605b226c29"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {},
     "lsdeel_uuids": [],
     "count": 3,
@@ -54122,7 +54122,7 @@
       "beheerobject": "XTMRT",
       "sample_asset_key": "7e86166b-4b07-479b-8060-55c2a8dddf0e"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#Elc",
@@ -54193,7 +54193,7 @@
       "beheerobject": "XTZWA",
       "sample_asset_key": "ac247354-3b09-4dd2-b17f-80dab2441ee6"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#TT",
@@ -54257,7 +54257,7 @@
       "beheerobject": "XTAHB",
       "sample_asset_key": "00a721fc-1281-4f9c-a98e-a1d7820bcb63"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#KlimaLegacy"
@@ -54845,7 +54845,7 @@
       "beheerobject": "XTVEB",
       "sample_asset_key": "5aec6f6f-c308-45b6-ad5f-0aa0b51a4e8c"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {},
     "lsdeel_uuids": [],
     "count": 1,
