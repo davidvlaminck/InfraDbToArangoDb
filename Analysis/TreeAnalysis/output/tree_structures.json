@@ -27573,7 +27573,7 @@
       "beheerobject": "WEV.Tunnel.KW0060",
       "sample_asset_key": "02eba23a-35b3-48f1-9bea-1e238c9f80b8"
     },
-    "label": "",
+    "label": "Tunnel",
     "tree": {
       "installatie#Tunneluitrusting": [
         "installatie#CameraGroep",
@@ -33339,7 +33339,7 @@
       "beheerobject": "XTWEV",
       "sample_asset_key": "0e71a3d0-5608-4743-8cdd-850899588ca6"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "installatie#CameraGroep",
@@ -39199,7 +39199,7 @@
       "beheerobject": "XTBEV",
       "sample_asset_key": "4c79a5d5-a96f-444c-ae01-856edda0a355"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "installatie#CameraGroep",
@@ -43309,7 +43309,7 @@
       "beheerobject": "XTMER",
       "sample_asset_key": "25297243-aadd-442b-82f6-75f611b7c603"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "lgc:installatie#Kast",
@@ -45126,7 +45126,7 @@
       "beheerobject": "XTAAJ",
       "sample_asset_key": "156a89a7-3143-4a04-bb71-5dbfeb8ffa5a"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#KlimaLegacy",
@@ -46579,7 +46579,7 @@
       "beheerobject": "XTLIC",
       "sample_asset_key": "166580f4-b341-4b51-9f06-40fda2356a2a"
     },
-    "label": "",
+    "label": "Netwerk",
     "tree": {
       "onderdeel#Cabine": [
         "installatie#CameraGroep",
