@@ -21554,7 +21554,7 @@
       "beheerobject": "A2595",
       "sample_asset_key": "0104d0dc-8d59-47e8-8d3b-f8707e8bb9d0"
     },
-    "label": "",
+    "label": "Pomp+HS",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -23713,7 +23713,7 @@
       "beheerobject": "WWD314",
       "sample_asset_key": "042d43b9-5ec5-4ce5-9c23-f0063a0472e0"
     },
-    "label": "",
+    "label": "District",
     "tree": {
       "installatie#Gebouw": [
         "lgc:installatie#LSDeel"
@@ -40815,7 +40815,7 @@
       "beheerobject": "WWD312",
       "sample_asset_key": "13d8b4b6-4a57-4efd-a88e-2179f8624e36"
     },
-    "label": "",
+    "label": "District",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -41204,7 +41204,7 @@
       "beheerobject": "WAD125",
       "sample_asset_key": "08b4e8ef-0407-4dd0-ae0a-f7d372c13790"
     },
-    "label": "",
+    "label": "District",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -45150,7 +45150,7 @@
       "beheerobject": "WWD315",
       "sample_asset_key": "15b3ae72-8be6-4e98-937d-326c4b116ea4"
     },
-    "label": "",
+    "label": "District",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -47302,7 +47302,7 @@
       "beheerobject": "WBD21201",
       "sample_asset_key": "02e74e86-4cbe-4990-9300-51e1c7e261fb"
     },
-    "label": "",
+    "label": "District",
     "tree": {
       "installatie#Gebouw": [
         "installatie#CameraGroep",
