@@ -23967,7 +23967,7 @@
       "beheerobject": "A4085",
       "sample_asset_key": "019b097f-e9d7-4e34-b776-2696f83d7d50"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "installatie#Tunnelverlichting": [
         "lgc:installatie#VPBevestig"
@@ -24613,7 +24613,7 @@
       "beheerobject": "GHADVM5",
       "sample_asset_key": "014927a1-4140-4e16-81b2-2bdbd9200c5f"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -26746,7 +26746,7 @@
       "beheerobject": "N34X6.1",
       "sample_asset_key": "05e0ebc8-7ed3-4812-992c-a4106a52f28e"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -32251,7 +32251,7 @@
       "beheerobject": "A4405",
       "sample_asset_key": "046fe897-91b6-47a7-9503-32bcbc0a8372"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "installatie#Tunnelverlichting": [
         "lgc:installatie#VPBevestig"
@@ -35225,7 +35225,7 @@
       "beheerobject": "KO0109",
       "sample_asset_key": "17ae02ab-db76-45d4-8c6a-1064388c641b"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -36142,7 +36142,7 @@
       "beheerobject": "N34X5.0",
       "sample_asset_key": "064fc9d8-b0bf-4f30-a81d-fc87c15ead89"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -40247,7 +40247,7 @@
       "beheerobject": "112G6",
       "sample_asset_key": "178d6c26-9b1d-4b61-98a2-bc909d8a3eea"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "installatie#Pompstation": [
         "lgc:installatie#Deb"
@@ -41608,7 +41608,7 @@
       "beheerobject": "A4096",
       "sample_asset_key": "203aefc5-b931-46f7-8359-934b7180862a"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel"
@@ -42261,7 +42261,7 @@
       "beheerobject": "N34X6.8",
       "sample_asset_key": "20231f91-73ea-4cce-859e-4e66a069d509"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -42882,7 +42882,7 @@
       "beheerobject": "A2072",
       "sample_asset_key": "0a27e15b-1d0f-4f07-8a8e-3c15bfd5525b"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "installatie#Gebouw": [
         "installatie#Tunnelverlichting",
@@ -43540,7 +43540,7 @@
       "beheerobject": "N34X7.6",
       "sample_asset_key": "01559d9f-c074-497e-9b9a-5382925c6aff"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LSDeel",
@@ -44794,7 +44794,7 @@
       "beheerobject": "KO0173",
       "sample_asset_key": "0838ef1a-99ec-4430-9f2b-0e40dc4ff9eb"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -45252,7 +45252,7 @@
       "beheerobject": "N34X8.2",
       "sample_asset_key": "1bc92d68-d8bd-466c-b07e-ddbca617dc86"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Paal": [
         "onderdeel#DynBordOpMaat"
@@ -45463,7 +45463,7 @@
       "beheerobject": "480G5",
       "sample_asset_key": "246e4d03-30fe-4877-9a76-dc4024a5a5b5"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "lgc:installatie#LS": [
         "installatie#Tunnelverlichting"
@@ -46505,7 +46505,7 @@
       "beheerobject": "A2083",
       "sample_asset_key": "1334fbcd-01ef-45a4-8401-de4bd2ab1d0e"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HS",
@@ -46554,7 +46554,7 @@
       "beheerobject": "A3461",
       "sample_asset_key": "154a3354-f874-4388-be00-e5b6c196d02a"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "lgc:installatie#PoS": [
         "lgc:installatie#AB",
@@ -47672,7 +47672,7 @@
       "beheerobject": "N34X0.2.Z",
       "sample_asset_key": "0bc0bd85-f81a-4782-8215-5c8c19def307"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -47910,7 +47910,7 @@
       "beheerobject": "KW0514",
       "sample_asset_key": "187c7ca9-e1fa-4d44-b01e-2d420ac88b83"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -48994,7 +48994,7 @@
       "beheerobject": "A3129",
       "sample_asset_key": "0beb4a0e-cff0-4464-b5f2-b872e1edf13e"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -49399,7 +49399,7 @@
       "beheerobject": "KW0222.Pompstation",
       "sample_asset_key": "269b19ea-b328-4bd6-9a21-d951f5410e03"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "lgc:installatie#LSDeel": [
         "installatie#Tunnelverlichting",
@@ -50141,7 +50141,7 @@
       "beheerobject": "KO0571_Pompstation",
       "sample_asset_key": "04dd2572-e464-44af-9fd1-525f446546a7"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "lgc:installatie#Kast": [
         "onderdeel#Laagspanningsbord"
@@ -50740,7 +50740,7 @@
       "beheerobject": "WW0289",
       "sample_asset_key": "209fb3fa-4686-40e2-8ead-7e2167dc44f4"
     },
-    "label": "",
+    "label": "VRI",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -51027,7 +51027,7 @@
       "beheerobject": "KO0117",
       "sample_asset_key": "38732ee5-591c-4897-8b4e-94d05ad23ac6"
     },
-    "label": "",
+    "label": "Pomp",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -52427,7 +52427,7 @@
       "beheerobject": "A3277",
       "sample_asset_key": "c49c34b9-65cc-4bad-be77-3207548d5839"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#Kast": [
         "lgc:installatie#LS",
@@ -52898,7 +52898,7 @@
       "beheerobject": "N74X66.3",
       "sample_asset_key": "24449036-600a-4a39-bd73-75bc31786fc8"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "onderdeel#Lichtmast": [
         "lgc:installatie#Kast",
@@ -53613,7 +53613,7 @@
       "beheerobject": "WW0961",
       "sample_asset_key": "08dffd1b-cec8-424b-aade-9c823f21c2b1"
     },
-    "label": "",
+    "label": "DynBord",
     "tree": {
       "lgc:installatie#HSCabineLegacy": [
         "lgc:installatie#HSDeel"
