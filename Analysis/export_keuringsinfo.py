@@ -332,7 +332,17 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
 
     # helper normalizations
     def _is_not_conform(s: str) -> bool:
-        return 'niet' in s and 'conform' in s or s.startswith('niet-')
+        # Recognise a broader set of phrases that indicate a non-conform result.
+        # Examples observed in data: 'niet-conform', 'niet conform', 'inbreuken', 'inbreuk'
+        if 'niet-conform' in s or 'niet conform' in s:
+            return True
+        if s.startswith('niet-'):
+            return True
+        if 'niet' in s and 'conform' in s:
+            return True
+        if 'inbreuk' in s or 'inbreuken' in s:
+            return True
+        return False
 
     def _is_conform(s: str) -> bool:
         # ensure we don't misclassify 'niet-conform' as 'conform'
@@ -523,6 +533,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
     headers = [
         "toezichtgroep",
         "toezichter",
+        "pivot_categorie",
         "type",
         "uuid",
         "naam",
@@ -626,9 +637,12 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
             return str(v)
 
         resolved_name = _resolved_toezichtgroep(r)
+        # compute pivot category using same cutoff as pivot sheets
+        pivot_cat = _pivot_result_key(r, cutoff=cutoff)
         row_values = [
             _sanitize(resolved_name if resolved_name is not None else r.toezichtgroep),
             _sanitize(getattr(r, 'toezichter_agent_name', None)),
+            _sanitize(pivot_cat),
             _sanitize(r.type),
             _sanitize(r.uuid),
             _sanitize(r.naam),
