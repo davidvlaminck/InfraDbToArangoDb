@@ -106,6 +106,8 @@ class KeuringsRecord:
     toestand: str | None = None
     datum_laatste_keuring: str | None = None
     resultaat_keuring: str | None = None
+    bs: Any | None = None
+    actief_bestekken: list[str] | None = None
     longitude: float | None = None
     latitude: float | None = None
 
@@ -206,6 +208,14 @@ def build_aql(
         + "  LET toezichter_agent = FIRST(FOR rel IN betrokken_relaties FILTER rel.edge.rol == 'toezichter' RETURN rel.vertex)\n"
         + "  LET toezichtgroep_agent_name = (toezichtgroep_agent != null && toezichtgroep_agent.purl != null && toezichtgroep_agent.purl.Agent_naam != null ? toezichtgroep_agent.purl.Agent_naam : (toezichtgroep_agent != null ? toezichtgroep_agent.naam : null))\n"
         + "  LET tz_from_agent = toezichtgroep_agent_name\n\n"
+        + "  // derive active bestek identifiers (eDeltaDossiernummer) from embedded bs.bestekkoppeling -> DOCUMENT(_to)\n"
+        + "  LET actief_bestek_list = (\n"
+        + "    FOR bk IN (a.bs != null ? (a.bs.Bestek_bestekkoppeling) : [])\n"
+        + "      FILTER bk.DtcBestekkoppeling_status != null && CONTAINS(bk.DtcBestekkoppeling_status, '/actief')\n"
+        + "      LET bestekdoc = DOCUMENT(bk._to)\n"
+        + "      FILTER bestekdoc != null\n"
+        + "      RETURN bestekdoc.eDeltaDossiernummer\n"
+        + "  )\n"
         + "  RETURN {\n"
         + "    \"toezichtgroep\": tz != null ? tz.naam : (tz_from_agent != null ? tz_from_agent : \"UNKNOWN\"),\n"
         + "    \"toezichtgroep_raw\": (a.toezichtgroep != null ? a.toezichtgroep : null),\n"
@@ -229,7 +239,9 @@ def build_aql(
         + "    \"isActief\": a.AIMDBStatus_isActief,\n"
         + "    \"toestand\": a.toestand,\n\n"
         + "    \"datum_laatste_keuring\": (latest_keuring != null ? latest_keuring.KeuringObject_keuringsdatum : null),\n"
-        + "    \"resultaat_keuring\": resultaat_keuring_stripped,\n\n"
+        + "    \"resultaat_keuring\": resultaat_keuring_stripped,\n"
+        + "    \"bs\": a.bs,\n"
+        + "    \"actief_bestekken\": actief_bestek_list,\n\n"
         + "    \"longitude\": (a.geometry != null ? (LENGTH(a.geometry.coordinates) > 0 ? a.geometry.coordinates[0] : null) : null),\n"
         + "    \"latitude\": (a.geometry != null ? (LENGTH(a.geometry.coordinates) > 1 ? a.geometry.coordinates[1] : null) : null)\n"
         + "  }"
@@ -536,6 +548,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
         "naam",
         "naampad",
         "techniek",
+        "actief_bestek(ken)",
         "toezichtgroep",
         "toezichter",
         "isActief",
@@ -670,12 +683,23 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
         resolved_name = _resolved_toezichtgroep(r)
         # compute pivot category using same cutoff as pivot sheets
         pivot_cat = _pivot_result_key(r, cutoff=cutoff)
+
+        # prefer the server-side computed actief_bestekken list if present
+        actief_bestek = None
+        try:
+            if getattr(r, 'actief_bestekken', None):
+                vals = r.actief_bestekken or []
+                if isinstance(vals, list) and vals:
+                    actief_bestek = '|'.join(str(v) for v in vals if v)
+        except Exception:
+            actief_bestek = None
         row_values = [
             _sanitize(r.uuid),
             _sanitize(lsdeel_cell_value if lsdeel_cell_value else None),
             _sanitize(r.naam),
             _sanitize(r.naampad),
             _sanitize(techniek),
+            _sanitize(actief_bestek),
             _sanitize(resolved_name if resolved_name is not None else r.toezichtgroep),
             _sanitize(getattr(r, 'toezichter_agent_name', None)),
             _sanitize(r.isActief),

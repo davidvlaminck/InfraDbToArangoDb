@@ -71,8 +71,7 @@ def generate_excel(
 
     records = fetch_records(
         db,
-        ls_short_uri=ls_short_uri,
-        lsdeel_short_uri=lsdeel_short_uri,
+        asset_short_uri=ls_short_uri,
         limit=limit,
     )
 
@@ -174,7 +173,7 @@ def run_pivot_debug(settings_path: Path, env: Environment, ls_short_uri: str, ls
     settings = _load_settings(settings_path)
     db = _create_db_from_settings(settings, env=env)
 
-    recs = fetch_records(db, ls_short_uri=ls_short_uri, lsdeel_short_uri=lsdeel_short_uri, limit=limit)
+    recs = fetch_records(db, asset_short_uri=ls_short_uri, limit=limit)
 
     cutoff = dt.date(2021, 1, 1)
 
@@ -229,7 +228,7 @@ def run_quick_stats(settings_path: Path, env: Environment, ls_short_uri: str, ls
     settings = _load_settings(settings_path)
     db = _create_db_from_settings(settings, env=env)
 
-    records = fetch_records(db, ls_short_uri=ls_short_uri, lsdeel_short_uri=lsdeel_short_uri, limit=limit)
+    records = fetch_records(db, asset_short_uri=ls_short_uri, limit=limit)
 
     print(f"Fetched {len(records)} records")
     # type and match counts
@@ -313,7 +312,7 @@ def main(argv: list[str] | None = None) -> int:
         # need to fetch records to compare
         settings_obj = _load_settings(settings)
         db = _create_db_from_settings(settings_obj, env=env)
-        recs = fetch_records(db, ls_short_uri=ls, lsdeel_short_uri=lsdeel, limit=limit)
+        recs = fetch_records(db, asset_short_uri=ls, limit=limit)
         report = compare_records_vs_excel(recs, out, include_not_meegenomen=False)
         for k, v in report.items():
             print(f"{k}: py={v['py']} excel={v['excel']} diff={v['diff']}")
