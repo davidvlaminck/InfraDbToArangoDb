@@ -92,13 +92,13 @@ def main() -> int:
     # Quick sanity output in console
     print(f"Fetched {len(records)} records")
     print("type counts:", dict(Counter(r.type for r in records)))
-    print("match counts:", dict(Counter(r.match for r in records)))
+    # match field removed; previously constant 'single'
+    print("record count:", len(records))
     print("sample rows:")
     for r in records[:10]:
         print(
             {
                 "type": r.type,
-                "match": r.match,
                 "uuid": r.uuid,
                 "naam": r.naam,
                 "naampad": r.naampad,

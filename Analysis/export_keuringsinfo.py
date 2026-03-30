@@ -83,7 +83,7 @@ PIVOT_ALL_SHEET = "Pivot (incl Niet meegenomen)"
 class KeuringsRecord:
     toezichtgroep: str
     type: str  # LS | Laagspanningsbord (LSB)
-    match: str
+    # match field removed (always 'single' before)
     uuid: str
     betrokken_agent_key: str | None = None
     betrokken_agent_uuid: str | None = None
@@ -189,7 +189,18 @@ def build_aql(
         + "  FILTER a.AIMDBStatus_isActief == true\n"
         + filter_clause
         + "  LET tz = FIRST(FOR t IN toezichtgroepen FILTER t._key == a.toezichtgroep_key LIMIT 1 RETURN t)\n"
-        + "  LET ins = a.ins\n"
+        + "  // find latest ElektrischeKeuring via assetrelaties (relatietype HeeftKeuring)\n"
+        + "  LET key_relatie_heeftkeuring = FIRST(FOR rel_type IN relatietypes FILTER rel_type.naam == 'HeeftKeuring' LIMIT 1 RETURN rel_type._key)\n"
+        + "  LET latest_keuring = FIRST(\n"
+        + "    FOR v, e IN 1..1 OUTBOUND a assetrelaties\n"
+        + "      FILTER e.relatietype_key == key_relatie_heeftkeuring\n"
+        + "      FILTER v.KeuringObject_keuringsdatum != null\n"
+        + "      SORT v.KeuringObject_keuringsdatum DESC\n"
+        + "      LIMIT 1\n"
+        + "      RETURN v\n"
+        + "  )\n"
+        + "  LET __result_array = (latest_keuring != null && latest_keuring.ElektrischeKeuring_resultaat != null ? SPLIT(latest_keuring.ElektrischeKeuring_resultaat, '/') : null)\n"
+        + "  LET resultaat_keuring_stripped = (__result_array != null ? __result_array[LENGTH(__result_array) - 1] : null)\n"
         + "  LET betrokken_relaties = (FOR v, e IN 1..1 OUTBOUND a betrokkenerelaties RETURN {edge: e, vertex: v})\n"
         + "  LET toezichtgroep_agent = FIRST(FOR rel IN betrokken_relaties FILTER rel.edge.rol == 'toezichtsgroep' RETURN rel.vertex)\n"
         + "  LET toezichter_agent = FIRST(FOR rel IN betrokken_relaties FILTER rel.edge.rol == 'toezichter' RETURN rel.vertex)\n"
@@ -210,16 +221,15 @@ def build_aql(
         + "    \"toezichter_agent_key\": (toezichter_agent != null ? toezichter_agent._key : null),\n"
         + "    \"toezichter_agent_uuid\": (toezichter_agent != null ? toezichter_agent.uuid : null),\n"
         + "    \"toezichter_agent_name\": (toezichter_agent != null && toezichter_agent.purl != null && toezichter_agent.purl.Agent_naam != null ? toezichter_agent.purl.Agent_naam : (toezichter_agent != null ? toezichter_agent.naam : null)),\n"
-        + "    \"type\": @asset_short_uri == \"lgc:onderdeel#Laagspanningsbord\" ? \"Laagspanningsbord\" : @asset_short_uri,\n"
-        + "    \"match\": \"single\",\n\n"
+        + "    \"type\": @asset_short_uri == \"lgc:onderdeel#Laagspanningsbord\" ? \"Laagspanningsbord\" : @asset_short_uri,\n\n"
         + "    \"uuid\": a._key,\n"
         + "    \"lsb_uuid\": null,\n"
         + "    \"naam\": a.AIMNaamObject_naam,\n"
         + "    \"naampad\": a.NaampadObject_naampad,\n\n"
         + "    \"isActief\": a.AIMDBStatus_isActief,\n"
         + "    \"toestand\": a.toestand,\n\n"
-        + "    \"datum_laatste_keuring\": ins != null ? ins.EMObject_datumLaatsteKeuring : null,\n"
-        + "    \"resultaat_keuring\": ins != null ? ins.EMObject_resultaatKeuring : null,\n\n"
+        + "    \"datum_laatste_keuring\": (latest_keuring != null ? latest_keuring.KeuringObject_keuringsdatum : null),\n"
+        + "    \"resultaat_keuring\": resultaat_keuring_stripped,\n\n"
         + "    \"longitude\": (a.geometry != null ? (LENGTH(a.geometry.coordinates) > 0 ? a.geometry.coordinates[0] : null) : null),\n"
         + "    \"latitude\": (a.geometry != null ? (LENGTH(a.geometry.coordinates) > 1 ? a.geometry.coordinates[1] : null) : null)\n"
         + "  }"
@@ -514,7 +524,6 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
         "toezichtgroep",
         "toezichter",
         "type",
-        "match",
         "uuid",
         "naam",
         "naampad",
@@ -621,7 +630,6 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
             _sanitize(resolved_name if resolved_name is not None else r.toezichtgroep),
             _sanitize(getattr(r, 'toezichter_agent_name', None)),
             _sanitize(r.type),
-            _sanitize(r.match),
             _sanitize(r.uuid),
             _sanitize(r.naam),
             _sanitize(r.naampad),
