@@ -1,4 +1,4 @@
-"""List all LSDeel assets with toezichter and toezichtgroep.
+"""List all Laagspanningsbord (formerly LSDeel) assets with toezichter and toezichtgroep.
 
 Outputs a CSV-style table to stdout and writes a CSV file next to this script.
 
@@ -16,14 +16,14 @@ from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 
 SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
 ENV = Environment.PRD
-OUT_CSV = Path(__file__).with_name(f"lsdeel_toezicht_{dt.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
+OUT_CSV = Path(__file__).with_name(f"lsb_toezicht_{dt.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
 
 AQL = """
-LET lsdeel_key = FIRST(FOR at IN assettypes FILTER at.short_uri == @lsdeel_short_uri LIMIT 1 RETURN at._key)
+LET lsb_key = FIRST(FOR at IN assettypes FILTER at.short_uri == @lsb_short_uri LIMIT 1 RETURN at._key)
 
 FOR a IN assets
   FILTER a.AIMDBStatus_isActief == true
-  FILTER a.assettype_key == lsdeel_key
+  FILTER a.assettype_key == lsb_key
   LET tz_group = (a.toezichtgroep_key != null ? FIRST(FOR t IN toezichtgroepen FILTER t._key == a.toezichtgroep_key LIMIT 1 RETURN t) : null)
   LET tz_obj = a.tz
   RETURN {
@@ -66,10 +66,10 @@ def main() -> int:
     settings = _load_settings(SETTINGS_PATH)
     db = _create_db_from_settings(settings, env=ENV)
 
-    cursor = db.aql.execute(AQL, bind_vars={"lsdeel_short_uri": "lgc:installatie#LSDeel"}, batch_size=2000, ttl=600, stream=True)
+    cursor = db.aql.execute(AQL, bind_vars={"lsb_short_uri": "onderdeel#Laagspanningsbord"}, batch_size=2000, ttl=600, stream=True)
 
     rows = list(cursor)
-    print(f"Found {len(rows)} LSDeel assets (AIMDBStatus_isActief==true)")
+    print(f"Found {len(rows)} Laagspanningsbord assets (AIMDBStatus_isActief==true)")
 
     # Print header and a few rows to console
     header = [

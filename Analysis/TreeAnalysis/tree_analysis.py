@@ -18,8 +18,8 @@ from collections import defaultdict
 from typing import Dict, Iterable, List, Set, Tuple, Any
 from pathlib import Path
 
-# default short URI for LSDeel type; make configurable globally
-DEFAULT_LSDEEL_SHORT_URI = "lgc:installatie#LSDeel"
+# default short URI for Laagspanningsbord (formerly LSDeel); make configurable globally
+DEFAULT_LSB_SHORT_URI = "lgc:onderdeel#Laagspanningsbord"
 
 
 def _beheer_from_parts(parts: List[str]) -> str | None:
@@ -58,7 +58,7 @@ def _structure_id_from_key(key: str) -> str:
 def build_structures_and_instances(
     assets: Iterable[Dict[str, Any]],
     assettype_map: Dict[str, str],
-    lsdeel_short_uri: str | None = DEFAULT_LSDEEL_SHORT_URI,
+    lsb_short_uri: str | None = DEFAULT_LSB_SHORT_URI,
 ) -> Tuple[Dict[str, Dict[str, Any]], Dict[str, Dict[str, Any]]]:
     """Build canonical structures and instances from assets.
 
@@ -102,7 +102,7 @@ def build_structures_and_instances(
     for beheer, items in groups.items():
         # collect level -> set of short_uris
         level_sets: Dict[int, Set[str]] = defaultdict(set)
-        lsdeel_keys: List[str] = []
+        lsb_keys: List[str] = []
         asset_keys: List[str] = []
         # collect exact path -> types so we can infer parent-child relationships
         exact_map: Dict[str, Set[str]] = defaultdict(set)
@@ -117,8 +117,8 @@ def build_structures_and_instances(
             ak = it.get("_key")
             if ak:
                 asset_keys.append(ak)
-            if lsdeel_short_uri and short == lsdeel_short_uri and ak:
-                lsdeel_keys.append(ak)
+            if lsb_short_uri and short == lsb_short_uri and ak:
+                lsb_keys.append(ak)
             path = "/".join(parts) if parts else ""
             if short:
                 exact_map[path].add(short)
@@ -207,7 +207,7 @@ def build_structures_and_instances(
         instances[beheer] = {
             "structure_id": structures_by_key[key]["id"],
             "asset_keys": asset_keys,
-            "lsdeel_keys": lsdeel_keys,
+            "lsb_keys": lsb_keys,
             "num_assets": len(asset_keys),
         }
 
@@ -241,7 +241,7 @@ def run_and_persist_structures(
     assets: Iterable[Dict[str, Any]],
     assettype_map: Dict[str, str],
     out_dir: Path,
-    lsdeel_short_uri: str | None = DEFAULT_LSDEEL_SHORT_URI,
+    lsb_short_uri: str | None = DEFAULT_LSB_SHORT_URI,
     omit_structure: bool = False,
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Dict[str, Any]]]:
     """Run structure extraction and persist JSON files.
@@ -260,13 +260,13 @@ def run_and_persist_structures(
     """
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    structures, instances = build_structures_and_instances(assets, assettype_map, lsdeel_short_uri)
+    structures, instances = build_structures_and_instances(assets, assettype_map, lsb_short_uri)
 
     # Annotate structures with count (total assets), occurrence (# unique beheerobjects)
     # and lsdeel_uuids (list of UUIDs of LSDeel assets in that structure)
     assets_by_id: dict[str, int] = {}
     occurrence_by_id: dict[str, int] = {}
-    lsdeel_by_id: dict[str, set] = {}
+    lsb_by_id: dict[str, set] = {}
     for beheer, inst in instances.items():
         sid = inst.get("structure_id")
         if not sid:
@@ -277,10 +277,10 @@ def run_and_persist_structures(
             na = 0
         assets_by_id[sid] = assets_by_id.get(sid, 0) + na
         occurrence_by_id[sid] = occurrence_by_id.get(sid, 0) + 1
-        # collect lsdeel keys
-        lks = inst.get("lsdeel_keys") or []
+        # collect lsb keys
+        lks = inst.get("lsb_keys") or []
         if lks:
-            sset = lsdeel_by_id.setdefault(sid, set())
+            sset = lsb_by_id.setdefault(sid, set())
             for v in lks:
                 sset.add(v)
 
@@ -292,8 +292,8 @@ def run_and_persist_structures(
         # optionally remove the canonical 'structure' field when it's redundant
         if omit_structure and "structure" in s_copy:
             s_copy.pop("structure")
-        # add lsdeel UUIDs list (sorted) for this structure
-        s_copy["lsdeel_uuids"] = sorted(list(lsdeel_by_id.get(sid, set())))
+        # add lsb UUIDs list (sorted) for this structure
+        s_copy["lsb_uuids"] = sorted(list(lsb_by_id.get(sid, set())))
         s_copy["count"] = int(assets_by_id.get(sid, 0))
         s_copy["occurrence"] = int(occurrence_by_id.get(sid, 0))
         structures_list.append(s_copy)

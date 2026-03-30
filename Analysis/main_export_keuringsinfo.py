@@ -38,9 +38,8 @@ from API.APIEnums import Environment
 SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
 ENV = Environment.PRD
 
-# LSDeel is fairly stable in this project; LS short-uri differs per dataset.
-LS_SHORT_URI = "lgc:installatie#LS"  # you said you updated this already
-LSDEEL_SHORT_URI = "lgc:installatie#LSDeel"
+# Default to Laagspanningsbord which is the typical target for the export.
+ASSET_SHORT_URI = "onderdeel#Laagspanningsbord"
 
 # Output file
 OUT_PATH = Path(__file__).with_name(f"keuringsinfo_{dt.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx")
@@ -80,14 +79,12 @@ def main() -> int:
     settings = _load_settings(SETTINGS_PATH)
     db = _create_db_from_settings(settings, env=ENV)
 
-    # Validate that short_uri values exist in this DB.
-    _assert_assettype_exists(db, LS_SHORT_URI)
-    _assert_assettype_exists(db, LSDEEL_SHORT_URI)
+    # Validate that the requested short_uri exists in this DB.
+    _assert_assettype_exists(db, ASSET_SHORT_URI)
 
     records = fetch_records(
         db,
-        ls_short_uri=LS_SHORT_URI,
-        lsdeel_short_uri=LSDEEL_SHORT_URI,
+        asset_short_uri=ASSET_SHORT_URI,
         max_runtime_seconds=MAX_RUNTIME_SECONDS,
         limit=DEBUG_LIMIT,
     )

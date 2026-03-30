@@ -1,4 +1,4 @@
-"""Export keuringsinfo (LS/LSDeel) from ArangoDB to an Excel workbook.
+"""Export keuringsinfo (LS/Laagspanningsbord) from ArangoDB to an Excel workbook.
 
 This script is intentionally placed in Analysis/ as requested.
 
@@ -7,11 +7,8 @@ Assumptions
 - Assets have `toezichtgroep_key` (8 chars) referring to toezichtgroepen._key.
 
 Behaviour
-- LS and LSDeel can be *paired* **only** via the Voedt relation (LS -> LSDeel).
-- Output is **one chosen object per row**:
-  - If there is a pair: choose LSDeel
-  - If no pair exists: choose the singleton itself
-- Adds a `type` column (LS/LSDeel) to make it explicit.
+- The report focuses on a single asset type (configurable via --asset-short-uri).
+- Adds a `type` column (e.g. 'Laagspanningsbord') to make the reported type explicit.
 
 Excel output
 - Separate sheets per toezichtgroep + "Andere".
@@ -38,6 +35,45 @@ from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 
 
 TARGET_SHEETS = {"V&W-WL", "V&W-WA", "V&W-WO", "V&W-WW", "V&W-WVB", "Tunnel Organ. VL."}
+
+# Map alternative toezichtgroep labels (case-insensitive) to the canonical sheet name
+# e.g. some records use 'V&W Vlaams-Brabant' which should be treated as 'V&W-WVB'
+SHEET_ALIASES: dict[str, str] = {
+    "v&w vlaams-brabant": "V&W-WVB",
+    "v&w-vlaams-brabant": "V&W-WVB",
+    "v&w-wvb": "V&W-WVB",
+    # Agent display-name variants (from agents collection) -> canonical sheet
+    # confirmed mappings provided by the user
+    "v&w oost-vlaanderen": "V&W-WO",
+    "v&w limburg": "V&W-WL",
+    "v&w antwerpen": "V&W-WA",
+    "v&w west-vlaanderen": "V&W-WW",
+    # Tunnel organisation (agent) maps to the Tunnel sheet
+    "tunnel organ. vl.": "Tunnel Organ. VL.",
+}
+
+# Explicit mapping from agent document keys/uuids to canonical sheet names.
+# The user provided these authoritative mappings (short _key -> display name -> uuid).
+# We include both the short _key and the full uuid to maximise matching chance when
+# assets store either form in their toezichtgroep/toezichtgroep_key fields.
+AGENT_TO_SHEET: dict[str, str] = {
+    # V&W agents
+    "206ba12e-dcc6": "V&W-WO",  # V&W Oost-Vlaanderen (_key)
+    "206ba12e-dcc6-4ed1-887c-978e98aaad41": "V&W-WO",  # uuid
+    "4761b281-fe11": "V&W-WL",  # V&W Limburg
+    "4761b281-fe11-4645-93a6-0e1955330e1c": "V&W-WL",
+    "5efe6764-007f": "V&W-WA",  # V&W Antwerpen
+    "5efe6764-007f-4099-83d9-29d0b2759211": "V&W-WA",
+    "61f977f9-f8c6": "V&W-WW",  # V&W West-Vlaanderen
+    "61f977f9-f8c6-4faf-859a-2cc180b61511": "V&W-WW",
+    "e3fe5c8e-037b": "V&W-WVB",  # V&W Vlaams-Brabant
+    "e3fe5c8e-037b-40cd-bff7-4617eb8bb86a": "V&W-WVB",
+
+    # Tunnel organisation
+    "7aa92dda-9e03": "Tunnel Organ. VL.",
+    "7aa92dda-9e03-4f10-a0b3-1c6748c332b9": "Tunnel Organ. VL.",
+}
+
 EXCLUDED_SHEET = "Niet meegenomen"
 PIVOT_SHEET = "Pivot"
 PIVOT_ALL_SHEET = "Pivot (incl Niet meegenomen)"
@@ -46,10 +82,24 @@ PIVOT_ALL_SHEET = "Pivot (incl Niet meegenomen)"
 @dataclass(frozen=True)
 class KeuringsRecord:
     toezichtgroep: str
-    type: str  # LS | LSDeel
+    type: str  # LS | Laagspanningsbord (LSB)
     match: str
     uuid: str
-    lsdeel_uuid: str | None = None
+    betrokken_agent_key: str | None = None
+    betrokken_agent_uuid: str | None = None
+    betrokken_agent_org_key: str | None = None
+    betrokken_agent_org_uuid: str | None = None
+    betrokken_agent_org_name: str | None = None
+    # role-based agents discovered via betrokkenerelaties
+    toezichtgroep_agent_key: str | None = None
+    toezichtgroep_agent_uuid: str | None = None
+    toezichtgroep_agent_name: str | None = None
+    toezichter_agent_key: str | None = None
+    toezichter_agent_uuid: str | None = None
+    toezichter_agent_name: str | None = None
+    toezichtgroep_raw: str | None = None
+    toezichtgroep_key_raw: str | None = None
+    lsb_uuid: str | None = None
     naam: str | None = None
     naampad: str | None = None
     isActief: bool | None = None
@@ -107,135 +157,86 @@ def _load_technique_map(tree_structures_path: Path) -> dict[str, str]:
         if not isinstance(e, dict):
             continue
         label = e.get("label") or ""
-        for u in e.get("lsdeel_uuids") or []:
+        # support both legacy key 'lsdeel_uuids' and new 'lsb_uuids'
+        for u in (e.get("lsb_uuids") or []) + (e.get("lsdeel_uuids") or []):
             if isinstance(u, str) and u:
                 mapping[u] = label
     return mapping
 
 
 def build_aql(
-    ls_short_uri: str,
-    lsdeel_short_uri: str,
-    voedt_short: str = "Voedt",
+    asset_short_uri: str,
     *,
     limit: int | None = None,
 ) -> str:
-    """Build AQL to emit one chosen object per row (prefer LSDeel for pairs).
+    """Build AQL to emit one row per asset of the given asset_short_uri.
 
-    Matching
-    - ONLY via the Voedt edge LS -> LSDeel (OUTBOUND).
+    Simplified: we no longer consider LS + LSDeel pairing. The report only
+    contains assets of the requested type (e.g. onderdeel#Laagspanningsbord).
 
-    Inclusion
-    - Only assets with AIMDBStatus_isActief == true are returned.
-
-    Routing
-    - Assets with toestand verwijderd/overgedragen are still returned, but will be
-      placed on the "Niet meegenomen" sheet in Python.
-
-    Match ranking: voedt (1) > single (3)
+    Inclusion: Only assets with AIMDBStatus_isActief == true are returned.
+    Routing: Assets with toestand verwijderd/overgedragen are still returned,
+    but will be placed on the "Niet meegenomen" sheet in Python.
     """
 
-    limit_clause = ""  # LIMIT handled in Python
+    # Always resolve the assettype key for the requested short_uri and filter by it
+    let_clause = "LET at_key = FIRST(FOR at IN assettypes FILTER at.short_uri == @asset_short_uri LIMIT 1 RETURN at._key)\n"
+    filter_clause = "  FILTER a.assettype_key == at_key\n"
 
-    return f"""
-LET ls_key      = FIRST(FOR at IN assettypes FILTER at.short_uri == @ls_short_uri LIMIT 1 RETURN at._key)
-LET lsdeel_key  = FIRST(FOR at IN assettypes FILTER at.short_uri == @lsdeel_short_uri LIMIT 1 RETURN at._key)
-LET voedt_key   = FIRST(FOR rt IN relatietypes FILTER rt.short == @voedt_short LIMIT 1 RETURN rt._key)
-
-LET pairs = (
-  FOR ls IN assets
-    FILTER ls.AIMDBStatus_isActief == true
-    FILTER ls.assettype_key == ls_key
-    FOR lsdeel, e IN OUTBOUND ls assetrelaties
-      FILTER e.relatietype_key == voedt_key
-      FILTER lsdeel.AIMDBStatus_isActief == true
-      FILTER lsdeel.assettype_key == lsdeel_key
-      RETURN {{"ls": ls, "lsdeel": lsdeel, "match": "voedt", "rank": 1}}
-)
-
-LET matched_ls_keys = (
-  FOR p IN pairs
-    COLLECT k = p.ls._key
-    RETURN k
-)
-
-LET matched_lsdeel_keys = (
-  FOR p IN pairs
-    COLLECT k = p.lsdeel._key
-    RETURN k
-)
-
-LET single_ls = (
-  FOR ls IN assets
-    FILTER ls.AIMDBStatus_isActief == true
-    FILTER ls.assettype_key == ls_key
-    FILTER ls._key NOT IN matched_ls_keys
-    RETURN {{"ls": ls, "lsdeel": null, "match": "single_ls", "rank": 3}}
-)
-
-LET single_lsdeel = (
-  FOR ld IN assets
-    FILTER ld.AIMDBStatus_isActief == true
-    FILTER ld.assettype_key == lsdeel_key
-    FILTER ld._key NOT IN matched_lsdeel_keys
-    RETURN {{"ls": null, "lsdeel": ld, "match": "single_lsdeel", "rank": 3}}
-)
-
-LET all_candidates = UNION_DISTINCT(pairs, single_ls, single_lsdeel)
-
-FOR chosen_doc IN (
-  FOR c IN all_candidates
-    LET chosen = c.lsdeel != null ? c.lsdeel : c.ls
-    COLLECT k = chosen._key INTO grouped = c
-    LET best = FIRST(
-      FOR g IN grouped
-        SORT g.rank ASC
-        LIMIT 1
-        RETURN g
+    aql = (
+        let_clause
+        + "FOR a IN assets\n"
+        + "  FILTER a.AIMDBStatus_isActief == true\n"
+        + filter_clause
+        + "  LET tz = FIRST(FOR t IN toezichtgroepen FILTER t._key == a.toezichtgroep_key LIMIT 1 RETURN t)\n"
+        + "  LET ins = a.ins\n"
+        + "  LET betrokken_relaties = (FOR v, e IN 1..1 OUTBOUND a betrokkenerelaties RETURN {edge: e, vertex: v})\n"
+        + "  LET toezichtgroep_agent = FIRST(FOR rel IN betrokken_relaties FILTER rel.edge.rol == 'toezichtsgroep' RETURN rel.vertex)\n"
+        + "  LET toezichter_agent = FIRST(FOR rel IN betrokken_relaties FILTER rel.edge.rol == 'toezichter' RETURN rel.vertex)\n"
+        + "  LET toezichtgroep_agent_name = (toezichtgroep_agent != null && toezichtgroep_agent.purl != null && toezichtgroep_agent.purl.Agent_naam != null ? toezichtgroep_agent.purl.Agent_naam : (toezichtgroep_agent != null ? toezichtgroep_agent.naam : null))\n"
+        + "  LET tz_from_agent = toezichtgroep_agent_name\n\n"
+        + "  RETURN {\n"
+        + "    \"toezichtgroep\": tz != null ? tz.naam : (tz_from_agent != null ? tz_from_agent : \"UNKNOWN\"),\n"
+        + "    \"toezichtgroep_raw\": (a.toezichtgroep != null ? a.toezichtgroep : null),\n"
+        + "    \"toezichtgroep_key_raw\": (a.toezichtgroep_key != null ? a.toezichtgroep_key : null),\n"
+        + "    \"betrokken_agent_key\": null,\n"
+        + "    \"betrokken_agent_uuid\": null,\n"
+        + "    \"betrokken_agent_org_key\": null,\n"
+        + "    \"betrokken_agent_org_uuid\": null,\n"
+        + "    \"betrokken_agent_org_name\": null,\n"
+        + "    \"toezichtgroep_agent_key\": (toezichtgroep_agent != null ? toezichtgroep_agent._key : null),\n"
+        + "    \"toezichtgroep_agent_uuid\": (toezichtgroep_agent != null ? toezichtgroep_agent.uuid : null),\n"
+        + "    \"toezichtgroep_agent_name\": (toezichtgroep_agent != null && toezichtgroep_agent.purl != null && toezichtgroep_agent.purl.Agent_naam != null ? toezichtgroep_agent.purl.Agent_naam : (toezichtgroep_agent != null ? toezichtgroep_agent.naam : null)),\n"
+        + "    \"toezichter_agent_key\": (toezichter_agent != null ? toezichter_agent._key : null),\n"
+        + "    \"toezichter_agent_uuid\": (toezichter_agent != null ? toezichter_agent.uuid : null),\n"
+        + "    \"toezichter_agent_name\": (toezichter_agent != null && toezichter_agent.purl != null && toezichter_agent.purl.Agent_naam != null ? toezichter_agent.purl.Agent_naam : (toezichter_agent != null ? toezichter_agent.naam : null)),\n"
+        + "    \"type\": @asset_short_uri == \"lgc:onderdeel#Laagspanningsbord\" ? \"Laagspanningsbord\" : @asset_short_uri,\n"
+        + "    \"match\": \"single\",\n\n"
+        + "    \"uuid\": a._key,\n"
+        + "    \"lsb_uuid\": null,\n"
+        + "    \"naam\": a.AIMNaamObject_naam,\n"
+        + "    \"naampad\": a.NaampadObject_naampad,\n\n"
+        + "    \"isActief\": a.AIMDBStatus_isActief,\n"
+        + "    \"toestand\": a.toestand,\n\n"
+        + "    \"datum_laatste_keuring\": ins != null ? ins.EMObject_datumLaatsteKeuring : null,\n"
+        + "    \"resultaat_keuring\": ins != null ? ins.EMObject_resultaatKeuring : null,\n\n"
+        + "    \"longitude\": (a.geometry != null ? (LENGTH(a.geometry.coordinates) > 0 ? a.geometry.coordinates[0] : null) : null),\n"
+        + "    \"latitude\": (a.geometry != null ? (LENGTH(a.geometry.coordinates) > 1 ? a.geometry.coordinates[1] : null) : null)\n"
+        + "  }"
     )
-    RETURN best
-)
-  LET chosen = chosen_doc.lsdeel != null ? chosen_doc.lsdeel : chosen_doc.ls
-  LET type = chosen_doc.lsdeel != null ? "LSDeel" : "LS"
-
-  LET tz = FIRST(FOR t IN toezichtgroepen FILTER t._key == chosen.toezichtgroep_key LIMIT 1 RETURN t)
-  LET ins = chosen.ins
-
-  RETURN {{
-    "toezichtgroep": tz != null ? tz.naam : "UNKNOWN",
-    "type": type,
-    "match": chosen_doc.match,
-
-    "uuid": chosen._key,
-    "lsdeel_uuid": (chosen_doc.lsdeel != null ? chosen_doc.lsdeel._key : null),
-    "naam": chosen.AIMNaamObject_naam,
-    "naampad": chosen.NaampadObject_naampad,
-
-    "isActief": chosen.AIMDBStatus_isActief,
-    "toestand": chosen.toestand,
-
-    "datum_laatste_keuring": ins != null ? ins.EMObject_datumLaatsteKeuring : null,
-    "resultaat_keuring": ins != null ? ins.EMObject_resultaatKeuring : null,
-
-    "longitude": (chosen.geometry != null ? (LENGTH(chosen.geometry.coordinates) > 0 ? chosen.geometry.coordinates[0] : null) : null),
-    "latitude": (chosen.geometry != null ? (LENGTH(chosen.geometry.coordinates) > 1 ? chosen.geometry.coordinates[1] : null) : null)
-  }}
-"""
+    return aql
 
 
 def fetch_records(
     db: Any,
-    ls_short_uri: str,
-    lsdeel_short_uri: str,
+    asset_short_uri: str,
     *,
     max_runtime_seconds: int = 300,
     limit: int | None = None,
 ) -> list[KeuringsRecord]:
-    aql = build_aql(ls_short_uri=ls_short_uri, lsdeel_short_uri=lsdeel_short_uri)
+    aql = build_aql(asset_short_uri=asset_short_uri)
     bind_vars: dict[str, Any] = {
-        "ls_short_uri": ls_short_uri,
-        "lsdeel_short_uri": lsdeel_short_uri,
-        "voedt_short": "Voedt",
+        "asset_short_uri": asset_short_uri,
     }
 
     cursor = db.aql.execute(
@@ -266,7 +267,27 @@ def fetch_records_not_meegenomen(*args: Any, **kwargs: Any) -> list[KeuringsReco
 def _sheet_name(toezichtgroep: str | None) -> str:
     if not toezichtgroep:
         return "Andere"
-    return toezichtgroep if toezichtgroep in TARGET_SHEETS else "Andere"
+    # normalize and apply known aliases (case-insensitive)
+    key = toezichtgroep.strip()
+    key_lower = key.lower()
+
+    # If the toezichtgroep value directly references an agent _key or uuid,
+    # the AGENT_TO_SHEET mapping takes precedence.
+    if key in AGENT_TO_SHEET:
+        return AGENT_TO_SHEET[key]
+    if key_lower in AGENT_TO_SHEET:
+        return AGENT_TO_SHEET[key_lower]
+
+    # alias map first (case-insensitive)
+    if key_lower in SHEET_ALIASES:
+        return SHEET_ALIASES[key_lower]
+
+    # case-insensitive match against canonical target names
+    for ts in TARGET_SHEETS:
+        if ts.lower() == key_lower:
+            return ts
+
+    return "Andere"
 
 
 def _is_not_included(record: KeuringsRecord) -> bool:
@@ -313,10 +334,8 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
     if d is None:
         return 'geen keuring'
 
-    if r_norm:
-        # normalize some common synonyms
-        if 'niet gekend' in r_norm or r_norm == 'geen keuring':
-            r_norm = None
+    if r_norm and ('niet gekend' in r_norm or r_norm == 'geen keuring'):
+        r_norm = None
 
     if d <= cutoff:
         if r_norm:
@@ -347,7 +366,27 @@ def _pivot_group_name(record: KeuringsRecord) -> str:
     'Andere' so the pivot stays stable.
     """
 
-    return _sheet_name(record.toezichtgroep)
+    # Prefer the explicit toezichtgroep name; if missing or UNKNOWN, prefer
+    # role-based agents discovered via betrokkenerelaties (toezichtgroep_agent_name,
+    # then toezichter_agent_name). This mirrors the exporter mapping logic.
+    resolved = _resolved_toezichtgroep(record)
+    return _sheet_name(resolved)
+
+
+def _resolved_toezichtgroep(record: KeuringsRecord) -> str | None:
+    """Return the best-available toezichtgroep display name for this record.
+
+    Priority:
+    1. record.toezichtgroep if set and not 'UNKNOWN'
+    2. record.toezichtgroep_agent_name
+    3. record.toezichter_agent_name
+    4. None
+    """
+    if record.toezichtgroep and str(record.toezichtgroep).strip().upper() != "UNKNOWN":
+        return record.toezichtgroep
+    if getattr(record, 'toezichtgroep_agent_name', None):
+        return getattr(record, 'toezichtgroep_agent_name')
+    return None
 
 
 def _build_pivot(
@@ -437,7 +476,12 @@ def _write_pivot_sheet(
 def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
     from openpyxl import Workbook
     from openpyxl.utils import get_column_letter
+    import json
 
+    # records may be a large iterable; avoid forcing it into a list here.
+    # However other code relied on multiple passes, so we'll consume into a list
+    # only if it's not already a list/tuple. Keep existing behavior but be defensive
+    # about cell values (sanitize lists/dicts).
     records_list = list(records)
 
     wb = Workbook()
@@ -468,6 +512,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
 
     headers = [
         "toezichtgroep",
+        "toezichter",
         "type",
         "match",
         "uuid",
@@ -493,32 +538,102 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
         if _is_not_included(r):
             sh = sheets[EXCLUDED_SHEET]
         else:
-            sh = sheets[_sheet_name(r.toezichtgroep)]
+            # Resolve sheet name using several heuristics:
+            # 1. Use the resolved toezichtgroep name (tz.naam) via _sheet_name
+            # 2. If that yields 'Andere' or UNKNOWN, try to map using agent keys/uuids
+            #    or raw toezichtgroep fields via AGENT_TO_SHEET and SHEET_ALIASES.
+            resolved_name = _resolved_toezichtgroep(r)
+            sheet_candidate = _sheet_name(resolved_name)
+            if sheet_candidate == "Andere" or (r.toezichtgroep or "").upper() == "UNKNOWN":
+                # try direct mapping by raw key/uuid
+                mapped = None
+                if getattr(r, 'toezichtgroep_key_raw', None):
+                    k = r.toezichtgroep_key_raw
+                    if k in AGENT_TO_SHEET:
+                        mapped = AGENT_TO_SHEET[k]
+                    elif k.lower() in AGENT_TO_SHEET:
+                        mapped = AGENT_TO_SHEET[k.lower()]
 
-        # map techniek by lsdeel uuid (preferred). fallback to the chosen uuid.
+                # try mapping by raw toezichtgroep string
+                if mapped is None and getattr(r, 'toezichtgroep_raw', None):
+                    raw = (r.toezichtgroep_raw or "").strip()
+                    raw_lower = raw.lower()
+                    if raw in AGENT_TO_SHEET:
+                        mapped = AGENT_TO_SHEET[raw]
+                    elif raw_lower in AGENT_TO_SHEET:
+                        mapped = AGENT_TO_SHEET[raw_lower]
+                    else:
+                        # try substring match: agent key/uuid inside raw
+                        for ak, sheetn in AGENT_TO_SHEET.items():
+                            if ak in raw or ak in (r.toezichtgroep or ""):
+                                mapped = sheetn
+                                break
+
+                # try mapping using role-based toezichtgroep_agent fields added by AQL
+                if mapped is None:
+                    for fld in ("toezichtgroep_agent_key", "toezichtgroep_agent_uuid", "toezichtgroep_agent_name"):
+                        v = getattr(r, fld, None)
+                        if not v:
+                            continue
+                        v_str = str(v)
+                        if v_str in AGENT_TO_SHEET:
+                            mapped = AGENT_TO_SHEET[v_str]
+                            break
+                        if v_str.lower() in AGENT_TO_SHEET:
+                            mapped = AGENT_TO_SHEET[v_str.lower()]
+                            break
+
+                if mapped:
+                    sh = sheets.get(mapped, sheets["Andere"])
+                else:
+                    sh = sheets[_sheet_name(resolved_name)]
+            else:
+                sh = sheets[sheet_candidate]
+
+        # map techniek by lsb uuid (preferred). fallback to the chosen uuid.
         techniek = ""
-        if getattr(r, 'lsdeel_uuid', None):
-            techniek = techniek_map.get(r.lsdeel_uuid, "")
+        if getattr(r, 'lsb_uuid', None):
+            techniek = techniek_map.get(r.lsb_uuid, "")
         if not techniek:
             techniek = techniek_map.get(r.uuid, "")
 
-        sh.append(
-            [
-                r.toezichtgroep,
-                r.type,
-                r.match,
-                r.uuid,
-                r.naam,
-                r.naampad,
-                techniek,
-                r.isActief,
-                r.toestand,
-                r.datum_laatste_keuring,
-                r.resultaat_keuring,
-                r.longitude,
-                r.latitude,
-            ]
-        )
+        # sanitize values before appending to avoid unsupported types (lists/dicts)
+        def _sanitize(v):
+            if v is None:
+                return None
+            # numeric types are fine
+            if isinstance(v, (int, float, str, bool)):
+                return v
+            # coordinates sometimes arrive as list like [lon, lat, z]
+            if isinstance(v, (list, tuple)):
+                # if numeric coordinate list, return first numeric as longitude-like
+                if all(isinstance(x, (int, float)) for x in v) and len(v) >= 1:
+                    # join only if length > 2? prefer scalar for Excel
+                    return v[0] if len(v) == 1 or len(v) >= 1 else ','.join(map(str, v))
+                return json.dumps(v, ensure_ascii=False)
+            if isinstance(v, dict):
+                return json.dumps(v, ensure_ascii=False)
+            # fallback to str
+            return str(v)
+
+        resolved_name = _resolved_toezichtgroep(r)
+        row_values = [
+            _sanitize(resolved_name if resolved_name is not None else r.toezichtgroep),
+            _sanitize(getattr(r, 'toezichter_agent_name', None)),
+            _sanitize(r.type),
+            _sanitize(r.match),
+            _sanitize(r.uuid),
+            _sanitize(r.naam),
+            _sanitize(r.naampad),
+            _sanitize(techniek),
+            _sanitize(r.isActief),
+            _sanitize(r.toestand),
+            _sanitize(r.datum_laatste_keuring),
+            _sanitize(r.resultaat_keuring),
+            _sanitize(r.longitude),
+            _sanitize(r.latitude),
+        ]
+        sh.append(row_values)
 
     def _autofit_sheet_columns(ws: Any, *, min_width: int = 10, max_width: int = 80, padding: int = 2) -> None:
         """Auto-adjust column widths based on cell value length."""
@@ -564,17 +679,10 @@ def main() -> int:
     )
 
     parser.add_argument(
-        "--ls-short-uri",
+        "--asset-short-uri",
         type=str,
-        default="lgc:installatie#LS",
-        help="assettypes.short_uri for LS",
-    )
-
-    parser.add_argument(
-        "--lsdeel-short-uri",
-        type=str,
-        default="lgc:installatie#LSDeel",
-        help="assettypes.short_uri for LSDeel",
+        default="onderdeel#Laagspanningsbord",
+        help="assettypes.short_uri for the asset to report (e.g. onderdeel#Laagspanningsbord)",
     )
 
     parser.add_argument("--limit", type=int, default=None, help="Optional cap rows (debug)")
@@ -586,8 +694,7 @@ def main() -> int:
 
     records = fetch_records(
         db,
-        ls_short_uri=args.ls_short_uri,
-        lsdeel_short_uri=args.lsdeel_short_uri,
+        asset_short_uri=args.asset_short_uri,
         max_runtime_seconds=300,
         limit=args.limit,
     )
