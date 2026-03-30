@@ -531,19 +531,18 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
     sheets = {name: wb.create_sheet(title=name) for name in sheet_names}
 
     headers = [
-        "toezichtgroep",
-        "toezichter",
-        "pivot_categorie",
-        "type",
         "uuid",
         "LSDeel_uuid",
         "naam",
         "naampad",
         "techniek",
+        "toezichtgroep",
+        "toezichter",
         "isActief",
         "toestand",
         "datum_laatste_keuring",
         "resultaat_keuring",
+        "pivot_categorie",
         "longitude",
         "latitude",
     ]
@@ -672,19 +671,18 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
         # compute pivot category using same cutoff as pivot sheets
         pivot_cat = _pivot_result_key(r, cutoff=cutoff)
         row_values = [
-            _sanitize(resolved_name if resolved_name is not None else r.toezichtgroep),
-            _sanitize(getattr(r, 'toezichter_agent_name', None)),
-            _sanitize(pivot_cat),
-            _sanitize(r.type),
             _sanitize(r.uuid),
             _sanitize(lsdeel_cell_value if lsdeel_cell_value else None),
             _sanitize(r.naam),
             _sanitize(r.naampad),
             _sanitize(techniek),
+            _sanitize(resolved_name if resolved_name is not None else r.toezichtgroep),
+            _sanitize(getattr(r, 'toezichter_agent_name', None)),
             _sanitize(r.isActief),
             _sanitize(r.toestand),
             _sanitize(r.datum_laatste_keuring),
             _sanitize(r.resultaat_keuring),
+            _sanitize(pivot_cat),
             _sanitize(r.longitude),
             _sanitize(r.latitude),
         ]
