@@ -536,6 +536,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
         "pivot_categorie",
         "type",
         "uuid",
+        "LSDeel_uuid",
         "naam",
         "naampad",
         "techniek",
@@ -553,6 +554,23 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
     # load technique mapping (lsdeel_uuid -> label) from tree_structures.json
     tree_structures_file = Path(__file__).parent / "TreeAnalysis" / "output" / "tree_structures.json"
     techniek_map = _load_technique_map(tree_structures_file)
+    # load migration mapping (Laagspanningsbord.uuid -> migrated_from_uuids list)
+    migration_file = Path(__file__).parent / "migration_LSDeel.json"
+    migration_map: dict[str, list[str]] = {}
+    try:
+        if migration_file.exists():
+            mig_data = json.loads(migration_file.read_text(encoding="utf-8"))
+            if isinstance(mig_data, list):
+                for o in mig_data:
+                    if not isinstance(o, dict):
+                        continue
+                    key = o.get("uuid")
+                    vals = o.get("migrated_from_uuids") or []
+                    if key and isinstance(vals, list):
+                        migration_map[str(key)] = [str(v) for v in vals if v]
+    except Exception:
+        # if migration file malformed or unreadable, proceed without migration mapping
+        migration_map = {}
 
     for r in records_list:
         if _is_not_included(r):
@@ -610,9 +628,23 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
             else:
                 sh = sheets[sheet_candidate]
 
-        # map techniek by lsb uuid (preferred). fallback to the chosen uuid.
+        # map techniek by migrated LSDeel uuid (from migration map) first,
+        # then by lsb_uuid, then fallback to the asset uuid
         techniek = ""
-        if getattr(r, 'lsb_uuid', None):
+        lsdeel_cell_value = ""
+        lsdeel_for_mapping = None
+        try:
+            mig_vals = migration_map.get(str(r.uuid))
+            if mig_vals:
+                # cell will contain comma-joined list; mapping prefers first value
+                lsdeel_cell_value = ",".join(mig_vals)
+                lsdeel_for_mapping = mig_vals[0]
+        except Exception:
+            lsdeel_cell_value = ""
+
+        if lsdeel_for_mapping:
+            techniek = techniek_map.get(lsdeel_for_mapping, "")
+        if not techniek and getattr(r, 'lsb_uuid', None):
             techniek = techniek_map.get(r.lsb_uuid, "")
         if not techniek:
             techniek = techniek_map.get(r.uuid, "")
@@ -645,6 +677,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
             _sanitize(pivot_cat),
             _sanitize(r.type),
             _sanitize(r.uuid),
+            _sanitize(lsdeel_cell_value if lsdeel_cell_value else None),
             _sanitize(r.naam),
             _sanitize(r.naampad),
             _sanitize(techniek),
