@@ -40,6 +40,8 @@ class ExtraFillStep:
             'sturing_relaties': self.fill_sturing_relaties,
             'bevestiging_relaties': self.fill_bevestiging_relaties,
             'hoortbij_relaties': self.fill_hoortbij_relaties,
+            'heeftkeuring_relaties': self.fill_heeftkeuring_relaties,
+            'gemigreerdnaar_relaties': self.fill_gemigreerdnaar_relaties,
         }
 
     def execute(self):
@@ -279,3 +281,9 @@ class ExtraFillStep:
 
     def fill_hoortbij_relaties(self, start_from, db, params):
         self._fill_derived_edges(db, 'fill_hoortbij_relaties', 'hoortbij_relaties', 'HoortBij')
+
+    def fill_heeftkeuring_relaties(self, start_from, db, params):
+        self._fill_derived_edges(db, 'fill_heeftkeuring_relaties', 'heeftkeuring_relaties', 'HoortBij')
+
+    def fill_gemigreerdnaar_relaties(self, start_from, db, params):
+        self._fill_derived_edges(db, 'fill_gemigreerdnaar_relaties', 'gemigreerdnaar_relaties', 'HoortBij')

@@ -38,7 +38,8 @@ class CreateIndicesStep:
         db.collection('vplankoppelingen').add_persistent_index(fields=['assets_key'], unique=False, sparse=False)
 
         # Derived edges used for fast traversal/loop detection queries
-        for derived in ['voedt_relaties', 'sturing_relaties', 'bevestiging_relaties', 'hoortbij_relaties']:
+        for derived in ['voedt_relaties', 'sturing_relaties', 'bevestiging_relaties', 'hoortbij_relaties',
+                        'heeftkeuring_relaties', 'gemigreerdnaar_relaties']:
             if db.has_collection(derived):
                 db.collection(derived).add_persistent_index(fields=['_from'], unique=False, sparse=False)
                 db.collection(derived).add_persistent_index(fields=['_to'], unique=False, sparse=False)
@@ -60,6 +61,8 @@ class CreateIndicesStep:
             'sturing_graph': 'sturing_relaties',
             'bevestiging_graph': 'bevestiging_relaties',
             'hoortbij_graph': 'hoortbij_relaties',
+            'heeftkeuring_graph': 'heeftkeuring_relaties',
+            'gemigreerdnaar_graph': 'gemigreerdnaar_relaties',
         }
         for graph_name, edge_collection in derived_graphs.items():
             if db.has_graph(graph_name):
