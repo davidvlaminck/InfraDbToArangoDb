@@ -2,6 +2,7 @@ import logging
 import time
 from pathlib import Path
 import datetime
+from zoneinfo import ZoneInfo
 
 from API.EMInfraClient import EMInfraClient
 from API.EMSONClient import EMSONClient
@@ -87,9 +88,23 @@ class DBPipelineController:
                     # Add finished_at document to params collection
                     try:
                         params_col = db.collection('params')
-                        now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+                        # Use Europe/Brussels timezone for the finished timestamp (CET/CEST)
+                        tz = ZoneInfo("Europe/Brussels")
+                        now_dt = datetime.datetime.now(tz)
+
+                        # ISO format with offset
+                        now = now_dt.isoformat()
                         params_col.insert({'_key': 'finished_at', 'value': now}, overwrite=True)
-                        logging.info(f"Added finished_at to params collection: {now}")
+                        try:
+                            tzname = now_dt.tzname()
+                        except Exception:
+                            tzname = None
+                        try:
+                            offset = now_dt.utcoffset()
+                            offset_s = str(offset)
+                        except Exception:
+                            offset_s = None
+                        logging.info(f"Added finished_at to params collection: {now} (tz: {tzname}, offset: {offset_s})")
                     except Exception as e:
                         logging.error(f"Failed to add finished_at to params collection: {e}")
                         continue
