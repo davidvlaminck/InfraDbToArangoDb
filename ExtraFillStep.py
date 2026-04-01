@@ -248,18 +248,19 @@ class ExtraFillStep:
             FOR e IN assetrelaties
               FILTER e.relatietype_key == rt_key
               FILTER e.AIMDBStatus_isActief == true
-              LET a_from = DOCUMENT(e._from)
-              LET a_to   = DOCUMENT(e._to)
-              FILTER a_from != null && a_to != null
-              FILTER a_from.AIMDBStatus_isActief == true
-              FILTER a_to.AIMDBStatus_isActief == true
-              INSERT {
-                _from: e._from,
-                _to: e._to,
-                source_edge_id: e._id,
-                source_edge_key: e._key
-              } INTO @@edge_collection
-              OPTIONS { ignoreErrors: true }
+              LET from_id = e._from
+              LET to_id   = e._to
+              FOR a_from IN assets
+                FILTER CONCAT('assets/', a_from._key) == from_id && a_from.AIMDBStatus_isActief == true
+                FOR a_to IN assets
+                  FILTER CONCAT('assets/', a_to._key) == to_id && a_to.AIMDBStatus_isActief == true
+                  INSERT {
+                    _from: e._from,
+                    _to: e._to,
+                    source_edge_id: e._id,
+                    source_edge_key: e._key
+                  } INTO @@edge_collection
+                  OPTIONS { ignoreErrors: true }
             """,
             bind_vars={'rt_key': rt_key, '@edge_collection': edge_collection},
             batch_size=5000,
