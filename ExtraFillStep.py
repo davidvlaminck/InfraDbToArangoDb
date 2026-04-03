@@ -205,9 +205,31 @@ class ExtraFillStep:
             db.create_collection(name, edge=True)
 
         col = db.collection(name)
-        # add_persistent_index is idempotent; Arango will ignore duplicates
-        col.add_persistent_index(fields=['_from'], unique=False, sparse=False)
-        col.add_persistent_index(fields=['_to'], unique=False, sparse=False)
+        # Ensure persistent indexes on _from and _to exist. Creating indexes can
+        # take time and occasionally trigger client-side timeouts; first check
+        # existing indexes and only create missing ones. If creation fails (e.g.
+        # due to transient timeout), log a warning and continue so the caller
+        # can proceed (the collection can still be filled).
+        try:
+            existing_indexes = col.indexes() or []
+        except Exception as e:
+            logging.warning("Could not list indexes for %s: %s", name, e)
+            existing_indexes = []
+
+        def has_persistent_on(fields):
+            for idx in existing_indexes:
+                if idx.get('type') == 'persistent' and idx.get('fields') == fields:
+                    return True
+            return False
+
+        for fields in (['_from'], ['_to']):
+            if not has_persistent_on(fields):
+                try:
+                    col.add_persistent_index(fields=fields, unique=False, sparse=False)
+                except requests.exceptions.ReadTimeout as e:
+                    logging.warning("ReadTimeout while creating index %s on %s: %s", fields, name, e)
+                except Exception as e:
+                    logging.warning("Failed to create index %s on %s: %s", fields, name, e)
 
     def _fill_derived_edges(self, db, params_key: str, edge_collection: str, relatietype_short: str):
         """(Re)build derived edges in edge_collection for a given relatietype.short.
@@ -216,7 +238,10 @@ class ExtraFillStep:
         - truncate edge collection
         - insert all matching edges from `assetrelaties`
 
-        We'll only include edges where both endpoints still exist and are active.
+        Note: we intentionally preserve the relationships themselves regardless of the
+        activity status of the endpoint documents. That is, both active and inactive
+        endpoints (and even missing documents) are included so the edge collections
+        reflect the source data relationships faithfully.
         """
         self._ensure_edge_collection(db, edge_collection)
 
