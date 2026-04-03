@@ -84,16 +84,12 @@ class ExtraFillStep:
         func(start_from, db, params)
 
     def _update_progress(self, db, params_key: str, start_from) -> None:
-        db.aql.execute(
-            "UPDATE @key WITH { from: @start_from } IN params",
-            bind_vars={"key": params_key, "start_from": start_from},
-        )
+        params = db.collection('params')
+        params.insert({'_key': params_key, 'from': start_from}, overwrite=True)
 
     def _mark_filled(self, db, params_key: str) -> None:
-        db.aql.execute(
-            "UPDATE @key WITH { from: @start_from, fill: @fill} IN params",
-            bind_vars={"key": params_key, "start_from": None, "fill": False},
-        )
+        params = db.collection('params')
+        params.insert({'_key': params_key, 'from': None, 'fill': False}, overwrite=True)
 
     def fill_assettypes(self, start_from, db, params):
         """Update `assettypes` docs with two boolean flags.
