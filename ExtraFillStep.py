@@ -1,5 +1,6 @@
 import logging
 from typing import Callable, Optional
+import requests
 
 from API.EMInfraClient import EMInfraClient
 
@@ -240,26 +241,47 @@ class ExtraFillStep:
 
         logging.info("🔄 Building %s derived edges for relatietype '%s'...", edge_collection, relatietype_short)
 
-        db.aql.execute(
-            """
+        # Build edge insertion AQL depending on relation type.
+        # - GemigreerdNaar: include all edges that are active (edge.AIMDBStatus_isActief == true)
+        #   regardless of whether endpoint documents are present/active.
+        # - Others: include only edges that are active AND whose endpoints are present
+        #   and active (both from/to documents must have AIMDBStatus_isActief == true).
+        if relatietype_short == 'GemigreerdNaar':
+            aql = """
             LET rt_key = @rt_key
             FOR e IN assetrelaties
               FILTER e.relatietype_key == rt_key
-              FILTER e.AIMDBStatus_isActief == true
-              LET from_id = e._from
-              LET to_id   = e._to
-              FOR a_from IN assets
-                FILTER CONCAT('assets/', a_from._key) == from_id && a_from.AIMDBStatus_isActief == true
-                FOR a_to IN assets
-                  FILTER CONCAT('assets/', a_to._key) == to_id && a_to.AIMDBStatus_isActief == true
-                  INSERT {
-                    _from: e._from,
-                    _to: e._to,
-                    source_edge_id: e._id,
-                    source_edge_key: e._key
-                  } INTO @@edge_collection
-                  OPTIONS { ignoreErrors: true }
-            """,
+              FILTER HAS(e, 'AIMDBStatus_isActief') && e.AIMDBStatus_isActief == true
+              INSERT {
+                _from: e._from,
+                _to: e._to,
+                source_edge_id: e._id,
+                source_edge_key: e._key
+              } INTO @@edge_collection
+              OPTIONS { ignoreErrors: true }
+            """
+        else:
+            aql = """
+            LET rt_key = @rt_key
+            FOR e IN assetrelaties
+              FILTER e.relatietype_key == rt_key
+              FILTER HAS(e, 'AIMDBStatus_isActief') && e.AIMDBStatus_isActief == true
+              LET a_from = DOCUMENT(e._from)
+              LET a_to = DOCUMENT(e._to)
+              FILTER a_from != null && a_to != null
+              FILTER HAS(a_from, 'AIMDBStatus_isActief') && a_from.AIMDBStatus_isActief == true
+              FILTER HAS(a_to, 'AIMDBStatus_isActief') && a_to.AIMDBStatus_isActief == true
+              INSERT {
+                _from: e._from,
+                _to: e._to,
+                source_edge_id: e._id,
+                source_edge_key: e._key
+              } INTO @@edge_collection
+              OPTIONS { ignoreErrors: true }
+            """
+
+        db.aql.execute(
+            aql,
             bind_vars={'rt_key': rt_key, '@edge_collection': edge_collection},
             batch_size=5000,
             stream=True,
