@@ -24,6 +24,8 @@ class ExtraFillStep:
         'sturing_relaties',
         'bevestiging_relaties',
         'hoortbij_relaties',
+        'heeftkeuring_relaties',
+        'gemigreerdnaar_relaties',
     ]
 
     def __init__(self, factory, eminfra_client: EMInfraClient):
@@ -284,7 +286,7 @@ class ExtraFillStep:
         self._fill_derived_edges(db, 'fill_hoortbij_relaties', 'hoortbij_relaties', 'HoortBij')
 
     def fill_heeftkeuring_relaties(self, start_from, db, params):
-        self._fill_derived_edges(db, 'fill_heeftkeuring_relaties', 'heeftkeuring_relaties', 'HoortBij')
+        self._fill_derived_edges(db, 'fill_heeftkeuring_relaties', 'heeftkeuring_relaties', 'HeeftKeuring')
 
     def fill_gemigreerdnaar_relaties(self, start_from, db, params):
-        self._fill_derived_edges(db, 'fill_gemigreerdnaar_relaties', 'gemigreerdnaar_relaties', 'HoortBij')
+        self._fill_derived_edges(db, 'fill_gemigreerdnaar_relaties', 'gemigreerdnaar_relaties', 'GemigreerdNaar')
