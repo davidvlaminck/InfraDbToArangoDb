@@ -11,7 +11,18 @@ class CreateDBStep:
     def execute(self):
         db = self.factory.create_connection()
 
-        # 🔍 Check if 'params' exists
+        # Define required collections
+        doc_collections = [
+            "params", "assets", "assettypes", "relatietypes", "agents", "toezichtgroepen", "identiteiten",
+            "beheerders", "bestekken", "vplankoppelingen", "aansluitingrefs"
+        ]
+        edge_collections = [
+            "assetrelaties", "betrokkenerelaties", "bestekkoppelingen", "aansluitingen",
+            # Derived edge collections
+            "voedt_relaties", "sturing_relaties", "bevestiging_relaties", "hoortbij_relaties"
+        ]
+
+        # If params doesn't exist -- full reset and create
         if not db.has_collection("params"):
             logging.info("⚠️ 'params' collection not found. Resetting database...")
 
@@ -28,16 +39,7 @@ class CreateDBStep:
                     db.delete_collection(name, ignore_missing=True)
                     logging.info(f"🗑️ Dropped collection: {name}")
 
-            # 🆕 Create document and edge collections
-            doc_collections = [
-                "params", "assets", "assettypes", "relatietypes", "agents", "toezichtgroepen", "identiteiten",
-                "beheerders", "bestekken", "vplankoppelingen", "aansluitingrefs"]
-            edge_collections = [
-                "assetrelaties", "betrokkenerelaties", "bestekkoppelingen", "aansluitingen",
-                # Derived edge collections
-                "voedt_relaties", "sturing_relaties", "bevestiging_relaties", "hoortbij_relaties"
-            ]
-
+            # 🆕 Create required document and edge collections
             for name in doc_collections:
                 db.create_collection(name)
                 logging.info(f"✅ Created document collection: {name}")
@@ -57,9 +59,33 @@ class CreateDBStep:
             params.insert_many(default_docs)
             for doc in default_docs:
                 logging.info(f"✅ Inserted default for '{doc['_key']}'")
-
         else:
-            logging.info("✅ 'params' collection exists. No changes made.")
+            # params exists: ensure required collections are present; create any that are missing
+            missing_docs = [n for n in doc_collections if not db.has_collection(n)]
+            missing_edges = [n for n in edge_collections if not db.has_collection(n)]
+            if not missing_docs and not missing_edges:
+                logging.info("✅ 'params' collection exists and required collections present. No changes made.")
+            else:
+                logging.warning(f"'params' exists but some required collections are missing. Creating {len(missing_docs)} doc(s) and {len(missing_edges)} edge(s).")
+                for name in missing_docs:
+                    db.create_collection(name)
+                    logging.info(f"✅ Created missing document collection: {name}")
+                for name in missing_edges:
+                    db.create_collection(name, edge=True)
+                    logging.info(f"✅ Created missing edge collection: {name}")
+
+                # Ensure default param docs exist
+                params = db.collection('params')
+                default_docs = [
+                    {"_key": "feed_assetrelaties", "page": -1, "event_uuid": None},
+                    {"_key": "feed_betrokkenerelaties", "page": -1, "event_uuid": None},
+                    {"_key": "feed_agents", "page": -1, "event_uuid": None},
+                    {"_key": "feed_assets", "page": -1, "event_uuid": None},
+                ]
+                for doc in default_docs:
+                    if not params.has(doc['_key']):
+                        params.insert(doc)
+                        logging.info(f"✅ Inserted missing default for '{doc['_key']}'")
 
         logging.info("✅ Database setup complete. Setting step to INITIAL_FILL.")
         set_db_step(db, DBStep.INITIAL_FILL)

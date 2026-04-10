@@ -19,6 +19,7 @@ from Enums import ResourceEnum, colorama_table
 DEFAULT_PAGE_SIZE = 1000
 MAX_WORKERS = 8
 RETRY_DELAY_SECONDS = 30
+DEFAULT_MAX_GROUP_ATTEMPTS = 10
 
 # Tune bulk import chunking (keeps behavior, reduces memory spikes)
 ASSET_IMPORT_CHUNK_SIZE = 1000
@@ -40,7 +41,9 @@ class InitialFillStep:
     def __init__(self, factory, eminfra_client: EMInfraClient, emson_client: EMSONClient,
                  page_size: int = DEFAULT_PAGE_SIZE,
                  use_pipeline: bool = False,
-                 pipeline_queue_size: int = 3):
+                 pipeline_queue_size: int = 3,
+                 run_window: dict | None = None,
+                 max_group_attempts: int = DEFAULT_MAX_GROUP_ATTEMPTS):
         self.factory = factory
         self.eminfra_client = eminfra_client
         self.emson_client = emson_client
@@ -55,6 +58,11 @@ class InitialFillStep:
 
         # transformer from Belgian Lambert2008 / EPSG:3812 to WGS84 / EPSG:4326
         self.transformer: Transformer = Transformer.from_crs("EPSG:3812", "EPSG:4326", always_xy=True)
+
+        # Optional run window (dict with 'start' and 'end' keys as HH:MM:SS strings)
+        # If provided, fill operations will abort (raise) when executed outside that window.
+        self.run_window = run_window
+        self.max_group_attempts = max_group_attempts
 
         # resource handler registry
         self._resource_handlers: Dict[str, Callable[[Any, Iterable[Dict[str, Any]]], None]] = {
@@ -145,13 +153,17 @@ class InitialFillStep:
     def fill_tables(self, fill_resource_groups: List[List[ResourceEnum]]):
         """
         Execute groups of fill tasks. Each group is attempted in parallel.
-        Failed tasks are retried indefinitely with a fixed wait between attempts.
+        Failed tasks are retried up to `self.max_group_attempts` attempts. If exceeded this method
+        raises a RuntimeError so the caller (controller) can decide how to proceed.
         """
         for group_index, fill_resource_group in enumerate(fill_resource_groups):
             remaining = list(fill_resource_group)
             attempt = 1
 
             while remaining:
+                # Before attempting a group, ensure we're allowed to run in the configured time window
+                if self.run_window and not self._is_within_run_window():
+                    raise RuntimeError("Outside allowed run window for initial fill; aborting group attempts")
                 logging.info("=== Batch attempt %d with %d task(s) ===", attempt, len(remaining))
                 failed: List[ResourceEnum] = []
                 max_workers = min(len(remaining), MAX_WORKERS)
@@ -170,6 +182,9 @@ class InitialFillStep:
 
                 if failed:
                     logging.warning("%d task(s) failed in attempt %d. Retrying in %s seconds...", len(failed), attempt, RETRY_DELAY_SECONDS)
+                    if attempt >= self.max_group_attempts:
+                        # escalate to caller (DBPipelineController) so it can retry at a higher level
+                        raise RuntimeError(f"Exceeded max attempts ({self.max_group_attempts}) for fill group {group_index}")
                     time.sleep(RETRY_DELAY_SECONDS)
                     remaining = failed
                     attempt += 1
@@ -365,6 +380,36 @@ class InitialFillStep:
         if resource == ResourceEnum.bestekken.value:
             return self.eminfra_client.get_resource_page("bestekrefs", page_size, sf)
         return self.eminfra_client.get_resource_page(resource, page_size, sf)
+
+    def _is_within_run_window(self) -> bool:
+        """Return True when current Europe/Brussels local time is within configured run_window.
+
+        The expected format for self.run_window is a dict with keys 'start' and 'end' as HH:MM:SS.
+        If parsing fails, conservatively return True (so we don't block).
+        """
+        if not self.run_window:
+            return True
+        try:
+            from zoneinfo import ZoneInfo
+            import datetime as _dt
+
+            tz = ZoneInfo("Europe/Brussels")
+            now = _dt.datetime.now(tz).time()
+            start_s = self.run_window.get("start")
+            end_s = self.run_window.get("end")
+            if not start_s or not end_s:
+                return True
+            fmt = "%H:%M:%S"
+            start_t = _dt.datetime.strptime(start_s, fmt).time()
+            end_t = _dt.datetime.strptime(end_s, fmt).time()
+
+            if start_t <= end_t:
+                return start_t <= now <= end_t
+            # spans midnight
+            return now >= start_t or now <= end_t
+        except Exception:
+            logging.exception("Failed to evaluate run window; allowing run by default")
+            return True
 
     # -----------------------
     # Data insertion and transformations

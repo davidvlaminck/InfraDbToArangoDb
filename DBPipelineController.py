@@ -69,6 +69,11 @@ class DBPipelineController:
                     logging.info("[0] Creating the database...")
                     self._create_db()
                 elif current_step == DBStep.INITIAL_FILL:
+                    # honor configured time window: if outside window, sleep until window start
+                    time_conf = self.settings.get("time") if isinstance(self.settings, dict) else None
+                    if time_conf and not self._is_within_run_window(time_conf):
+                        logging.info("Currently outside allowed run window; sleeping until next window start")
+                        self._sleep_until_window_start(time_conf)
                     logging.info("[1] Filling the database...")
                     self._run_fill()
                 elif current_step == DBStep.EXTRA_DATA_FILL:
@@ -119,9 +124,70 @@ class DBPipelineController:
         set_db_step(self.pipeline_connection, step=DBStep.INITIAL_FILL)
 
     def _run_fill(self):
-        step_runner = InitialFillStep(self.factory, eminfra_client=self.eminfra_client, emson_client=self.emson_client)
+        # pass configured time window and optional max attempts into the step runner
+        time_conf = self.settings.get("time") if isinstance(self.settings, dict) else None
+        # determine max attempts (default 10)
+        try:
+            max_attempts = int(self.settings.get("max_group_attempts", 10)) if isinstance(self.settings, dict) else 10
+        except Exception:
+            max_attempts = 10
+
+        step_runner = InitialFillStep(
+            self.factory,
+            eminfra_client=self.eminfra_client,
+            emson_client=self.emson_client,
+            run_window=time_conf,
+            max_group_attempts=max_attempts,
+        )
+        # Let exceptions propagate so the outer run() loop can handle/backoff/retry
         step_runner.execute(fill_resource_groups=self.fill_resource_groups)
         set_db_step(self.pipeline_connection, step=DBStep.EXTRA_DATA_FILL)
+
+    def _is_within_run_window(self, time_conf: dict) -> bool:
+        """Check whether current Europe/Brussels time is within configured time window.
+
+        time_conf must contain 'start' and 'end' strings like '06:00:00'. If invalid, return True.
+        """
+        try:
+            tz = ZoneInfo("Europe/Brussels")
+            now = datetime.datetime.now(tz).time()
+            start_s = time_conf.get("start")
+            end_s = time_conf.get("end")
+            if not start_s or not end_s:
+                return True
+            fmt = "%H:%M:%S"
+            start_t = datetime.datetime.strptime(start_s, fmt).time()
+            end_t = datetime.datetime.strptime(end_s, fmt).time()
+            if start_t <= end_t:
+                return start_t <= now <= end_t
+            return now >= start_t or now <= end_t
+        except Exception:
+            logging.exception("Failed to parse run window from settings; allowing run by default")
+            return True
+
+    def _sleep_until_window_start(self, time_conf: dict) -> None:
+        try:
+            tz = ZoneInfo("Europe/Brussels")
+            now_dt = datetime.datetime.now(tz)
+            fmt = "%H:%M:%S"
+            start_s = time_conf.get("start")
+            if not start_s:
+                return
+            start_time = datetime.datetime.strptime(start_s, fmt).time()
+            # build next start datetime
+            start_dt = now_dt.replace(hour=start_time.hour, minute=start_time.minute, second=start_time.second, microsecond=0)
+            if start_dt <= now_dt:
+                # next day's start
+                start_dt = start_dt + datetime.timedelta(days=1)
+            delta = (start_dt - now_dt).total_seconds()
+            logging.info(f"Sleeping for {int(delta)} seconds until next run window start at {start_dt.isoformat()}")
+            # cap sleep to avoid extremely long blocking in case of misconfiguration
+            max_sleep = 60 * 60 * 6
+            to_sleep = min(delta, max_sleep)
+            time.sleep(to_sleep)
+        except Exception:
+            logging.exception("Failed to compute sleep until window start; sleeping 60s")
+            time.sleep(60)
 
     def _run_extra_fill(self):
         step_runner = ExtraFillStep(self.factory, eminfra_client=self.eminfra_client)
