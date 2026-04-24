@@ -14,6 +14,7 @@ from Enums import DBStep, ResourceEnum
 from ExtraFillStep import ExtraFillStep
 from GenericDbFunctions import get_db_step, set_db_step
 from InitialFillStep import InitialFillStep
+from utils.time_window import is_within_time_window, seconds_until_next_window_start
 
 
 class DBPipelineController:
@@ -144,23 +145,9 @@ class DBPipelineController:
         set_db_step(self.pipeline_connection, step=DBStep.EXTRA_DATA_FILL)
 
     def _is_within_run_window(self, time_conf: dict) -> bool:
-        """Check whether current Europe/Brussels time is within configured time window.
-
-        time_conf must contain 'start' and 'end' strings like '06:00:00'. If invalid, return True.
-        """
+        """Check whether current Europe/Brussels time is within configured time window."""
         try:
-            tz = ZoneInfo("Europe/Brussels")
-            now = datetime.datetime.now(tz).time()
-            start_s = time_conf.get("start")
-            end_s = time_conf.get("end")
-            if not start_s or not end_s:
-                return True
-            fmt = "%H:%M:%S"
-            start_t = datetime.datetime.strptime(start_s, fmt).time()
-            end_t = datetime.datetime.strptime(end_s, fmt).time()
-            if start_t <= end_t:
-                return start_t <= now <= end_t
-            return now >= start_t or now <= end_t
+            return is_within_time_window(time_conf)
         except Exception:
             logging.exception("Failed to parse run window from settings; allowing run by default")
             return True
@@ -169,17 +156,10 @@ class DBPipelineController:
         try:
             tz = ZoneInfo("Europe/Brussels")
             now_dt = datetime.datetime.now(tz)
-            fmt = "%H:%M:%S"
-            start_s = time_conf.get("start")
-            if not start_s:
+            delta = seconds_until_next_window_start(time_conf, now=now_dt)
+            if delta <= 0:
                 return
-            start_time = datetime.datetime.strptime(start_s, fmt).time()
-            # build next start datetime
-            start_dt = now_dt.replace(hour=start_time.hour, minute=start_time.minute, second=start_time.second, microsecond=0)
-            if start_dt <= now_dt:
-                # next day's start
-                start_dt = start_dt + datetime.timedelta(days=1)
-            delta = (start_dt - now_dt).total_seconds()
+            start_dt = now_dt + datetime.timedelta(seconds=delta)
             logging.info(f"Sleeping for {int(delta)} seconds until next run window start at {start_dt.isoformat()}")
             # cap sleep to avoid extremely long blocking in case of misconfiguration
             max_sleep = 60 * 60 * 6

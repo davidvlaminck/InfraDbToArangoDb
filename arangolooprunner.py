@@ -1,21 +1,21 @@
 import os
 import time as timer
 import logging
+import json
 from datetime import datetime
-from zoneinfo import ZoneInfo
 import pytz
 import subprocess
 from pathlib import Path
-from datetime import time
 from API.APIEnums import Environment, AuthType
 from DBPipelineController import DBPipelineController
+from utils.time_window import BRUSSELS, get_time_window_label, is_within_time_window
 
-BRUSSELS = ZoneInfo("Europe/Brussels")
 PARAMS_COLLECTION_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'params')
-
-RUN_WINDOW_START = "03:00:01"
-RUN_WINDOW_END = "05:00:00"
 SLEEP_TIME = 60
+SETTINGS_PATH_CANDIDATES = [
+    Path('/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json'),
+    Path('/home/david/Documents/AWV/resources/settings_ArangoDB.json'),
+]
 
 # --- Logging setup: both file and console ---
 logging.basicConfig(
@@ -32,22 +32,25 @@ console.setFormatter(formatter)
 logging.getLogger().addHandler(console)
 # --- End logging setup ---
 
-def parse_hms_to_seconds(hms: str) -> int:
-    parts = (hms or "").split(":")
-    if len(parts) != 3:
-        raise ValueError(f"Invalid time format '{hms}', expected HH:MM:SS")
-    h, m, s = (int(p) for p in parts)
-    if not (0 <= h <= 23 and 0 <= m <= 59 and 0 <= s <= 59):
-        raise ValueError(f"Invalid time value '{hms}', expected HH:MM:SS within normal ranges")
-    return h * 3600 + m * 60 + s
+def resolve_settings_path() -> Path:
+    env_value = os.getenv('SYNC_TO_ARANGO_SETTINGS')
+    if env_value:
+        return Path(env_value)
 
-def is_within_run_window(now: datetime) -> bool:
-    start_s = parse_hms_to_seconds(RUN_WINDOW_START)
-    end_s = parse_hms_to_seconds(RUN_WINDOW_END)
-    now_s = now.hour * 3600 + now.minute * 60 + now.second
-    if start_s <= end_s:
-        return start_s <= now_s <= end_s
-    return now_s >= start_s or now_s <= end_s
+    for candidate in SETTINGS_PATH_CANDIDATES:
+        if candidate.exists():
+            return candidate
+
+    return SETTINGS_PATH_CANDIDATES[0]
+
+
+def load_settings(settings_path: Path) -> dict:
+    with settings_path.open('r', encoding='utf-8') as file:
+        return json.load(file)
+
+
+def get_runner_time_conf(settings: dict | None) -> dict | None:
+    return settings.get('time') if isinstance(settings, dict) else None
 
 def delete_params_collection(settings_path, env, auth_type):
     """
@@ -71,15 +74,18 @@ def run_main_linux_arango(settings_path, env, auth_type):
 
 def main():
     last_run_date = None
-    settings_path = Path('/home/david/Documents/AWV/resources/settings_ArangoDB.json')
+    settings_path = resolve_settings_path()
     env = Environment.PRD
     auth_type = AuthType.JWT
     while True:
         try:
             now = datetime.now(tz=pytz.timezone("Europe/Brussels"))
-            if is_within_run_window(now):
+            settings = load_settings(settings_path)
+            time_conf = get_runner_time_conf(settings)
+            window_label = get_time_window_label(time_conf)
+            if is_within_time_window(time_conf, now=now, timezone=BRUSSELS):
                 if last_run_date != now.date():
-                    logging.info(f"Within run window ({RUN_WINDOW_START} - {RUN_WINDOW_END}), starting job.")
+                    logging.info(f"Within configured run window ({window_label}), starting job.")
                     delete_params_collection(settings_path, env, auth_type)
                     logging.info("First run_main_linux_arango call starting.")
                     run_main_linux_arango(settings_path, env, auth_type)
@@ -92,7 +98,7 @@ def main():
                 else:
                     logging.info("Already ran today, waiting for next window.")
             else:
-                logging.info(f"Not within run window ({now} is not within {RUN_WINDOW_START} - {RUN_WINDOW_END}), sleeping.")
+                logging.info(f"Not within configured run window ({now} is not within {window_label}), sleeping.")
         except Exception as e:
             logging.error("Exception occurred:", exc_info=True)
         timer.sleep(SLEEP_TIME)
@@ -103,17 +109,16 @@ if __name__ == "__main__":
 # The execute_now function is not used in the main loop, but left for manual/interactive use if needed.
 def execute_now():
     """
-    Script to run the ArangoDB pipeline at a scheduled time window. If run between 03:01 and 05:00, it will first clear the 'params' collection
-    using the same credentials/settings as the main pipeline, then run the full pipeline. Uses the settings file and DBPipelineController logic.
+    Manually execute the pipeline only when the configured settings-based time window allows it.
     """
-    now = datetime.now().time()
-    start = time(3, 0, 0)
-    end = time(5, 0)
-    settings_path = Path('/home/david/Documents/AWV/resources/settings_ArangoDB.json')
+    now = datetime.now(tz=BRUSSELS)
+    settings_path = resolve_settings_path()
+    settings = load_settings(settings_path)
+    time_conf = get_runner_time_conf(settings)
     env = Environment.PRD
     auth_type = AuthType.JWT
 
-    if start <= now <= end:
+    if is_within_time_window(time_conf, now=now, timezone=BRUSSELS):
         delete_params_collection(settings_path, env, auth_type)
         controller = DBPipelineController(settings_path=settings_path, auth_type=auth_type, env=env)
         controller.run()
