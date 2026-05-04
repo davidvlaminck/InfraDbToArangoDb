@@ -244,7 +244,8 @@ def main(argv: list[str] | None = None) -> int:
         bind_vars["limit"] = 100
 
     settings = _load_settings(args.settings)
-    db = _create_db_from_settings(settings, env=Environment[args.env])
+    env = Environment.__members__[args.env]
+    db = _create_db_from_settings(settings, env=env)
 
     rows = fetch_rows(
         db,
