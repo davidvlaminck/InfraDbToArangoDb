@@ -1,0 +1,11 @@
+FOR a IN assets
+  FILTER a.AIMDBStatus_isActief == true
+  LIMIT @limit
+  RETURN {
+    uuid: a._key,
+    type: a.`@type`,
+    naam: a.AIMNaamObject_naam,
+    naampad: a.NaampadObject_naampad,
+    isActief: a.AIMDBStatus_isActief
+  }
+
