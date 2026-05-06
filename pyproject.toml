@@ -1,0 +1,17 @@
+[project]
+name = "infradbtoarangodb"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "colorama>=0.4.6",
+    "cryptography>=48.0.0",
+    "openpyxl>=3.1.5",
+    "pyjwt>=2.12.1",
+    "pyproj>=3.7.2",
+    "pytest>=9.0.3",
+    "python-arango>=8.3.2",
+    "pytz>=2026.2",
+    "shapely>=2.1.2",
+]
