@@ -97,6 +97,9 @@ class KeuringsRecord:
     toezichter_agent_key: str | None = None
     toezichter_agent_uuid: str | None = None
     toezichter_agent_name: str | None = None
+    schadebeheerder_agent_key: str | None = None
+    schadebeheerder_agent_uuid: str | None = None
+    schadebeheerder_agent_name: str | None = None
     toezichtgroep_raw: str | None = None
     toezichtgroep_key_raw: str | None = None
     lsb_uuid: str | None = None
@@ -206,6 +209,7 @@ def build_aql(
         + "  LET betrokken_relaties = (FOR v, e IN 1..1 OUTBOUND a betrokkenerelaties RETURN {edge: e, vertex: v})\n"
         + "  LET toezichtgroep_agent = FIRST(FOR rel IN betrokken_relaties FILTER rel.edge.rol == 'toezichtsgroep' RETURN rel.vertex)\n"
         + "  LET toezichter_agent = FIRST(FOR rel IN betrokken_relaties FILTER rel.edge.rol == 'toezichter' RETURN rel.vertex)\n"
+        + "  LET schadebeheerder_agent = FIRST(FOR rel IN betrokken_relaties FILTER rel.edge.rol == 'schadebeheerder' RETURN rel.vertex)\n"
         + "  LET toezichtgroep_agent_name = (toezichtgroep_agent != null && toezichtgroep_agent.purl != null && toezichtgroep_agent.purl.Agent_naam != null ? toezichtgroep_agent.purl.Agent_naam : (toezichtgroep_agent != null ? toezichtgroep_agent.naam : null))\n"
         + "  LET tz_from_agent = toezichtgroep_agent_name\n\n"
         + "  // derive active bestek identifiers (eDeltaDossiernummer) from embedded bs.bestekkoppeling -> DOCUMENT(_to)\n"
@@ -231,6 +235,9 @@ def build_aql(
         + "    \"toezichter_agent_key\": (toezichter_agent != null ? toezichter_agent._key : null),\n"
         + "    \"toezichter_agent_uuid\": (toezichter_agent != null ? toezichter_agent.uuid : null),\n"
         + "    \"toezichter_agent_name\": (toezichter_agent != null && toezichter_agent.purl != null && toezichter_agent.purl.Agent_naam != null ? toezichter_agent.purl.Agent_naam : (toezichter_agent != null ? toezichter_agent.naam : null)),\n"
+        + "    \"schadebeheerder_agent_key\": (schadebeheerder_agent != null ? schadebeheerder_agent._key : null),\n"
+        + "    \"schadebeheerder_agent_uuid\": (schadebeheerder_agent != null ? schadebeheerder_agent.uuid : null),\n"
+        + "    \"schadebeheerder_agent_name\": (schadebeheerder_agent != null && schadebeheerder_agent.purl != null && schadebeheerder_agent.purl.Agent_naam != null ? schadebeheerder_agent.purl.Agent_naam : (schadebeheerder_agent != null ? schadebeheerder_agent.naam : null)),\n"
         + "    \"type\": @asset_short_uri == \"lgc:onderdeel#Laagspanningsbord\" ? \"Laagspanningsbord\" : @asset_short_uri,\n\n"
         + "    \"uuid\": a._key,\n"
         + "    \"lsb_uuid\": null,\n"
@@ -551,6 +558,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
         "actief_bestek(ken)",
         "toezichtgroep",
         "toezichter",
+        "schadebeheerder",
         "isActief",
         "toestand",
         "datum_laatste_keuring",
@@ -702,6 +710,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
             _sanitize(actief_bestek),
             _sanitize(resolved_name if resolved_name is not None else r.toezichtgroep),
             _sanitize(getattr(r, 'toezichter_agent_name', None)),
+            _sanitize(getattr(r, 'schadebeheerder_agent_name', None)),
             _sanitize(r.isActief),
             _sanitize(r.toestand),
             _sanitize(r.datum_laatste_keuring),
