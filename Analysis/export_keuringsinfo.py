@@ -34,7 +34,7 @@ from API.APIEnums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 
 
-TARGET_SHEETS = {"V&W-WL", "V&W-WA", "V&W-WO", "V&W-WW", "V&W-WVB", "Tunnel Organ. VL."}
+TARGET_SHEETS = {"V&W-WL", "V&W-WA", "V&W-WO", "V&W-WW", "V&W-WVB", "Tunnel Organ. VL.", "EMT_BMI", "EMT_TELE"}
 
 # Map alternative toezichtgroep labels (case-insensitive) to the canonical sheet name
 # e.g. some records use 'V&W Vlaams-Brabant' which should be treated as 'V&W-WVB'
@@ -399,7 +399,7 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
 
 
 def _pivot_group_name(record: KeuringsRecord) -> str:
-    """Map any record to one of the 6 target groups or 'Andere'.
+    """Map any record to one of the target groups or 'Andere'.
 
     For pivoting we intentionally collapse everything outside TARGET_SHEETS into
     'Andere' so the pivot stays stable.
