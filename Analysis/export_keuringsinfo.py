@@ -323,7 +323,32 @@ def _is_not_included(record: KeuringsRecord) -> bool:
     # In "Niet meegenomen":
     # - ONLY active assets with removed/transferred toestand
     # - Inactive assets are never exported at all
-    return (record.toestand or "").lower() in {"verwijderd", "overgedragen"}
+    # - Some additional records based on toezichtgroep
+    if (record.toestand or "").lower() in {"verwijderd", "overgedragen"}:
+        return True
+    if record.uuid in {'651ee842-7785-4a79-b4b6-b6c10c028df0','e622f112-2cc0-47eb-82a3-7d79cc941d6c'}:
+        return True
+    if record.toezichtgroep:
+        if record.toezichtgroep in {'ABBAMelda test', 'De Werkvennootschap', 'EMT_KUNST_O', 'EMT_KUNST_W',
+                                    'EMT_WHG', 'EMT_WHM', 'EMT_WHW', 'LANTIS', 'PPS_DIABOLO', 'Stad Antwerpen',
+                                    'Vlaamse Belastingdienst', 'VMM-WATER', 'W&Z'}:
+            return True
+        if record.toezichtgroep == 'ANPR Extenen':
+            return record.schadebeheerder_agent_name == 'District Gent 411'
+        if record.toezichtgroep == 'UNKNOWN':
+            if record.actief_bestekken and 'HVV.089' in record.actief_bestekken:
+                print('found records with bestek "HVV.089"')
+                return True
+            elif record.uuid in {'8cb95a85-8a7c-4d6a-9573-11cfecad23c7','f8e30b99-d011-4d59-bedc-b960c01f26ae',
+                                 'cbd18bc7-623f-4052-9f91-e5cb4d1f8bb2','46430596-a0af-44c5-87b2-2985eeaec730',
+                                 'd24b762a-5d13-40fc-86ac-1ee364277c64','36abe6eb-33d2-47f8-8c19-557d5809d071',
+                                 'a3ceb677-a435-498f-b4ac-c812f5b38a86','6e883a60-4907-402e-974a-2cb34fa34106'}:
+                return True
+            return False
+
+        return False
+
+    return False
 
 
 def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
