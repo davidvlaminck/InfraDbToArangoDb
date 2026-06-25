@@ -50,6 +50,7 @@ SHEET_ALIASES: dict[str, str] = {
     "v&w west-vlaanderen": "V&W-WW",
     # Tunnel organisation (agent) maps to the Tunnel sheet
     "tunnel organ. vl.": "Tunnel Organ. VL.",
+    "afdeling tunnelorganisatie": "Tunnel Organ. VL.",
 }
 
 # Explicit mapping from agent document keys/uuids to canonical sheet names.
@@ -72,6 +73,9 @@ AGENT_TO_SHEET: dict[str, str] = {
     # Tunnel organisation
     "7aa92dda-9e03": "Tunnel Organ. VL.",
     "7aa92dda-9e03-4f10-a0b3-1c6748c332b9": "Tunnel Organ. VL.",
+    # Tunnel organisation
+    "2a484172-54d9": "Tunnel Organ. VL.",
+    "2a484172-54d9-45bf-97c5-96019c5ec803": "Tunnel Organ. VL.",
 }
 
 EXCLUDED_SHEET = "Niet meegenomen"
