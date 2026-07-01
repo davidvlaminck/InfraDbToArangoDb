@@ -34,7 +34,7 @@ from API.APIEnums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 
 
-TARGET_SHEETS = {"V&W-WL", "V&W-WA", "V&W-WO", "V&W-WW", "V&W-WVB", "Tunnel Organ. VL.", "EMT_BMI", "EMT_TELE"}
+TARGET_SHEETS = {"V&W-WL", "V&W-WA", "V&W-WO", "V&W-WW", "V&W-WVB", "Afdeling Tunnelorganisatie", "EMT_BMI", "EMT_TELE"}
 
 # Map alternative toezichtgroep labels (case-insensitive) to the canonical sheet name
 # e.g. some records use 'V&W Vlaams-Brabant' which should be treated as 'V&W-WVB'
@@ -49,8 +49,9 @@ SHEET_ALIASES: dict[str, str] = {
     "v&w antwerpen": "V&W-WA",
     "v&w west-vlaanderen": "V&W-WW",
     # Tunnel organisation (agent) maps to the Tunnel sheet
-    "tunnel organ. vl.": "Tunnel Organ. VL.",
-    "afdeling tunnelorganisatie": "Tunnel Organ. VL.",
+    # Both variants are mapped to the canonical sheet name
+    "tunnel organ. vl.": "Afdeling Tunnelorganisatie",
+    "afdeling tunnelorganisatie": "Afdeling Tunnelorganisatie",
 }
 
 # Explicit mapping from agent document keys/uuids to canonical sheet names.
@@ -71,11 +72,11 @@ AGENT_TO_SHEET: dict[str, str] = {
     "e3fe5c8e-037b-40cd-bff7-4617eb8bb86a": "V&W-WVB",
 
     # Tunnel organisation
-    "7aa92dda-9e03": "Tunnel Organ. VL.",
-    "7aa92dda-9e03-4f10-a0b3-1c6748c332b9": "Tunnel Organ. VL.",
+    "7aa92dda-9e03": "Afdeling Tunnelorganisatie",
+    "7aa92dda-9e03-4f10-a0b3-1c6748c332b9": "Afdeling Tunnelorganisatie",
     # Tunnel organisation
-    "2a484172-54d9": "Tunnel Organ. VL.",
-    "2a484172-54d9-45bf-97c5-96019c5ec803": "Tunnel Organ. VL.",
+    "2a484172-54d9": "Afdeling Tunnelorganisatie",
+    "2a484172-54d9-45bf-97c5-96019c5ec803": "Afdeling Tunnelorganisatie",
 }
 
 EXCLUDED_SHEET = "Niet meegenomen"
@@ -454,6 +455,8 @@ def _resolved_toezichtgroep(record: KeuringsRecord) -> str | None:
         return record.toezichtgroep
     if getattr(record, 'toezichtgroep_agent_name', None):
         return getattr(record, 'toezichtgroep_agent_name')
+    if getattr(record, 'toezichter_agent_name', None):
+        return getattr(record, 'toezichter_agent_name')
     return None
 
 
