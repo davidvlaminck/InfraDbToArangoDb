@@ -14,4 +14,5 @@ dependencies = [
     "python-arango>=8.3.2",
     "pytz>=2026.2",
     "shapely>=2.1.2",
+    "tzdata>=2026.3"
 ]
