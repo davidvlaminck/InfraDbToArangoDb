@@ -5,6 +5,7 @@ from utils.time_window import (
 	get_time_window_label,
 	is_within_time_window,
 	seconds_until_next_window_start,
+	seconds_until_time,
 )
 
 
@@ -40,4 +41,19 @@ def test_seconds_until_next_window_start_uses_next_day_when_needed():
 	delta = seconds_until_next_window_start(time_conf, now=_dt("2026-04-24T23:55:00"))
 
 	assert delta == 6 * 60 * 60 + 5 * 60
+
+
+def test_seconds_until_time_same_day():
+	delta = seconds_until_time("03:00:00", now=_dt("2026-04-24T00:00:00"))
+	assert delta == 3 * 60 * 60
+
+
+def test_seconds_until_time_next_day():
+	delta = seconds_until_time("03:00:00", now=_dt("2026-04-24T23:59:59"))
+	assert delta == 3 * 60 * 60 + 1
+
+
+def test_seconds_until_time_exactly_at_target():
+	delta = seconds_until_time("03:00:00", now=_dt("2026-04-24T03:00:00"))
+	assert delta == 0.0
 

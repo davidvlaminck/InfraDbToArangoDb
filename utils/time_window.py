@@ -68,6 +68,28 @@ def seconds_until_next_window_start(
     return max(0.0, (next_start - current_dt).total_seconds())
 
 
+def seconds_until_time(
+    target_time_str: str,
+    *,
+    now: dt.datetime | None = None,
+    timezone: ZoneInfo = BRUSSELS,
+) -> float:
+    """Compute seconds until the next occurrence of a daily time (HH:MM:SS).
+
+    Uses strict less-than comparison so that when *now* is exactly the target
+    time the returned delta is 0 (i.e. "run now").
+    """
+    target = dt.datetime.strptime(target_time_str, "%H:%M:%S").time()
+    current_dt = now.astimezone(timezone) if now is not None else dt.datetime.now(timezone)
+    current_trunc = current_dt.replace(microsecond=0)
+
+    next_dt = current_trunc.replace(hour=target.hour, minute=target.minute, second=target.second)
+    if next_dt < current_trunc:
+        next_dt += dt.timedelta(days=1)
+
+    return max(0.0, (next_dt - current_trunc).total_seconds())
+
+
 def get_time_window_label(time_conf: dict | None) -> str:
     bounds = get_time_window_bounds(time_conf)
     if bounds is None:
