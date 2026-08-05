@@ -15,4 +15,7 @@ if __name__ == '__main__':
 
     # 🚀 Connect to ArangoDB using DBPipelineController
     controller = DBPipelineController(settings_path=settings_path, auth_type=AuthType.JWT, env=Environment.PRD)
-    controller.run()
+    try:
+        controller.run()
+    finally:
+        controller.close()

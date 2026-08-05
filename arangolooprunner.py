@@ -89,14 +89,18 @@ def delete_params_collection(settings_path, env, auth_type):
     Connects to ArangoDB using the same settings as DBPipelineController and drops the 'params' collection if it exists.
     """
     controller = DBPipelineController(settings_path=settings_path, env=env, auth_type=auth_type)
-    db = controller.factory.create_connection()
-    if db.has_collection('params'):
-        db.delete_collection('params')
-        logging.info("Dropped 'params' collection.")
-    else:
-        logging.warning("'params' collection does not exist.")
+    try:
+        db = controller.factory.create_connection()
+        if db.has_collection('params'):
+            db.delete_collection('params')
+            logging.info("Dropped 'params' collection.")
+        else:
+            logging.warning("'params' collection does not exist.")
+    finally:
+        controller.close()
 
 def run_main_linux_arango(settings_path, env, auth_type, ps=None):
+    controller = None
     try:
         controller = DBPipelineController(settings_path=settings_path, auth_type=auth_type, env=env)
         controller.run()
@@ -110,7 +114,10 @@ def run_main_linux_arango(settings_path, env, auth_type, ps=None):
         logging.error("main_linux_arango.py failed with exception!\n%s", e)
         if ps is not None:
             logging.info(f"Updating pipeline_state: arango_sync / failed — {e}")
-            ps.update("arango_sync", "failed", f"Fout: {e}")
+            ps.update("arango_sync", "failed", "Fout: {e}")
+    finally:
+        if controller is not None:
+            controller.close()
 
 def main():
     settings_path = resolve_settings_path()
@@ -184,7 +191,10 @@ def execute_now():
             ps.update("arango_sync", "running", "Arango sync gestart (execute_now)")
         delete_params_collection(settings_path, env, auth_type)
         controller = DBPipelineController(settings_path=settings_path, auth_type=auth_type, env=env)
-        controller.run()
+        try:
+            controller.run()
+        finally:
+            controller.close()
         if ps is not None:
             logging.info("Updating pipeline_state: arango_sync / completed (execute_now)")
             ps.update("arango_sync", "completed", "Arango sync voltooid (execute_now)")

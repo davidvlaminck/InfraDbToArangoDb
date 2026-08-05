@@ -248,17 +248,13 @@ class ExtraFillStep:
         # Clear existing derived edges
         db.collection(edge_collection).truncate()
 
-        rt_key = next(
-            iter(
-                db.aql.execute(
-                    'FOR rt IN relatietypes FILTER rt.short == @short LIMIT 1 RETURN rt._key',
-                    bind_vars={'short': relatietype_short},
-                    batch_size=1,
-                    stream=True,
-                )
-            ),
-            None,
-        )
+        with db.aql.execute(
+            'FOR rt IN relatietypes FILTER rt.short == @short LIMIT 1 RETURN rt._key',
+            bind_vars={'short': relatietype_short},
+            batch_size=1,
+            stream=True,
+        ) as cursor:
+            rt_key = next(iter(cursor), None)
         if rt_key is None:
             logging.warning("⚠️ Could not find relatietype '%s'. Leaving %s empty.", relatietype_short, edge_collection)
             self._mark_filled(db, params_key)
@@ -305,12 +301,16 @@ class ExtraFillStep:
               OPTIONS { ignoreErrors: true }
             """
 
-        db.aql.execute(
+        # Stream the INSERT so the server processes rows in batches without
+        # materialising the full result set on the client.  The cursor is
+        # fully consumed by list() which also releases the server-side
+        # cursor and its HTTP connection.
+        list(db.aql.execute(
             aql,
             bind_vars={'rt_key': rt_key, '@edge_collection': edge_collection},
             batch_size=5000,
             stream=True,
-        )
+        ))
 
         count = next(iter(db.aql.execute('RETURN COUNT(FOR x IN @@c RETURN 1)', bind_vars={'@c': edge_collection})), None)
         logging.info("✅ %s built. Edge count: %s", edge_collection, count)
