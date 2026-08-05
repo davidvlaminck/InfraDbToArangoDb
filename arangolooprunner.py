@@ -104,10 +104,12 @@ def run_main_linux_arango(settings_path, env, auth_type, ps=None):
     except subprocess.CalledProcessError as e:
         logging.error("main_linux_arango.py failed!\n%s", e.stderr)
         if ps is not None:
+            logging.info(f"Updating pipeline_state: arango_sync / failed — {e}")
             ps.update("arango_sync", "failed", f"Script eindigde met fout: {e}")
     except Exception as e:
         logging.error("main_linux_arango.py failed with exception!\n%s", e)
         if ps is not None:
+            logging.info(f"Updating pipeline_state: arango_sync / failed — {e}")
             ps.update("arango_sync", "failed", f"Fout: {e}")
 
 def main():
@@ -118,6 +120,7 @@ def main():
 
     ps = get_pipeline_state(settings)
     if ps is not None:
+        logging.info("Initializing pipeline_state table in SQLite")
         ps.ensure()
 
     while True:
@@ -133,6 +136,7 @@ def main():
             logging.info(f"{SCHEDULED_RUN_TIME} reached, starting DBPipelineController run.")
 
             if ps is not None:
+                logging.info("Updating pipeline_state: arango_sync / running")
                 ps.update("arango_sync", "running", "Arango sync gestart")
 
             delete_params_collection(settings_path, env, auth_type)
@@ -147,11 +151,13 @@ def main():
             logging.info("Second run_main_linux_arango call finished.")
 
             if ps is not None:
+                logging.info("Updating pipeline_state: arango_sync / completed")
                 ps.update("arango_sync", "completed", "Arango sync voltooid")
 
         except Exception as e:
             logging.error("Exception occurred:", exc_info=True)
             if ps is not None:
+                logging.info(f"Updating pipeline_state: arango_sync / failed — {e}")
                 ps.update("arango_sync", "failed", f"Fout in loop: {e}")
         timer.sleep(SLEEP_TIME)
 
@@ -174,10 +180,12 @@ def execute_now():
         ps = get_pipeline_state(settings)
         if ps is not None:
             ps.ensure()
+            logging.info("Updating pipeline_state: arango_sync / running (execute_now)")
             ps.update("arango_sync", "running", "Arango sync gestart (execute_now)")
         delete_params_collection(settings_path, env, auth_type)
         controller = DBPipelineController(settings_path=settings_path, auth_type=auth_type, env=env)
         controller.run()
         if ps is not None:
+            logging.info("Updating pipeline_state: arango_sync / completed (execute_now)")
             ps.update("arango_sync", "completed", "Arango sync voltooid (execute_now)")
     print('exit')
