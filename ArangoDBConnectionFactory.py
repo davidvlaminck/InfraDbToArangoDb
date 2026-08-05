@@ -12,3 +12,8 @@ class ArangoDBConnectionFactory:
 
     def create_connection(self):
         return self.client.db(self.db_name, username=self.username, password=self.password)
+
+    def close(self) -> None:
+        """Close the underlying ArangoClient HTTP sessions."""
+        if hasattr(self.client, "close"):
+            self.client.close()

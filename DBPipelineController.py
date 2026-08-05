@@ -195,3 +195,25 @@ class DBPipelineController:
         except Exception as e:
             logging.error(f"❌ Failed to connect to database: {e}")
             raise e
+
+    def close(self) -> None:
+        """Close all HTTP sessions and ArangoDB client connections.
+
+        Each DBPipelineController creates an ArangoClient (which holds one
+        requests.Session) and two JWTRequester instances (each extending
+        requests.Session).  If these are not explicitly closed the underlying
+        sockets/file-descriptors leak.  In the long-running loop runner a new
+        controller is created every iteration, so this method must be called
+        when the controller is no longer needed.
+        """
+        for attr in ("eminfra_client", "emson_client"):
+            requester = getattr(self, attr, None)
+            if requester is not None and hasattr(requester.requester, "close"):
+                try:
+                    requester.requester.close()
+                except Exception as e:
+                    logging.warning(f"Error closing requester for {attr}: {e}")
+        try:
+            self.factory.close()
+        except Exception as e:
+            logging.warning(f"Error closing ArangoDB client: {e}")
