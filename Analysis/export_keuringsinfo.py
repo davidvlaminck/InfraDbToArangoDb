@@ -33,8 +33,7 @@ from typing import Any, Iterable
 from API.APIEnums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 
-# DEFAULT_SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
-DEFAULT_SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
+DEFAULT_SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
 
 TARGET_SHEETS = {"V&W-WL", "V&W-WA", "V&W-WO", "V&W-WW", "V&W-WVB", "Afdeling Tunnelorganisatie", "EMT_BMI", "EMT_TELE"}
 
