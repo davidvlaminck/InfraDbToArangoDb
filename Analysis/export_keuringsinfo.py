@@ -33,6 +33,8 @@ from typing import Any, Iterable
 from API.APIEnums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 
+# DEFAULT_SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
+DEFAULT_SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
 
 TARGET_SHEETS = {"V&W-WL", "V&W-WA", "V&W-WO", "V&W-WW", "V&W-WVB", "Afdeling Tunnelorganisatie", "EMT_BMI", "EMT_TELE"}
 
@@ -133,6 +135,7 @@ def _create_db_from_settings(settings: dict[str, Any], env: Environment) -> Any:
         db_name=db_settings["database"],
         username=db_settings["user"],
         password=db_settings["password"],
+        hosts=['http://127.0.0.1:8530', 'http://127.0.0.1:8529']
     )
     return factory.create_connection()
 
@@ -787,7 +790,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Export keuringsinfo naar Excel")
-    parser.add_argument("--settings", type=Path, required=True)
+    parser.add_argument("--settings", type=Path, default=DEFAULT_SETTINGS_PATH, required=True)
     parser.add_argument("--env", type=str, default="PRD", choices=[e.name for e in Environment])
     parser.add_argument("--auth", type=str, default="JWT", choices=[a.name for a in AuthType])
     parser.add_argument(
