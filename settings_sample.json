@@ -54,7 +54,6 @@
          "end" : "23:50:00"
      },
      "health_db" : {
-         "path" : "/home/davidlinux/PycharmProjects/RSA_Health/health.db",
-         "rsa_health_project_path" : "/home/davidlinux/PycharmProjects/RSA_Health"
+         "path" : "/opt/data-platform/RSA_Health/health.db"
      }
  }

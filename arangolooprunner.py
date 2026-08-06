@@ -8,7 +8,6 @@ import subprocess
 from pathlib import Path
 
 try:
-    import sys
     from lib.pipeline_state import PipelineState
     _PS_AVAILABLE = True
 except ImportError:
@@ -65,7 +64,8 @@ def get_runner_time_conf(settings: dict | None) -> dict | None:
 def get_pipeline_state(settings: dict | None):
     """Create a PipelineState from the settings' health_db config.
 
-    Returns None when the RSA_Health pipeline_state module is unavailable.
+    Returns None when the RSA_Health pipeline_state module is unavailable
+    or the config is incomplete.
     """
     if not _PS_AVAILABLE:
         return None
@@ -75,12 +75,8 @@ def get_pipeline_state(settings: dict | None):
         return None
 
     db_path = health_conf.get("path")
-    project_path = health_conf.get("rsa_health_project_path")
-    if not db_path or not project_path:
+    if not db_path:
         return None
-
-    if str(project_path) not in sys.path:
-        sys.path.insert(0, str(project_path))
 
     return PipelineState(db_path)
 
