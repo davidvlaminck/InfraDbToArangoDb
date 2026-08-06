@@ -7,11 +7,7 @@ import pytz
 import subprocess
 from pathlib import Path
 
-try:
-    from lib.pipeline_state import PipelineState
-    _PS_AVAILABLE = True
-except ImportError:
-    _PS_AVAILABLE = False
+from utils.sqlite_queue_client import enqueue_sqlite_job
 
 from API.APIEnums import Environment, AuthType
 from DBPipelineController import DBPipelineController
@@ -61,24 +57,37 @@ def get_runner_time_conf(settings: dict | None) -> dict | None:
     return settings.get('time') if isinstance(settings, dict) else None
 
 
-def get_pipeline_state(settings: dict | None):
-    """Create a PipelineState from the settings' health_db config.
+def get_health_db_path(settings: dict | None) -> str | None:
+    """Return the health_db SQLite path from settings, or None when unset.
 
-    Returns None when the RSA_Health pipeline_state module is unavailable
-    or the config is incomplete.
+    When set, the runner enqueues pipeline_state write-jobs to the dedicated
+    SQLite queue writer instead of writing to SQLite directly.
     """
-    if not _PS_AVAILABLE:
-        return None
-
     health_conf = settings.get("health_db") if isinstance(settings, dict) else None
     if not isinstance(health_conf, dict):
         return None
+    return health_conf.get("path")
 
-    db_path = health_conf.get("path")
-    if not db_path:
-        return None
 
-    return PipelineState(db_path)
+def update_pipeline_state(
+    phase: str, status: str, message: str = "", health_db_path: str | None = None
+) -> None:
+    """Enqueue a pipeline_state update via the JSON file queue.
+
+    Direct writes to SQLite are no longer allowed from producer processes.
+    """
+    if health_db_path is None:
+        return
+    logging.info("Enqueueing pipeline_state: %s / %s", phase, status)
+    enqueue_sqlite_job(
+        action="set_pipeline_state",
+        payload={
+            "phase": phase,
+            "status": status,
+            "message": message,
+        },
+    )
+
 
 def delete_params_collection(settings_path, env, auth_type):
     """
@@ -95,22 +104,18 @@ def delete_params_collection(settings_path, env, auth_type):
     finally:
         controller.close()
 
-def run_main_linux_arango(settings_path, env, auth_type, ps=None):
+def run_main_linux_arango(settings_path, env, auth_type, health_db_path=None):
     controller = None
     try:
         controller = DBPipelineController(settings_path=settings_path, auth_type=auth_type, env=env)
         controller.run()
-        logging.info("main_linux_arango.py executed successfully.\n%s")
+        logging.info("main_linux_arango.py executed successfully.")
     except subprocess.CalledProcessError as e:
         logging.error("main_linux_arango.py failed!\n%s", e.stderr)
-        if ps is not None:
-            logging.info(f"Updating pipeline_state: arango_sync / failed — {e}")
-            ps.update("arango_sync", "failed", f"Script eindigde met fout: {e}")
+        update_pipeline_state("arango_sync", "failed", f"Script eindigde met fout: {e}", health_db_path)
     except Exception as e:
         logging.error("main_linux_arango.py failed with exception!\n%s", e)
-        if ps is not None:
-            logging.info(f"Updating pipeline_state: arango_sync / failed — {e}")
-            ps.update("arango_sync", "failed", "Fout: {e}")
+        update_pipeline_state("arango_sync", "failed", f"Fout: {e}", health_db_path)
     finally:
         if controller is not None:
             controller.close()
@@ -121,10 +126,10 @@ def main():
     env = Environment.PRD
     auth_type = AuthType.JWT
 
-    ps = get_pipeline_state(settings)
-    if ps is not None:
-        logging.info("Initializing pipeline_state table in SQLite")
-        ps.ensure()
+    health_db_path = get_health_db_path(settings)
+    if health_db_path is not None:
+        logging.info("Enqueueing pipeline_state schema setup")
+        enqueue_sqlite_job(action="ensure_pipeline_state", payload={})
 
     while True:
         try:
@@ -138,30 +143,24 @@ def main():
 
             logging.info(f"{SCHEDULED_RUN_TIME} reached, starting DBPipelineController run.")
 
-            if ps is not None:
-                logging.info("Updating pipeline_state: arango_sync / running")
-                ps.update("arango_sync", "running", "Arango sync gestart")
+            update_pipeline_state("arango_sync", "running", "Arango sync gestart", health_db_path)
 
             delete_params_collection(settings_path, env, auth_type)
 
             logging.info("First run_main_linux_arango call starting.")
-            run_main_linux_arango(settings_path, env, auth_type, ps=ps)
+            run_main_linux_arango(settings_path, env, auth_type, health_db_path=health_db_path)
             logging.info("First run_main_linux_arango call finished. Waiting 10 seconds before second call.")
             timer.sleep(10)
 
             logging.info("Second run_main_linux_arango call starting.")
-            run_main_linux_arango(settings_path, env, auth_type, ps=ps)
+            run_main_linux_arango(settings_path, env, auth_type, health_db_path=health_db_path)
             logging.info("Second run_main_linux_arango call finished.")
 
-            if ps is not None:
-                logging.info("Updating pipeline_state: arango_sync / completed")
-                ps.update("arango_sync", "completed", "Arango sync voltooid")
+            update_pipeline_state("arango_sync", "completed", "Arango sync voltooid", health_db_path)
 
         except Exception as e:
             logging.error("Exception occurred:", exc_info=True)
-            if ps is not None:
-                logging.info(f"Updating pipeline_state: arango_sync / failed — {e}")
-                ps.update("arango_sync", "failed", f"Fout in loop: {e}")
+            update_pipeline_state("arango_sync", "failed", f"Fout in loop: {e}", health_db_path)
         timer.sleep(SLEEP_TIME)
 
 if __name__ == "__main__":
@@ -180,18 +179,16 @@ def execute_now():
     auth_type = AuthType.JWT
 
     if is_within_time_window(time_conf, now=now, timezone=BRUSSELS):
-        ps = get_pipeline_state(settings)
-        if ps is not None:
-            ps.ensure()
-            logging.info("Updating pipeline_state: arango_sync / running (execute_now)")
-            ps.update("arango_sync", "running", "Arango sync gestart (execute_now)")
+        health_db_path = get_health_db_path(settings)
+        if health_db_path is not None:
+            enqueue_sqlite_job(action="ensure_pipeline_state", payload={})
+            update_pipeline_state("arango_sync", "running", "Arango sync gestart (execute_now)", health_db_path)
         delete_params_collection(settings_path, env, auth_type)
         controller = DBPipelineController(settings_path=settings_path, auth_type=auth_type, env=env)
         try:
             controller.run()
         finally:
             controller.close()
-        if ps is not None:
-            logging.info("Updating pipeline_state: arango_sync / completed (execute_now)")
-            ps.update("arango_sync", "completed", "Arango sync voltooid (execute_now)")
+        if health_db_path is not None:
+            update_pipeline_state("arango_sync", "completed", "Arango sync voltooid (execute_now)", health_db_path)
     print('exit')
