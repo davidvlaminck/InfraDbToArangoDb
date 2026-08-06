@@ -33,7 +33,6 @@ from typing import Any, Iterable
 from API.APIEnums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 
-
 TARGET_SHEETS = {"V&W-WL", "V&W-WA", "V&W-WO", "V&W-WW", "V&W-WVB", "Afdeling Tunnelorganisatie", "EMT_BMI", "EMT_TELE"}
 
 # Map alternative toezichtgroep labels (case-insensitive) to the canonical sheet name
@@ -133,6 +132,7 @@ def _create_db_from_settings(settings: dict[str, Any], env: Environment) -> Any:
         db_name=db_settings["database"],
         username=db_settings["user"],
         password=db_settings["password"],
+        hosts=db_settings["hosts"]
     )
     return factory.create_connection()
 

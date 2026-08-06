@@ -41,12 +41,14 @@
          "prd" : {
              "database" : "",
              "user": "",
-             "password": ""
+             "password": "",
+             "hosts": ["http://127.0.0.1:8529", "http://127.0.0.1:8530"]
          },
         "unittest" : {
              "database" : "unittest",
              "user": "unittest",
-             "password": "unittest"
+             "password": "unittest",
+             "hosts": ["unittest", "unittest"]
          }
     },
      "time" : {
