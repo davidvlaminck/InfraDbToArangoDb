@@ -4,15 +4,18 @@ import logging
 import json
 import subprocess
 from datetime import datetime, timezone
+import pytz
 from pathlib import Path
 
 from utils.sqlite_queue_client import enqueue_sqlite_job
 
 from API.APIEnums import Environment, AuthType
 from DBPipelineController import DBPipelineController
+from utils.time_window import BRUSSELS, seconds_until_time
 
 PARAMS_COLLECTION_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'params')
 SLEEP_TIME = 60
+SCHEDULED_RUN_TIME = "03:00:00"
 
 # --- Logging setup: both file and console ---
 logging.basicConfig(
@@ -109,7 +112,15 @@ def main():
 
     while True:
         try:
-            logging.info("Starting DBPipelineController run.")
+            now = datetime.now(tz=pytz.timezone("Europe/Brussels"))
+            delta = seconds_until_time(SCHEDULED_RUN_TIME, now=now, timezone=BRUSSELS)
+
+            if delta > 0:
+                logging.info(f"Not yet {SCHEDULED_RUN_TIME}, waiting {int(delta)} seconds.")
+                timer.sleep(min(delta, SLEEP_TIME))
+                continue
+
+            logging.info(f"{SCHEDULED_RUN_TIME} reached, starting DBPipelineController run.")
 
             update_pipeline_state("arango_sync", "running", "Arango sync gestart", health_db_path)
 
