@@ -1,0 +1,18 @@
+[Unit] 
+Description=Data import naar ArangoDB
+After=network-online.target postgresql.service arangodb3.service 
+Wants=network-online.target 
+ 
+[Service] 
+Type=simple
+User=deploy
+Group=deploy
+WorkingDirectory=/opt/data-platform/InfraDbToAranagoDb
+ExecStart=/home/deploy/.local/bin/uv run arangolooprunner.py 
+StandardOutput=append:/opt/data-platform/logs/arango_sync.log 
+StandardError=append:/opt/data-platform/logs/arango_sync.log
+Restart=on-failure
+RestartSec=60
+ 
+[Install] 
+WantedBy=multi-user.target 
