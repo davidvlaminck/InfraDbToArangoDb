@@ -51,10 +51,6 @@
              "hosts": ["unittest", "unittest"]
          }
     },
-     "time" : {
-         "start" : "06:00:00",
-         "end" : "23:50:00"
-     },
      "health_db" : {
          "path" : "/opt/data-platform/RSA_Health/health.db"
      }

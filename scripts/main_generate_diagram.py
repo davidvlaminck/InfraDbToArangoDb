@@ -337,7 +337,7 @@ if __name__ == '__main__':
     # print(json.dumps(drawio_json, indent=2))
 
     xml_content = generate_drawio_mxfile(model, fkey_mapping=fkey_overrides, cols=4)
-    with open("diagram.drawio", "w", encoding="utf-8") as f:
+    with open("../diagram.drawio", "w", encoding="utf-8") as f:
         f.write(xml_content)
 
     print("Wrote diagram.graphml—import this in draw.io")

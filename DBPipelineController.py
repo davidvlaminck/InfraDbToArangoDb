@@ -14,7 +14,6 @@ from Enums import DBStep, ResourceEnum
 from ExtraFillStep import ExtraFillStep
 from GenericDbFunctions import get_db_step, set_db_step
 from InitialFillStep import InitialFillStep
-from utils.time_window import is_within_time_window, seconds_until_next_window_start
 
 
 class DBPipelineController:
@@ -70,11 +69,6 @@ class DBPipelineController:
                     logging.info("[0] Creating the database...")
                     self._create_db()
                 elif current_step == DBStep.INITIAL_FILL:
-                    # honor configured time window: if outside window, sleep until window start
-                    time_conf = self.settings.get("time") if isinstance(self.settings, dict) else None
-                    if time_conf and not self._is_within_run_window(time_conf):
-                        logging.info("Currently outside allowed run window; sleeping until next window start")
-                        self._sleep_until_window_start(time_conf)
                     logging.info("[1] Filling the database...")
                     self._run_fill()
                 elif current_step == DBStep.EXTRA_DATA_FILL:
@@ -125,8 +119,6 @@ class DBPipelineController:
         set_db_step(self.pipeline_connection, step=DBStep.INITIAL_FILL)
 
     def _run_fill(self):
-        # pass configured time window and optional max attempts into the step runner
-        time_conf = self.settings.get("time") if isinstance(self.settings, dict) else None
         # determine max attempts (default 10)
         try:
             max_attempts = int(self.settings.get("max_group_attempts", 10)) if isinstance(self.settings, dict) else 10
@@ -137,37 +129,11 @@ class DBPipelineController:
             self.factory,
             eminfra_client=self.eminfra_client,
             emson_client=self.emson_client,
-            run_window=time_conf,
             max_group_attempts=max_attempts,
         )
         # Let exceptions propagate so the outer run() loop can handle/backoff/retry
         step_runner.execute(fill_resource_groups=self.fill_resource_groups)
         set_db_step(self.pipeline_connection, step=DBStep.EXTRA_DATA_FILL)
-
-    def _is_within_run_window(self, time_conf: dict) -> bool:
-        """Check whether current Europe/Brussels time is within configured time window."""
-        try:
-            return is_within_time_window(time_conf)
-        except Exception:
-            logging.exception("Failed to parse run window from settings; allowing run by default")
-            return True
-
-    def _sleep_until_window_start(self, time_conf: dict) -> None:
-        try:
-            tz = ZoneInfo("Europe/Brussels")
-            now_dt = datetime.datetime.now(tz)
-            delta = seconds_until_next_window_start(time_conf, now=now_dt)
-            if delta <= 0:
-                return
-            start_dt = now_dt + datetime.timedelta(seconds=delta)
-            logging.info(f"Sleeping for {int(delta)} seconds until next run window start at {start_dt.isoformat()}")
-            # cap sleep to avoid extremely long blocking in case of misconfiguration
-            max_sleep = 60 * 60 * 6
-            to_sleep = min(delta, max_sleep)
-            time.sleep(to_sleep)
-        except Exception:
-            logging.exception("Failed to compute sleep until window start; sleeping 60s")
-            time.sleep(60)
 
     def _run_extra_fill(self):
         step_runner = ExtraFillStep(self.factory, eminfra_client=self.eminfra_client)

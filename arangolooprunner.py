@@ -2,24 +2,17 @@ import os
 import time as timer
 import logging
 import json
-from datetime import datetime
-import pytz
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 
 from utils.sqlite_queue_client import enqueue_sqlite_job
 
 from API.APIEnums import Environment, AuthType
 from DBPipelineController import DBPipelineController
-from utils.time_window import BRUSSELS, is_within_time_window, seconds_until_time
 
 PARAMS_COLLECTION_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'params')
 SLEEP_TIME = 60
-SCHEDULED_RUN_TIME = "03:00:00"
-SETTINGS_PATH_CANDIDATES = [
-    Path('/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json'),
-    Path('/home/david/Documents/AWV/resources/settings_ArangoDB.json'),
-]
 
 # --- Logging setup: both file and console ---
 logging.basicConfig(
@@ -36,25 +29,10 @@ console.setFormatter(formatter)
 logging.getLogger().addHandler(console)
 # --- End logging setup ---
 
-def resolve_settings_path() -> Path:
-    env_value = os.getenv('SYNC_TO_ARANGO_SETTINGS')
-    if env_value:
-        return Path(env_value)
-
-    for candidate in SETTINGS_PATH_CANDIDATES:
-        if candidate.exists():
-            return candidate
-
-    return SETTINGS_PATH_CANDIDATES[0]
-
 
 def load_settings(settings_path: Path) -> dict:
     with settings_path.open('r', encoding='utf-8') as file:
         return json.load(file)
-
-
-def get_runner_time_conf(settings: dict | None) -> dict | None:
-    return settings.get('time') if isinstance(settings, dict) else None
 
 
 def get_health_db_path(settings: dict | None) -> str | None:
@@ -80,10 +58,11 @@ def update_pipeline_state(
         return
     logging.info("Enqueueing pipeline_state: %s / %s", phase, status)
     enqueue_sqlite_job(
-        action="set_pipeline_state",
+        action="update_pipeline_state",
         payload={
             "phase": phase,
             "status": status,
+            "updated_at": datetime.now(timezone.utc).isoformat(),
             "message": message,
         },
     )
@@ -121,27 +100,16 @@ def run_main_linux_arango(settings_path, env, auth_type, health_db_path=None):
             controller.close()
 
 def main():
-    settings_path = resolve_settings_path()
+    settings_path = Path(__file__).parent.parent / 'config' / 'settings_arangodb.json'
     settings = load_settings(settings_path)
     env = Environment.PRD
     auth_type = AuthType.JWT
 
     health_db_path = get_health_db_path(settings)
-    if health_db_path is not None:
-        logging.info("Enqueueing pipeline_state schema setup")
-        enqueue_sqlite_job(action="ensure_pipeline_state", payload={})
 
     while True:
         try:
-            now = datetime.now(tz=pytz.timezone("Europe/Brussels"))
-            delta = seconds_until_time(SCHEDULED_RUN_TIME, now=now, timezone=BRUSSELS)
-
-            if delta > 0:
-                logging.info(f"Not yet {SCHEDULED_RUN_TIME}, waiting {int(delta)} seconds.")
-                timer.sleep(min(delta, SLEEP_TIME))
-                continue
-
-            logging.info(f"{SCHEDULED_RUN_TIME} reached, starting DBPipelineController run.")
+            logging.info("Starting DBPipelineController run.")
 
             update_pipeline_state("arango_sync", "running", "Arango sync gestart", health_db_path)
 
@@ -165,30 +133,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# The execute_now function is not used in the main loop, but left for manual/interactive use if needed.
-def execute_now():
-    """
-    Manually execute the pipeline only when the configured settings-based time window allows it.
-    """
-    now = datetime.now(tz=BRUSSELS)
-    settings_path = resolve_settings_path()
-    settings = load_settings(settings_path)
-    time_conf = get_runner_time_conf(settings)
-    env = Environment.PRD
-    auth_type = AuthType.JWT
-
-    if is_within_time_window(time_conf, now=now, timezone=BRUSSELS):
-        health_db_path = get_health_db_path(settings)
-        if health_db_path is not None:
-            enqueue_sqlite_job(action="ensure_pipeline_state", payload={})
-            update_pipeline_state("arango_sync", "running", "Arango sync gestart (execute_now)", health_db_path)
-        delete_params_collection(settings_path, env, auth_type)
-        controller = DBPipelineController(settings_path=settings_path, auth_type=auth_type, env=env)
-        try:
-            controller.run()
-        finally:
-            controller.close()
-        if health_db_path is not None:
-            update_pipeline_state("arango_sync", "completed", "Arango sync voltooid (execute_now)", health_db_path)
-    print('exit')

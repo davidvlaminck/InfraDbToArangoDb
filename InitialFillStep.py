@@ -42,7 +42,6 @@ class InitialFillStep:
                  page_size: int = DEFAULT_PAGE_SIZE,
                  use_pipeline: bool = False,
                  pipeline_queue_size: int = 3,
-                 run_window: dict | None = None,
                  max_group_attempts: int = DEFAULT_MAX_GROUP_ATTEMPTS):
         self.factory = factory
         self.eminfra_client = eminfra_client
@@ -59,9 +58,6 @@ class InitialFillStep:
         # transformer from Belgian Lambert2008 / EPSG:3812 to WGS84 / EPSG:4326
         self.transformer: Transformer = Transformer.from_crs("EPSG:3812", "EPSG:4326", always_xy=True)
 
-        # Optional run window (dict with 'start' and 'end' keys as HH:MM:SS strings)
-        # If provided, fill operations will abort (raise) when executed outside that window.
-        self.run_window = run_window
         self.max_group_attempts = max_group_attempts
 
         # resource handler registry
@@ -161,9 +157,6 @@ class InitialFillStep:
             attempt = 1
 
             while remaining:
-                # Before attempting a group, ensure we're allowed to run in the configured time window
-                if self.run_window and not self._is_within_run_window():
-                    raise RuntimeError("Outside allowed run window for initial fill; aborting group attempts")
                 logging.info("=== Batch attempt %d with %d task(s) ===", attempt, len(remaining))
                 failed: List[ResourceEnum] = []
                 max_workers = min(len(remaining), MAX_WORKERS)
@@ -380,36 +373,6 @@ class InitialFillStep:
         if resource == ResourceEnum.bestekken.value:
             return self.eminfra_client.get_resource_page("bestekrefs", page_size, sf)
         return self.eminfra_client.get_resource_page(resource, page_size, sf)
-
-    def _is_within_run_window(self) -> bool:
-        """Return True when current Europe/Brussels local time is within configured run_window.
-
-        The expected format for self.run_window is a dict with keys 'start' and 'end' as HH:MM:SS.
-        If parsing fails, conservatively return True (so we don't block).
-        """
-        if not self.run_window:
-            return True
-        try:
-            from zoneinfo import ZoneInfo
-            import datetime as _dt
-
-            tz = ZoneInfo("Europe/Brussels")
-            now = _dt.datetime.now(tz).time()
-            start_s = self.run_window.get("start")
-            end_s = self.run_window.get("end")
-            if not start_s or not end_s:
-                return True
-            fmt = "%H:%M:%S"
-            start_t = _dt.datetime.strptime(start_s, fmt).time()
-            end_t = _dt.datetime.strptime(end_s, fmt).time()
-
-            if start_t <= end_t:
-                return start_t <= now <= end_t
-            # spans midnight
-            return now >= start_t or now <= end_t
-        except Exception:
-            logging.exception("Failed to evaluate run window; allowing run by default")
-            return True
 
     # -----------------------
     # Data insertion and transformations
