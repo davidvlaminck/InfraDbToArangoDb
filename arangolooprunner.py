@@ -3,7 +3,7 @@ import time as timer
 import logging
 import json
 import subprocess
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import pytz
 from pathlib import Path
 
@@ -11,11 +11,25 @@ from utils.sqlite_queue_client import enqueue_sqlite_job
 
 from API.APIEnums import Environment, AuthType
 from DBPipelineController import DBPipelineController
-from utils.time_window import BRUSSELS, seconds_until_time
 
 PARAMS_COLLECTION_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'params')
 SLEEP_TIME = 60
 SCHEDULED_RUN_TIME = "03:00:00"
+
+BRUSSELS = pytz.timezone("Europe/Brussels")
+
+
+def seconds_until_time(target_time_str: str, *, now=None, timezone=BRUSSELS) -> float:
+    target = datetime.strptime(target_time_str, "%H:%M:%S").time()
+    current_dt = now.astimezone(timezone) if now is not None else datetime.now(timezone)
+    current_trunc = current_dt.replace(microsecond=0)
+
+    next_dt = current_trunc.replace(hour=target.hour, minute=target.minute, second=target.second)
+    if next_dt < current_trunc:
+        next_dt += timedelta(days=1)
+
+    return max(0.0, (next_dt - current_trunc).total_seconds())
+
 
 # --- Logging setup: both file and console ---
 logging.basicConfig(
