@@ -7,7 +7,7 @@ from datetime import datetime, timezone, timedelta
 import pytz
 from pathlib import Path
 
-from utils.sqlite_queue_client import enqueue_sqlite_job
+from utils.pipeline_state import enqueue_sqlite_job
 
 from API.APIEnums import Environment, AuthType
 from DBPipelineController import DBPipelineController
