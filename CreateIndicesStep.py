@@ -21,7 +21,7 @@ class CreateIndicesStep:
         db.collection('assets').add_persistent_index(fields=['beheerder_key'], unique=False, sparse=False)
         db.collection('assets').add_persistent_index(fields=['naampad_parts'], unique=False, sparse=True)
         db.collection('assets').add_persistent_index(fields=['naampad_parent'], unique=False, sparse=True)
-        db.collection('assets').add_persistent_index(fields=['NaampadObject_naampad'], unique=False, sparse=True)
+        db.collection('assets').add_persistent_index(fields=['NaampadObject_naampad'], unique=False, sparse=True, name='idx_assets_naampad')
         db.collection('assets').add_persistent_index(fields=['assettype_key', 'AIMDBStatus_isActief'], unique=False,
                                                      sparse=False)
         db.collection('assets').add_persistent_index(fields=['assettype_key', 'AIMDBStatus_isActief', 'toestand'],
@@ -32,6 +32,7 @@ class CreateIndicesStep:
                                                             unique=False, sparse=False)
 
         db.collection('assettypes').add_persistent_index(fields=['short_uri'], unique=False, sparse=False)
+        db.collection('assettypes').add_persistent_index(fields=['uri'], unique=False, sparse=False, name='assettypes_uri_idx')
         db.collection('relatietypes').add_persistent_index(fields=['short'], unique=False, sparse=False)
         db.collection('betrokkenerelaties').add_persistent_index(fields=['_from', 'role'], unique=False, sparse=False)
         db.collection('betrokkenerelaties').add_persistent_index(fields=['_to', 'role'], unique=False, sparse=False)
