@@ -35,8 +35,8 @@ from API.APIEnums import Environment
 
 
 # --- Configure these ---
-SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
-# SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
+# SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
+SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
 ENV = Environment.PRD
 
 # Default to Laagspanningsbord which is the typical target for the export.
@@ -111,7 +111,7 @@ def main() -> int:
             }
         )
 
-    export_to_excel(records, OUT_PATH, dt.date(2025,1,1))
+    export_to_excel(records, OUT_PATH, dt.date(2025,9,1))
     print(f"Wrote {len(records)} rows to {OUT_PATH}")
     return 0
 
