@@ -1,0 +1,120 @@
+"""Easy PyCharm entrypoint for the keuringsinfo export.
+
+How to use in PyCharm
+1) Open this file.
+2) Edit SETTINGS_PATH below to point to your real settings json.
+3) Optionally edit LS_SHORT_URI if needed.
+4) Run this file.
+
+It will generate an Excel file in the same folder as this script.
+
+Note
+- This file is intentionally kept in Analysis/ (as requested earlier).
+- It reuses the logic from `Analysis/export_keuringsinfo.py`.
+"""
+
+from __future__ import annotations
+
+import datetime as dt
+import sys
+import os
+
+# Ensure repository root is on sys.path so imports like `from Analysis.export_keuringsinfo`
+# and `from API.APIEnums` work when this file is run directly in PyCharm (working dir may
+# not include the project root). We compute two levels up from this file (repo root)
+# and insert it at the front of sys.path.
+_repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _repo_root not in sys.path:
+    sys.path.insert(0, _repo_root)
+
+from collections import Counter
+from pathlib import Path
+
+from Analysis.export_keuringsinfo import export_to_excel, fetch_records, _load_settings, _create_db_from_settings
+from API.APIEnums import Environment
+
+
+# --- Configure these ---
+SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
+# SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
+ENV = Environment.PRD
+
+# Default to Laagspanningsbord which is the typical target for the export.
+ASSET_SHORT_URI = "onderdeel#HSCabine"
+
+# Output file
+FILENAME = 'HSCabine'
+OUT_PATH = Path(__file__).with_name(f"keuringsinfo_{FILENAME}_{dt.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx")
+
+# For first run / debugging you can cap the amount of rows to avoid long runtimes.
+DEBUG_LIMIT: int | None = None  # e.g. 500
+MAX_RUNTIME_SECONDS = 600
+
+
+def _assert_assettype_exists(db, short_uri: str) -> None:
+    """Fail fast if the assettype short_uri isn't present."""
+    found = db.aql.execute(
+        "FOR at IN assettypes FILTER at.short_uri == @s LIMIT 1 RETURN at._key",
+        bind_vars={"s": short_uri},
+    )
+    if next(iter(found), None) is None:
+        # show a few close candidates
+        candidates = list(
+            db.aql.execute(
+                "FOR at IN assettypes FILTER CONTAINS(LOWER(at.short_uri), LOWER(@needle)) LIMIT 10 RETURN at.short_uri",
+                bind_vars={"needle": short_uri.split('#')[-1]},
+            )
+        )
+        raise ValueError(
+            f"assettypes.short_uri not found: {short_uri}\n"
+            f"Candidates: {candidates}"
+        )
+
+
+def main() -> int:
+    if not SETTINGS_PATH.exists():
+        raise FileNotFoundError(
+            f"Settings file not found: {SETTINGS_PATH}\n"
+            f"Edit SETTINGS_PATH in Analysis/main_export_keuringsinfo_hs.py"
+        )
+
+    settings = _load_settings(SETTINGS_PATH)
+    db = _create_db_from_settings(settings, env=ENV)
+
+    # Validate that the requested short_uri exists in this DB.
+    _assert_assettype_exists(db, ASSET_SHORT_URI)
+
+    records = fetch_records(
+        db,
+        asset_short_uri=ASSET_SHORT_URI,
+        max_runtime_seconds=MAX_RUNTIME_SECONDS,
+        limit=DEBUG_LIMIT,
+    )
+
+    # Quick sanity output in console
+    print(f"Fetched {len(records)} records")
+    print("type counts:", dict(Counter(r.type for r in records)))
+    # match field removed; previously constant 'single'
+    print("record count:", len(records))
+    print("sample rows:")
+    for r in records[:10]:
+        print(
+            {
+                "type": r.type,
+                "uuid": r.uuid,
+                "naam": r.naam,
+                "naampad": r.naampad,
+                "isActief": r.isActief,
+                "toestand": r.toestand,
+                "datum": r.datum_laatste_keuring,
+                "resultaat": r.resultaat_keuring,
+            }
+        )
+
+    export_to_excel(records, OUT_PATH, dt.date(2025,1,1))
+    print(f"Wrote {len(records)} rows to {OUT_PATH}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

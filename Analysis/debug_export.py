@@ -75,7 +75,7 @@ def generate_excel(
         limit=limit,
     )
 
-    export_to_excel(records, out_path)
+    export_to_excel(records, out_path, dt.date(2021,1,1))
     return out_path, records
 
 

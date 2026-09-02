@@ -24,6 +24,7 @@ Excel output
 from __future__ import annotations
 
 import argparse
+import datetime
 import datetime as dt
 from collections import Counter, defaultdict
 from dataclasses import dataclass
@@ -544,7 +545,7 @@ def _write_pivot_sheet(
     sh.append(total_row)
 
 
-def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
+def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_date:datetime.date) -> None:
     from openpyxl import Workbook
     from openpyxl.utils import get_column_letter
     import json
@@ -562,7 +563,8 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path) -> None:
     # Two pivots:
     # - Pivot: excludes Niet meegenomen
     # - Pivot (incl Niet meegenomen): includes them
-    cutoff = dt.date(2021, 1, 1)
+    cutoff = cutoff_date
+    # cutoff = dt.date(2021, 1, 1)
     _write_pivot_sheet(
         wb,
         sheet_name=PIVOT_ALL_SHEET,
@@ -817,7 +819,7 @@ def main() -> int:
         limit=args.limit,
     )
 
-    export_to_excel(records, args.out)
+    export_to_excel(records, args.out, cutoff_date=dt.date(2021,1,1))
     print(f"Wrote {len(records)} rows to {args.out}")
     return 0
 

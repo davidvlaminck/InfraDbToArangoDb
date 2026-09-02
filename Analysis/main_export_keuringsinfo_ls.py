@@ -36,13 +36,15 @@ from API.APIEnums import Environment
 
 # --- Configure these ---
 SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
+# SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
 ENV = Environment.PRD
 
 # Default to Laagspanningsbord which is the typical target for the export.
 ASSET_SHORT_URI = "onderdeel#Laagspanningsbord"
 
 # Output file
-OUT_PATH = Path(__file__).with_name(f"keuringsinfo_{dt.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx")
+FILENAME = 'Laagspanningsbord'
+OUT_PATH = Path(__file__).with_name(f"keuringsinfo_{FILENAME}_{dt.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx")
 
 # For first run / debugging you can cap the amount of rows to avoid long runtimes.
 DEBUG_LIMIT: int | None = None  # e.g. 500
@@ -73,7 +75,7 @@ def main() -> int:
     if not SETTINGS_PATH.exists():
         raise FileNotFoundError(
             f"Settings file not found: {SETTINGS_PATH}\n"
-            f"Edit SETTINGS_PATH in Analysis/main_export_keuringsinfo.py"
+            f"Edit SETTINGS_PATH in Analysis/main_export_keuringsinfo_ls.py"
         )
 
     settings = _load_settings(SETTINGS_PATH)
@@ -109,7 +111,7 @@ def main() -> int:
             }
         )
 
-    export_to_excel(records, OUT_PATH)
+    export_to_excel(records, OUT_PATH, cutoff_date=dt.date(2021,1,1))
     print(f"Wrote {len(records)} rows to {OUT_PATH}")
     return 0
 
