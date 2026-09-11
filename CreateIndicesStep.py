@@ -27,6 +27,12 @@ class CreateIndicesStep:
         db.collection('assets').add_persistent_index(fields=['assettype_key', 'AIMDBStatus_isActief', 'toestand'],
                                                      unique=False, sparse=False)
 
+        db.collection('assets').add_index({
+            'type': 'geo',
+            'fields': ['geometry'],
+            'geoJson': True
+        })
+
         db.collection('assetrelaties').add_persistent_index(fields=["relatietype_key"], unique=False, sparse=False)
         db.collection('assetrelaties').add_persistent_index(fields=['relatietype_key', 'AIMDBStatus_isActief'],
                                                             unique=False, sparse=False)
@@ -34,9 +40,12 @@ class CreateIndicesStep:
         db.collection('assettypes').add_persistent_index(fields=['short_uri'], unique=False, sparse=False)
         db.collection('assettypes').add_persistent_index(fields=['uri'], unique=False, sparse=False, name='assettypes_uri_idx')
         db.collection('relatietypes').add_persistent_index(fields=['short'], unique=False, sparse=False)
-        db.collection('betrokkenerelaties').add_persistent_index(fields=['_from', 'role'], unique=False, sparse=False)
-        db.collection('betrokkenerelaties').add_persistent_index(fields=['_to', 'role'], unique=False, sparse=False)
+        db.collection('betrokkenerelaties').add_persistent_index(fields=['_from', 'rol'], unique=False, sparse=False)
+        db.collection('betrokkenerelaties').add_persistent_index(fields=['_to', 'rol'], unique=False, sparse=False)
+        db.collection('agents').add_persistent_index(fields=['AIMDBStatus_isActief'], unique=False, sparse=False)
+        db.collection('agents').add_persistent_index(fields=['purl.Agent_naam'], unique=False, sparse=True)
         db.collection('vplankoppelingen').add_persistent_index(fields=['assets_key'], unique=False, sparse=False)
+        db.collection('bestekkoppelingen').add_persistent_index(fields=['DtcBestekkoppeling_status'], unique=False, sparse=False)
 
         # Derived edges used for fast traversal/loop detection queries
         for derived in ['voedt_relaties', 'sturing_relaties', 'bevestiging_relaties', 'hoortbij_relaties',
