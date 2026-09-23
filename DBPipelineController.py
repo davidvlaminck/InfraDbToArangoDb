@@ -49,7 +49,7 @@ class DBPipelineController:
         db_name = db_settings['database']
         username = db_settings['user']
         password = db_settings['password']
-        hosts = db_settings.get('hosts')
+        hosts = db_settings.get('hosts', ['127.0.0.1'])
         factory = ArangoDBConnectionFactory(db_name, username, password, hosts=hosts)
 
         return factory, eminfra_client, emson_client
