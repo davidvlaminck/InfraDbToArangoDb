@@ -160,6 +160,7 @@ class ExtraFillStep:
                     "vplan_nummer": v['vplanRef']['nummer'],
                     "inDienstDatum": v.get('inDienstDatum'),
                     "uitDienstDatum": v.get('uitDienstDatum'),
+                    "commentaar": v.get('commentaar'),
                 }
                 for v in vplan_info
             ]
@@ -176,7 +177,8 @@ class ExtraFillStep:
                         vplan_uuid: koppeling.vplan_uuid,
                         vplan_nummer: koppeling.vplan_nummer,
                         inDienstDatum: koppeling.inDienstDatum,
-                        uitDienstDatum: koppeling.uitDienstDatum
+                        uitDienstDatum: koppeling.uitDienstDatum,
+                        commentaar: koppeling.commentaar
                       }
                       UPDATE {}
                       IN vplankoppelingen
