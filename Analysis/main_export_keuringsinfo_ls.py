@@ -35,9 +35,10 @@ from API.APIEnums import Environment
 
 
 # --- Configure these ---
-SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
-# SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
+# SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
+SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
 ENV = Environment.PRD
+CUTOFF_DATE = dt.date.today() - dt.timedelta(days=5*365)
 
 # Default to Laagspanningsbord which is the typical target for the export.
 ASSET_SHORT_URI = "onderdeel#Laagspanningsbord"
