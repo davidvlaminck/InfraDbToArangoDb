@@ -107,11 +107,11 @@ class KeuringsRecord:
     schadebeheerder_agent_name: str | None = None
     toezichtgroep_raw: str | None = None
     toezichtgroep_key_raw: str | None = None
-    lsb_uuid: str | None = None
     naam: str | None = None
     naampad: str | None = None
     isActief: bool | None = None
     toestand: str | None = None
+    naam_keuringsverslag: str | None = None
     datum_laatste_keuring: str | None = None
     resultaat_keuring: str | None = None
     bs: Any | None = None
@@ -212,6 +212,7 @@ def build_aql(
         + "  )\n"
         + "  LET __result_array = (latest_keuring != null && latest_keuring.ElektrischeKeuring_resultaat != null ? SPLIT(latest_keuring.ElektrischeKeuring_resultaat, '/') : null)\n"
         + "  LET resultaat_keuring_stripped = (__result_array != null ? __result_array[LENGTH(__result_array) - 1] : null)\n"
+        + "  LET elektrischekeuring_naam = (latest_keuring != null && latest_keuring.AbstracteAanvullendeGeometrie_naam != null ? latest_keuring.AbstracteAanvullendeGeometrie_naam : null)\n"
         + "  LET betrokken_relaties = (FOR v, e IN 1..1 OUTBOUND a betrokkenerelaties RETURN {edge: e, vertex: v})\n"
         + "  LET toezichtgroep_agent = FIRST(FOR rel IN betrokken_relaties FILTER rel.edge.rol == 'toezichtsgroep' RETURN rel.vertex)\n"
         + "  LET toezichter_agent = FIRST(FOR rel IN betrokken_relaties FILTER rel.edge.rol == 'toezichter' RETURN rel.vertex)\n"
@@ -227,36 +228,36 @@ def build_aql(
         + "      RETURN bestekdoc.eDeltaDossiernummer\n"
         + "  )\n"
         + "  RETURN {\n"
-        + "    \"toezichtgroep\": tz != null ? tz.naam : (tz_from_agent != null ? tz_from_agent : \"UNKNOWN\"),\n"
-        + "    \"toezichtgroep_raw\": (a.toezichtgroep != null ? a.toezichtgroep : null),\n"
-        + "    \"toezichtgroep_key_raw\": (a.toezichtgroep_key != null ? a.toezichtgroep_key : null),\n"
-        + "    \"betrokken_agent_key\": null,\n"
-        + "    \"betrokken_agent_uuid\": null,\n"
-        + "    \"betrokken_agent_org_key\": null,\n"
-        + "    \"betrokken_agent_org_uuid\": null,\n"
-        + "    \"betrokken_agent_org_name\": null,\n"
-        + "    \"toezichtgroep_agent_key\": (toezichtgroep_agent != null ? toezichtgroep_agent._key : null),\n"
-        + "    \"toezichtgroep_agent_uuid\": (toezichtgroep_agent != null ? toezichtgroep_agent.uuid : null),\n"
-        + "    \"toezichtgroep_agent_name\": (toezichtgroep_agent != null && toezichtgroep_agent.purl != null && toezichtgroep_agent.purl.Agent_naam != null ? toezichtgroep_agent.purl.Agent_naam : (toezichtgroep_agent != null ? toezichtgroep_agent.naam : null)),\n"
-        + "    \"toezichter_agent_key\": (toezichter_agent != null ? toezichter_agent._key : null),\n"
-        + "    \"toezichter_agent_uuid\": (toezichter_agent != null ? toezichter_agent.uuid : null),\n"
-        + "    \"toezichter_agent_name\": (toezichter_agent != null && toezichter_agent.purl != null && toezichter_agent.purl.Agent_naam != null ? toezichter_agent.purl.Agent_naam : (toezichter_agent != null ? toezichter_agent.naam : null)),\n"
-        + "    \"schadebeheerder_agent_key\": (schadebeheerder_agent != null ? schadebeheerder_agent._key : null),\n"
-        + "    \"schadebeheerder_agent_uuid\": (schadebeheerder_agent != null ? schadebeheerder_agent.uuid : null),\n"
-        + "    \"schadebeheerder_agent_name\": (schadebeheerder_agent != null && schadebeheerder_agent.purl != null && schadebeheerder_agent.purl.Agent_naam != null ? schadebeheerder_agent.purl.Agent_naam : (schadebeheerder_agent != null ? schadebeheerder_agent.naam : null)),\n"
-        + "    \"type\": @asset_short_uri == \"lgc:onderdeel#Laagspanningsbord\" ? \"Laagspanningsbord\" : @asset_short_uri,\n\n"
-        + "    \"uuid\": a._key,\n"
-        + "    \"lsb_uuid\": null,\n"
-        + "    \"naam\": a.AIMNaamObject_naam,\n"
-        + "    \"naampad\": a.NaampadObject_naampad,\n\n"
-        + "    \"isActief\": a.AIMDBStatus_isActief,\n"
-        + "    \"toestand\": a.toestand,\n\n"
-        + "    \"datum_laatste_keuring\": (latest_keuring != null ? latest_keuring.KeuringObject_keuringsdatum : null),\n"
-        + "    \"resultaat_keuring\": resultaat_keuring_stripped,\n"
-        + "    \"bs\": a.bs,\n"
-        + "    \"actief_bestekken\": actief_bestek_list,\n\n"
-        + "    \"longitude\": (a.geometry != null ? (LENGTH(a.geometry.coordinates) > 0 ? a.geometry.coordinates[0] : null) : null),\n"
-        + "    \"latitude\": (a.geometry != null ? (LENGTH(a.geometry.coordinates) > 1 ? a.geometry.coordinates[1] : null) : null)\n"
+        + '    "toezichtgroep": tz != null ? tz.naam : (tz_from_agent != null ? tz_from_agent : "UNKNOWN"),\n'
+        + '    "toezichtgroep_raw": (a.toezichtgroep != null ? a.toezichtgroep : null),\n'
+        + '    "toezichtgroep_key_raw": (a.toezichtgroep_key != null ? a.toezichtgroep_key : null),\n'
+        + '    "betrokken_agent_key": null,\n'
+        + '    "betrokken_agent_uuid": null,\n'
+        + '    "betrokken_agent_org_key": null,\n'
+        + '    "betrokken_agent_org_uuid": null,\n'
+        + '    "betrokken_agent_org_name": null,\n'
+        + '    "toezichtgroep_agent_key": (toezichtgroep_agent != null ? toezichtgroep_agent._key : null),\n'
+        + '    "toezichtgroep_agent_uuid": (toezichtgroep_agent != null ? toezichtgroep_agent.uuid : null),\n'
+        + '    "toezichtgroep_agent_name": (toezichtgroep_agent != null && toezichtgroep_agent.purl != null && toezichtgroep_agent.purl.Agent_naam != null ? toezichtgroep_agent.purl.Agent_naam : (toezichtgroep_agent != null ? toezichtgroep_agent.naam : null)),\n'
+        + '    "toezichter_agent_key": (toezichter_agent != null ? toezichter_agent._key : null),\n'
+        + '    "toezichter_agent_uuid": (toezichter_agent != null ? toezichter_agent.uuid : null),\n'
+        + '    "toezichter_agent_name": (toezichter_agent != null && toezichter_agent.purl != null && toezichter_agent.purl.Agent_naam != null ? toezichter_agent.purl.Agent_naam : (toezichter_agent != null ? toezichter_agent.naam : null)),\n'
+        + '    "schadebeheerder_agent_key": (schadebeheerder_agent != null ? schadebeheerder_agent._key : null),\n'
+        + '    "schadebeheerder_agent_uuid": (schadebeheerder_agent != null ? schadebeheerder_agent.uuid : null),\n'
+        + '    "schadebeheerder_agent_name": (schadebeheerder_agent != null && schadebeheerder_agent.purl != null && schadebeheerder_agent.purl.Agent_naam != null ? schadebeheerder_agent.purl.Agent_naam : (schadebeheerder_agent != null ? schadebeheerder_agent.naam : null)),\n'
+        + '    "type": @asset_short_uri == "lgc:onderdeel#Laagspanningsbord" ? "Laagspanningsbord" : @asset_short_uri,\n\n'
+        + '    "uuid": a._key,\n'
+        + '    "naam": a.AIMNaamObject_naam,\n'
+        + '    "naampad": a.NaampadObject_naampad,\n\n'
+        + '    "isActief": a.AIMDBStatus_isActief,\n'
+        + '    "toestand": a.toestand,\n\n'
+        + '    "naam_keuringsverslag": elektrischekeuring_naam,\n\n'
+        + '    "datum_laatste_keuring": (latest_keuring != null ? latest_keuring.KeuringObject_keuringsdatum : null),\n'
+        + '    "resultaat_keuring": resultaat_keuring_stripped,\n'
+        + '    "bs": a.bs,\n'
+        + '    "actief_bestekken": actief_bestek_list,\n\n'
+        + '    "longitude": (a.geometry != null ? (LENGTH(a.geometry.coordinates) > 0 ? a.geometry.coordinates[0] : null) : null),\n'
+        + '    "latitude": (a.geometry != null ? (LENGTH(a.geometry.coordinates) > 1 ? a.geometry.coordinates[1] : null) : null)\n'
         + "  }"
     )
     return aql
@@ -366,9 +367,13 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
 
     Rules:
     - If no keuringsdatum: 'geen keuring'
+    - If cutoff_date_minus_one_year < keuringsdatum <= cutoff:
+        - If resultaat indicates conform (or conform met opmerkingen): 'vervallen keuring (laatste jaar), conform'
+        - If resultaat indicates niet-conform: 'vervallen keuring (laatste jaar), niet conform'
+        - Else: 'geen keuring'
     - If keuringsdatum <= cutoff:
-        - If resultaat indicates conform (or conform met opmerkingen): 'vervallen keuring, conform'
-        - If resultaat indicates niet-conform: 'vervallen keuring, niet conform'
+        - If resultaat indicates conform (or conform met opmerkingen): 'vervallen keuring (> 1 jaar), conform'
+        - If resultaat indicates niet-conform: 'vervallen keuring (> 1 jaar), niet conform'
         - Else: 'geen keuring'
     - If keuringsdatum > cutoff:
         - conform: 'conform'
@@ -376,6 +381,8 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
         - niet-conform: 'niet-conform met inbreuken'
         - Else: 'geen keuring'
     """
+    cutoff_date_minus_one_year = cutoff - dt.timedelta(days=365)
+
     d = _parse_iso_date(record.datum_laatste_keuring)
     r = record.resultaat_keuring
     r_norm = r.strip().lower() if r else None
@@ -407,15 +414,26 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
     if r_norm and ('niet gekend' in r_norm or r_norm == 'geen keuring'):
         r_norm = None
 
-    if d <= cutoff:
+    if cutoff >= d > cutoff_date_minus_one_year:
         if r_norm:
             if _is_not_conform(r_norm):
-                return 'vervallen keuring, niet conform'
+                return 'vervallen keuring (laatste jaar), niet conform'
             if _is_conform(r_norm):
                 # conform or conform met opmerkingen
                 if _has_opmerking(r_norm):
-                    return 'vervallen keuring, conform'
-                return 'vervallen keuring, conform'
+                    return 'vervallen keuring (laatste jaar), conform'
+                return 'vervallen keuring (laatste jaar), conform'
+        return 'geen keuring'
+
+    if d <= cutoff:
+        if r_norm:
+            if _is_not_conform(r_norm):
+                return 'vervallen keuring (> 1 jaar), niet conform'
+            if _is_conform(r_norm):
+                # conform or conform met opmerkingen
+                if _has_opmerking(r_norm):
+                    return 'vervallen keuring (> 1 jaar), conform'
+                return 'vervallen keuring (> 1 jaar), conform'
         return 'geen keuring'
 
     # d > cutoff
@@ -481,12 +499,14 @@ def _build_pivot(
 
     # Fixed column order as requested
     result_cols = [
-        'conform',
-        'conform met opmerkingen',
-        'niet-conform met inbreuken',
-        'vervallen keuring, conform',
-        'vervallen keuring, niet conform',
-        'geen keuring',
+        "conform",
+        "conform met opmerkingen",
+        "niet-conform met inbreuken",
+        "vervallen keuring (laatste jaar), conform",
+        "vervallen keuring (laatste jaar), niet conform",
+        "vervallen keuring (> 1 jaar), conform",
+        "vervallen keuring (> 1 jaar), niet conform",
+        "geen keuring",
     ]
     # Ensure all columns are present in all groups
     for c in counters.values():
@@ -564,7 +584,6 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
     # - Pivot: excludes Niet meegenomen
     # - Pivot (incl Niet meegenomen): includes them
     cutoff = cutoff_date
-    # cutoff = dt.date(2021, 1, 1)
     _write_pivot_sheet(
         wb,
         sheet_name=PIVOT_ALL_SHEET,
@@ -585,7 +604,6 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
 
     headers = [
         "uuid",
-        "LSDeel_uuid",
         "naam",
         "naampad",
         "techniek",
@@ -595,6 +613,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
         "schadebeheerder",
         "isActief",
         "toestand",
+        "naam_keuringsverslag",
         "datum_laatste_keuring",
         "resultaat_keuring",
         "pivot_categorie",
@@ -737,16 +756,16 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
             actief_bestek = None
         row_values = [
             _sanitize(r.uuid),
-            _sanitize(lsdeel_cell_value if lsdeel_cell_value else None),
             _sanitize(r.naam),
             _sanitize(r.naampad),
             _sanitize(techniek),
             _sanitize(actief_bestek),
             _sanitize(resolved_name if resolved_name is not None else r.toezichtgroep),
-            _sanitize(getattr(r, 'toezichter_agent_name', None)),
-            _sanitize(getattr(r, 'schadebeheerder_agent_name', None)),
+            _sanitize(getattr(r, "toezichter_agent_name", None)),
+            _sanitize(getattr(r, "schadebeheerder_agent_name", None)),
             _sanitize(r.isActief),
             _sanitize(r.toestand),
+            _sanitize(r.naam_keuringsverslag),
             _sanitize(r.datum_laatste_keuring),
             _sanitize(r.resultaat_keuring),
             _sanitize(pivot_cat),
