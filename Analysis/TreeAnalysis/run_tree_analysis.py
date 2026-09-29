@@ -19,7 +19,8 @@ except Exception:
 
 from tree_analysis import build_assettype_map, run_and_persist_structures
 
-
+# TODO Voeg een lijst van HSCabines toe
+# TODO hernoem LSDeel naar Laagspanningsbord.
 # SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
 SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
 DEFAULT_OUT = Path(__file__).parent / "output"
