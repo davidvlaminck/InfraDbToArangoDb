@@ -20,7 +20,8 @@ except Exception:
 from tree_analysis import build_assettype_map, run_and_persist_structures
 
 
-SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
+# SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
+SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
 DEFAULT_OUT = Path(__file__).parent / "output"
 
 
@@ -37,6 +38,7 @@ def _create_db_from_settings(settings: dict[str, Any], env: Any):
         db_name=db_settings["database"],
         username=db_settings["user"],
         password=db_settings["password"],
+        hosts=db_settings["hosts"],
     )
     return factory.create_connection()
 
@@ -106,7 +108,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--assettypes-csv", default=None, help="CSV file with assettypes (must contain _key and short_uri)")
     p.add_argument("--debug-beheer", default=None, help="Write debug JSON for a specific beheerobject and exit")
     p.add_argument("--env", default="prd")
-    p.add_argument("--lsdeel-short-uri", default="lgc:installatie#LSDeel")
+    p.add_argument("--lsdeel-short-uri", default="onderdeel#Laagspanningsbord")
     # omit_structure is now the default behavior. Use --keep-structure to preserve the canonical 'structure' field.
     p.add_argument("--keep-structure", dest="omit_structure", action="store_false", help="Keep the canonical 'structure' field in output (default: omit it)")
     p.set_defaults(omit_structure=True)
