@@ -19,7 +19,7 @@ from typing import Dict, Iterable, List, Set, Tuple, Any
 from pathlib import Path
 
 # default short URI for Laagspanningsbord (formerly LSDeel); make configurable globally
-DEFAULT_LSB_SHORT_URI = "lgc:onderdeel#Laagspanningsbord"
+DEFAULT_LSB_SHORT_URI = "onderdeel#Laagspanningsbord"
 
 
 def _beheer_from_parts(parts: List[str]) -> str | None:
