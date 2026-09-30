@@ -1,14 +1,6 @@
 ﻿#!/usr/bin/env python3
 """
-Update UUIDs in tree_structures.json using the gemigreerdnaar mapping file.
-
-Reads each 36-character UUID found in the "lsdeel_uuids" arrays of
-tree_structures.json and replaces it with the corresponding new UUID from
-the mapping file (mapping_gemigreerdnaar_20260929.json), which contains _from/_to
-pairs.
-
-Only UUIDs inside "lsdeel_uuids" arrays are modified. All other fields
-(e.g. id, example, label, tree, count, occurrence) are left untouched.
+Update UUID and typeURI na de verweving.
 """
 
 import json
@@ -138,5 +130,5 @@ if __name__ == "__main__":
     main()
 
     # TODO
-    # lanceer AQL-query vanuit Python-script en bouw de mapping file op.
+    # lanceer AQL-query vanuit Python-script en bouw de mapping file van de verweven uuid's op.
 
