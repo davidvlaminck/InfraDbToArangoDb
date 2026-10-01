@@ -17,7 +17,6 @@ class ExtraFillStep:
     # resources that can be executed by this step (in order)
     RESOURCES_TO_FILL = [
         'assettypes',
-        'vplanrefs',
         'vplankoppelingen',
         'aansluitingrefs',
         'aansluitingen',
@@ -37,7 +36,6 @@ class ExtraFillStep:
         # Map resource names to their fill functions
         self._fill_functions: dict[str, Callable[[Optional[str], object, object], None]] = {
             'assettypes': self.fill_assettypes,
-            'vplanrefs': self.fill_vplanrefs,
             'vplankoppelingen': self.fill_vplankoppelingen,
             'aansluitingrefs': self.fill_aansluitingrefs,
             'aansluitingen': self.fill_aansluitingen,
@@ -130,45 +128,6 @@ class ExtraFillStep:
 
         logging.info("✅ No more data for assettypes. Marking as filled.")
         self._mark_filled(db, "fill_assettypes")
-
-    def fill_vplanrefs(self, start_from, db, params):
-        """Fill collection `vplanrefs` from the `core/api/vplanrefs` endpoint.
-
-        Vplanrefs are a standalone reference table: Infra DB does not link them to
-        an asset, so they are fetched in one offset-paged sweep instead of per asset.
-
-        Progress is stored as the last processed offset.
-        """
-        if not db.has_collection('vplanrefs'):
-            db.create_collection('vplanrefs')
-
-        page_size = 1000
-        total = 0
-
-        for cursor, refs in self.eminfra_client.get_vplanrefs_page(page_size, start_from):
-            if refs:
-                docs = [
-                    {
-                        "_key": r["uuid"],
-                        "uuid": r["uuid"],
-                        "nummer": r.get("nummer"),
-                        "createdOn": r.get("createdOn"),
-                        "modifiedOn": r.get("modifiedOn"),
-                    }
-                    for r in refs
-                ]
-                db.collection('vplanrefs').import_bulk(docs, overwrite=False, on_duplicate="update")
-                total += len(docs)
-
-            self._update_progress(db, "fill_vplanrefs", cursor)
-
-            logging.info("🔄 Inserted %d vplanrefs (running total: %d). Next offset: %s",
-                         len(refs) if refs else 0, total, cursor)
-
-            if cursor is None:
-                logging.info("✅ No more data for vplanrefs. Marking as filled.")
-                self._mark_filled(db, "fill_vplanrefs")
-                return
 
     def fill_vplankoppelingen(self, start_from, db, params):
         """Fill collection `vplankoppelingen` by asking EMInfra per eligible asset.

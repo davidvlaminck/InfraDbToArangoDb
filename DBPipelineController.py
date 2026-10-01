@@ -34,7 +34,7 @@ class DBPipelineController:
 
         self.fill_resource_groups = [
             [ResourceEnum.assettypes, ResourceEnum.relatietypes, ResourceEnum.toezichtgroepen, ResourceEnum.bestekken,
-             ResourceEnum.identiteiten, ResourceEnum.beheerders],
+             ResourceEnum.vplanrefs, ResourceEnum.identiteiten, ResourceEnum.beheerders],
             [ResourceEnum.assetrelaties, ResourceEnum.assets, ResourceEnum.agents, ResourceEnum.betrokkenerelaties,]
         ]
 

@@ -48,14 +48,6 @@ class EMInfraClient:
         url = f"core/api/assettypes/{assettype_uuid}/kenmerktypes"
         return self.requester.get(url).json()['data']
 
-    def get_vplanrefs_page(self, page_size: int, start_from: Optional[int]):
-        """Offset-based paging for core/api/vplanrefs.
-
-        Vplanrefs are not linked to an asset anywhere in Infra DB, so they are
-        fetched as a standalone reference table instead of per asset.
-        """
-        return self.get_resource_page("vplanrefs", page_size, start_from)
-
     def get_vplannen_by_asset_uuid(self, asset_uuid: str) -> list[dict[str, Any]]:
         url = f"core/api/assets/{asset_uuid}/kenmerken/9f12fd85-d4ae-4adc-952f-5fa6e9d0ffb7/vplannen"
         return self.requester.get(url).json()['data']
