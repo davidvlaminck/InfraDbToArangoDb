@@ -44,7 +44,8 @@ class CreateIndicesStep:
         db.collection('betrokkenerelaties').add_persistent_index(fields=['_to', 'rol'], unique=False, sparse=False)
         db.collection('agents').add_persistent_index(fields=['AIMDBStatus_isActief'], unique=False, sparse=False)
         db.collection('agents').add_persistent_index(fields=['purl.Agent_naam'], unique=False, sparse=True)
-        db.collection('vplankoppelingen').add_persistent_index(fields=['assets_key'], unique=False, sparse=False)
+        db.collection('vplanrefs').add_persistent_index(fields=['nummer'], unique=False, sparse=False)
+        db.collection('vplankoppelingen').add_persistent_index(fields=['asset_key'], unique=False, sparse=False)
         db.collection('bestekkoppelingen').add_persistent_index(fields=['DtcBestekkoppeling_status'], unique=False, sparse=False)
 
         # Derived edges used for fast traversal/loop detection queries
