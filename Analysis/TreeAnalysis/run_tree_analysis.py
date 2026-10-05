@@ -110,6 +110,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--debug-beheer", default=None, help="Write debug JSON for a specific beheerobject and exit")
     p.add_argument("--env", default="prd")
     p.add_argument("--lsdeel-short-uri", default="onderdeel#Laagspanningsbord")
+    p.add_argument("--hscabine-short-uri", default="onderdeel#HSCabine")
     # omit_structure is now the default behavior. Use --keep-structure to preserve the canonical 'structure' field.
     p.add_argument("--keep-structure", dest="omit_structure", action="store_false", help="Keep the canonical 'structure' field in output (default: omit it)")
     p.set_defaults(omit_structure=True)
@@ -218,7 +219,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # regular run: build structures and instances and persist using core function
     try:
-        run_and_persist_structures(assets, assettype_map, Path(args.out_dir), args.lsdeel_short_uri, omit_structure=bool(args.omit_structure))
+        run_and_persist_structures(assets, assettype_map, Path(args.out_dir), args.lsdeel_short_uri, args.hscabine_short_uri, omit_structure=bool(args.omit_structure))
     except Exception as e:
         print("Error building/persisting structures and instances:", e)
         return 4
