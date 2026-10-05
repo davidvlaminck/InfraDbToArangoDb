@@ -229,10 +229,10 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     tree_structures = load_json(tree_path)
-    mapping_dict_lsdeel_label = load_json(DEFAULT_LSDEEL_LABEL)
+    mapping_dict_lsdeel_label = load_json(args.lsdeel_out)
 
     # Fill in the label
-    tree_structures_with_label = append_label(tree_structures, mapping_dict=mapping_dict_lsdeel_label, uuid_key=DEFAULT_UUID_KEY, label_key=DEFAULT_LABEL_KEY)
+    tree_structures_with_label = append_label(tree_structures, mapping_dict=mapping_dict_lsdeel_label, uuid_key=args.uuid_key, label_key=args.label_key)
 
     # Rewrite the tree_structures (original and with label)
     write_json(PRE_MIGRATION_TREE_STRUCTURES, tree_structures, indent=args.indent)
