@@ -74,8 +74,7 @@ def replace_typeuri(node, mapping):
         for key, value in node.items():
             new_key = mapping.get(key, key) if isinstance(key, str) else key
             if new_key in replaced:
-                # two different legacy URIs mapped onto the same new URI
-                print("WARNING: key collision {} while mapping ({} dropped)".format(new_key, key))
+                raise ValueError("key collision {} while mapping ({})".format(new_key, key))
             replaced[new_key] = replace_typeuri(value, mapping)
         return replaced
 
