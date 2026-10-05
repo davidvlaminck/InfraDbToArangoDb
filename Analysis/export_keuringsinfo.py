@@ -384,7 +384,7 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date, validity_perio
         - niet-conform: 'niet-conform met inbreuken, < X jaar'
         - Else: 'geen keuring'
     """
-    cutoff_date_minus_validity_period = cutoff - dt.timedelta(days=validity_period * 365)
+    cutoff_date_minus_validity_period = cutoff - dt.timedelta(days=365)
 
     d = _parse_iso_date(record.datum_laatste_keuring)
     r = record.resultaat_keuring
