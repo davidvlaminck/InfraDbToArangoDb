@@ -172,7 +172,7 @@ def _load_technique_map(tree_structures_path: Path) -> dict[str, str]:
         for u in (e.get("lsb_uuids") or []) + (e.get("lsdeel_uuids") or []):
             if isinstance(u, str) and u:
                 mapping[u] = label
-        for u in (e.get("hscabine_uuids") or []) + (e.get("hscabine_uuids") or []):
+        for u in (e.get("hscabine_uuids") or []):
             if isinstance(u, str) and u:
                 mapping[u] = label
     return mapping

@@ -17,7 +17,7 @@ TREE_STRUCTURES_PATH = OUTPUT_DIR / "tree_structures.json"
 MAPPING_PATH_ASSET_UUID = SCRIPT_DIR / "mapping_gemigreerdnaar_20260929.json"
 MAPPING_PATH_ASSETTYPE_URI = SCRIPT_DIR / "mapping_verweving_202609.json"
 
-UUID_ARRAY_KEYS = ("lsdeel_uuids", "hscabine_uuids")
+UUID_ARRAY_KEYS = ("lsb_uuids", "hscabine_uuids")
 
 
 def load_json(path):
