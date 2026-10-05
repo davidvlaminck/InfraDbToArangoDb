@@ -24,14 +24,14 @@ def test_build_simple_structure(tmp_path):
         {"_key": "k1", "assettype_key": "t_ls", "naampad_parts": ["B1", "K1", "L1"], "AIMDBStatus_isActief": True},
         {"_key": "k2", "assettype_key": "t_lsdeel", "naampad_parts": ["B1", "K1", "L1.D1"], "AIMDBStatus_isActief": True},
     ]
-    assettypes = [{"_key": "t_ls", "short_uri": "lgc:installatie#LS"}, {"_key": "t_lsdeel", "short_uri": "lgc:installatie#LSDeel"}]
+    assettypes = [{"_key": "t_ls", "short_uri": "onderdeel#DNBLaagspanning"}, {"_key": "t_lsdeel", "short_uri": "onderdeel#Laagspanningsbord"}]
     assettype_map = build_assettype_map(assettypes)
-    structures, instances = build_structures_and_instances(assets, assettype_map, lsdeel_short_uri="lgc:installatie#LSDeel")
+    structures, instances = build_structures_and_instances(assets, assettype_map, lsb_short_uri="onderdeel#Laagspanningsbord", hscabine_short_uri="onderdeel#HSCabine")
     assert isinstance(structures, dict)
     assert isinstance(instances, dict)
     assert "B1" in instances
     # persist using run_and_persist_structures
-    s_list, inst = run_and_persist_structures(assets, assettype_map, tmp_path, lsdeel_short_uri="lgc:installatie#LSDeel")
+    s_list, inst = run_and_persist_structures(assets, assettype_map, tmp_path, lsb_short_uri="onderdeel#Laagspanningsbord", hscabine_short_uri="onderdeel#HSCabine")
     assert isinstance(s_list, list)
     assert (tmp_path / "tree_structures.json").exists()
     assert (tmp_path / "tree_instances.json").exists()
@@ -42,7 +42,7 @@ def test_merge_existing_list_format(tmp_path):
     assets = [
         {"_key": "k1", "assettype_key": "t1", "naampad_parts": ["B1", "K"], "AIMDBStatus_isActief": True},
     ]
-    assettypes = [{"_key": "t1", "short_uri": "lgc:installatie#Kast"}]
+    assettypes = [{"_key": "t1", "short_uri": "onderdeel#Wegkantkast"}]
     assettype_map = build_assettype_map(assettypes)
     structures, instances = build_structures_and_instances(assets, assettype_map)
     # manually inject an older list format into structures_by_key via run_and_persist_structures
@@ -68,7 +68,7 @@ def test_canonical_and_instances_simple():
         {"_key": "b3", "assettype_key": "t3", "naampad_parts": ["B2", "C2", "D2"]},
     ]
 
-    structures, instances = build_structures_and_instances(assets, assettype_map, lsdeel_short_uri="type:LSDeel")
+    structures, instances = build_structures_and_instances(assets, assettype_map, lsb_short_uri="type:LSDeel")
 
     # both instances should map to the same structure id
     assert len(structures) == 1
@@ -77,9 +77,9 @@ def test_canonical_and_instances_simple():
     # each instance should have 3 assets
     assert instances["B1"]["num_assets"] == 3
     assert instances["B2"]["num_assets"] == 3
-    # lsdeel keys should be present
-    assert "a3" in instances["B1"]["lsdeel_keys"]
-    assert "b3" in instances["B2"]["lsdeel_keys"]
+    # lsbord keys should be present
+    assert "a3" in instances["B1"]["lsb_keys"]
+    assert "b3" in instances["B2"]["lsb_keys"]
 
 
 def test_inactive_assets_are_ignored():

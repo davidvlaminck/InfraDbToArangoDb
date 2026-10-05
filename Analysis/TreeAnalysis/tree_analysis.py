@@ -19,7 +19,8 @@ from typing import Dict, Iterable, List, Set, Tuple, Any
 from pathlib import Path
 
 # default short URI for Laagspanningsbord (formerly LSDeel); make configurable globally
-DEFAULT_LSB_SHORT_URI = "lgc:onderdeel#Laagspanningsbord"
+DEFAULT_LSB_SHORT_URI = "onderdeel#Laagspanningsbord"
+DEFAULT_HSCABINE_SHORT_URI = "onderdeel#HSCabine"
 
 
 def _beheer_from_parts(parts: List[str]) -> str | None:
@@ -59,13 +60,15 @@ def build_structures_and_instances(
     assets: Iterable[Dict[str, Any]],
     assettype_map: Dict[str, str],
     lsb_short_uri: str | None = DEFAULT_LSB_SHORT_URI,
+    hscabine_short_uri: str | None = DEFAULT_HSCABINE_SHORT_URI,
 ) -> Tuple[Dict[str, Dict[str, Any]], Dict[str, Dict[str, Any]]]:
     """Build canonical structures and instances from assets.
 
     Args:
       assets: iterable of asset dicts with keys: _key, assettype_key, naampad_parts
       assettype_map: mapping assettype_key -> short_uri
-      lsdeel_short_uri: optional short_uri used to mark LSDeel assets
+      lsdeel_short_uri: optional short_uri used to mark Laagpsanningsbord assets
+      hscabine_short_uri: optional short_uri used to mark HSCabine assets
 
     Returns:
       (structures, instances)
@@ -103,6 +106,7 @@ def build_structures_and_instances(
         # collect level -> set of short_uris
         level_sets: Dict[int, Set[str]] = defaultdict(set)
         lsb_keys: List[str] = []
+        hscabine_keys: List[str] = []
         asset_keys: List[str] = []
         # collect exact path -> types so we can infer parent-child relationships
         exact_map: Dict[str, Set[str]] = defaultdict(set)
@@ -119,6 +123,8 @@ def build_structures_and_instances(
                 asset_keys.append(ak)
             if lsb_short_uri and short == lsb_short_uri and ak:
                 lsb_keys.append(ak)
+            if hscabine_short_uri and short == hscabine_short_uri and ak:
+                hscabine_keys.append(ak)
             path = "/".join(parts) if parts else ""
             if short:
                 exact_map[path].add(short)
@@ -208,6 +214,7 @@ def build_structures_and_instances(
             "structure_id": structures_by_key[key]["id"],
             "asset_keys": asset_keys,
             "lsb_keys": lsb_keys,
+            "hscabine_keys": hscabine_keys,
             "num_assets": len(asset_keys),
         }
 
@@ -242,6 +249,7 @@ def run_and_persist_structures(
     assettype_map: Dict[str, str],
     out_dir: Path,
     lsb_short_uri: str | None = DEFAULT_LSB_SHORT_URI,
+    hscabine_short_uri: str | None = DEFAULT_HSCABINE_SHORT_URI,
     omit_structure: bool = False,
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Dict[str, Any]]]:
     """Run structure extraction and persist JSON files.
@@ -254,19 +262,22 @@ def run_and_persist_structures(
       assettype_map: mapping key -> short_uri
       out_dir: Path where outputs will be written (directory will be created if needed)
       lsdeel_short_uri: optional short uri used to mark LSDeel assets
+      hscabine_short_uri: optional short uri used to mark HSCabine assets
       omit_structure: if True, do not include the 'structure' attribute in the persisted JSON
 
     Returns (structures_list, instances)
     """
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    structures, instances = build_structures_and_instances(assets, assettype_map, lsb_short_uri)
+    structures, instances = build_structures_and_instances(assets, assettype_map, lsb_short_uri, hscabine_short_uri)
 
     # Annotate structures with count (total assets), occurrence (# unique beheerobjects)
-    # and lsdeel_uuids (list of UUIDs of LSDeel assets in that structure)
+    # and lsb_uuids (list of UUIDs of Laagspanningsbord assets in that structure)
+    # and hscabine_uuids (list of UUIDs of HSCabine assets in that structure)
     assets_by_id: dict[str, int] = {}
     occurrence_by_id: dict[str, int] = {}
     lsb_by_id: dict[str, set] = {}
+    hscabine_by_id: dict[str, set] = {}
     for beheer, inst in instances.items():
         sid = inst.get("structure_id")
         if not sid:
@@ -283,6 +294,12 @@ def run_and_persist_structures(
             sset = lsb_by_id.setdefault(sid, set())
             for v in lks:
                 sset.add(v)
+        # collect hscabine keys
+        hks = inst.get("hscabine_keys") or []
+        if hks:
+            sset = hscabine_by_id.setdefault(sid, set())
+            for v in hks:
+                sset.add(v)
 
     structures_list = []
     for sid, s in structures.items():
@@ -293,7 +310,8 @@ def run_and_persist_structures(
         if omit_structure and "structure" in s_copy:
             s_copy.pop("structure")
         # add lsb UUIDs list (sorted) for this structure
-        s_copy["lsb_uuids"] = sorted(list(lsb_by_id.get(sid, set())))
+        s_copy["lsb_uuids"] = sorted(lsb_by_id.get(sid, set()))
+        s_copy["hscabine_uuids"] = sorted(hscabine_by_id.get(sid, set()))
         s_copy["count"] = int(assets_by_id.get(sid, 0))
         s_copy["occurrence"] = int(occurrence_by_id.get(sid, 0))
         structures_list.append(s_copy)

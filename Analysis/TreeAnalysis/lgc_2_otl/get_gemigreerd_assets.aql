@@ -1,0 +1,16 @@
+// AQL query:
+/*
+Alle HeeftGemigreerd-relaties en diens bron- and doel-uuid's.
+*/
+LET rel_gemigreerdnaar_key = FIRST(FOR rel_type in relatietypes FILTER rel_type.short == 'GemigreerdNaar' LIMIT 1 RETURN rel_type._key)
+FOR rel IN assetrelaties
+  FILTER rel.relatietype_key == rel_gemigreerdnaar_key
+  FILTER (NOT HAS(rel, "AIMDBStatus_isActief") OR rel.AIMDBStatus_isActief == true)
+
+  RETURN {
+    _from: RIGHT(rel._from, 36),
+    _to: RIGHT(rel._to, 36)
+    //_key: rel._key,
+    //relatietype_key: rel.relatietype_key,
+    //AIMDBStatus_isActief: rel.AIMDBStatus_isActief,
+   }
