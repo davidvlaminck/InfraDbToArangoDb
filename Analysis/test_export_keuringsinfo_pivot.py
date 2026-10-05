@@ -53,7 +53,7 @@ def test_pivot_result_key_cutoff_and_blank_handling():
         datum_laatste_keuring="2022-02-03",
         resultaat_keuring="conform",
     )
-    assert _pivot_result_key(r3, cutoff=cutoff, validity_period=5) == "conform"
+    assert _pivot_result_key(r3, cutoff=cutoff, validity_period=5) == "conform, < 5 jaar"
 
 
 def test_build_pivot_counts_every_record_by_default_and_excludes_not_meegenomen():
