@@ -34,8 +34,8 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 TREE_ANALYSIS_DIR = SCRIPT_DIR.parent
 OUTPUT_DIR = TREE_ANALYSIS_DIR / "output"
 
-DEFAULT_TREE_STRUCTURES = OUTPUT_DIR / "tree_structures.json"
 PRE_MIGRATION_TREE_STRUCTURES = OUTPUT_DIR / "tree_structures_original.json"
+DEFAULT_TREE_STRUCTURES = PRE_MIGRATION_TREE_STRUCTURES
 DEFAULT_MIGRATION_MAPPING = SCRIPT_DIR / "mapping_gemigreerdnaar_20260929.json"
 
 DEFAULT_LSDEEL_OUT = SCRIPT_DIR / "mapping_lsdeel_label_202610.json"
