@@ -72,7 +72,6 @@ class InitialFillStep:
             ResourceEnum.identiteiten.value: self._handle_identiteiten,
             ResourceEnum.beheerders.value: self._handle_beheerders,
             ResourceEnum.bestekken.value: self._handle_bestekken,
-            ResourceEnum.vplanrefs.value: self._handle_vplanrefs,
         }
 
     # -----------------------
@@ -588,25 +587,6 @@ class InitialFillStep:
                 "aannemerNaam": r.get("aannemerNaam"),
                 "aannemerReferentie": r.get("aannemerReferentie"),
                 "actief": r.get("actief"),
-            }
-            for r in dicts
-        ]
-        if docs:
-            collection.import_bulk(docs, overwrite=False, on_duplicate="update")
-
-    def _handle_vplanrefs(self, db, dicts: Iterable[Dict[str, Any]]):
-        """Vplanrefs are a standalone reference table; Infra DB links them to no asset.
-
-        Stored as plain documents, keyed by uuid. Any `links` HAL-metadata is dropped.
-        """
-        collection = db.collection("vplanrefs")
-        docs = [
-            {
-                "_key": r["uuid"],
-                "uuid": r["uuid"],
-                "nummer": r.get("nummer"),
-                "createdOn": r.get("createdOn"),
-                "modifiedOn": r.get("modifiedOn"),
             }
             for r in dicts
         ]

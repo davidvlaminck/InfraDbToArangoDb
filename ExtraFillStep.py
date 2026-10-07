@@ -17,7 +17,6 @@ class ExtraFillStep:
     # resources that can be executed by this step (in order)
     RESOURCES_TO_FILL = [
         'assettypes',
-        'vplankoppelingen',
         'aansluitingrefs',
         'aansluitingen',
         # derived edge collections
@@ -36,7 +35,6 @@ class ExtraFillStep:
         # Map resource names to their fill functions
         self._fill_functions: dict[str, Callable[[Optional[str], object, object], None]] = {
             'assettypes': self.fill_assettypes,
-            'vplankoppelingen': self.fill_vplankoppelingen,
             'aansluitingrefs': self.fill_aansluitingrefs,
             'aansluitingen': self.fill_aansluitingen,
             'voedt_relaties': self.fill_voedt_relaties,
@@ -93,10 +91,9 @@ class ExtraFillStep:
         params.insert({'_key': params_key, 'from': None, 'fill': False}, overwrite=True)
 
     def fill_assettypes(self, start_from, db, params):
-        """Update `assettypes` docs with two boolean flags.
+        """Update `assettypes` docs with boolean flags.
 
         For each assettype uuid we call EMInfra to see if it has these kenmerken:
-        - Vplan
         - Elektrisch aansluitpunt
 
         Progress is stored as the last processed assettype uuid.
@@ -112,13 +109,8 @@ class ExtraFillStep:
             ast_info = self.eminfra_client.get_kenmerktypes_by_asettype_uuid(ast_uuid)
             logging.info(f"🔄 Updating {ast_uuid}")
 
-            vplan_kenmerk = next((k for k in ast_info if k['kenmerkType']['naam'] == 'Vplan'), None)
             ean_kenmerk = next((k for k in ast_info if k['kenmerkType']['naam'] == 'Elektrisch aansluitpunt'), None)
 
-            db.aql.execute(
-                "UPDATE @key WITH { vplan_kenmerk: @vplan_kenmerk } IN assettypes",
-                bind_vars={"key": ast_uuid[:8], "vplan_kenmerk": vplan_kenmerk is not None},
-            )
             db.aql.execute(
                 "UPDATE @key WITH { aansluitpunt_kenmerk: @aansluitpunt_kenmerk } IN assettypes",
                 bind_vars={"key": ast_uuid[:8], "aansluitpunt_kenmerk": ean_kenmerk is not None},
@@ -128,68 +120,6 @@ class ExtraFillStep:
 
         logging.info("✅ No more data for assettypes. Marking as filled.")
         self._mark_filled(db, "fill_assettypes")
-
-    def fill_vplankoppelingen(self, start_from, db, params):
-        """Fill collection `vplankoppelingen` by asking EMInfra per eligible asset.
-
-        Eligibility: asset's type has `assettypes.vplan_kenmerk == true`.
-
-        Progress is stored as the last processed asset _key.
-        """
-        query = """
-          FOR asset IN assets
-            FOR atype IN assettypes
-              FILTER asset.assettype_key == atype._key
-              FILTER atype.vplan_kenmerk == true
-              RETURN asset._key
-        """
-        uuids_sorted = sorted(db.aql.execute(query))
-
-        for asset_uuid in uuids_sorted:
-            if start_from and asset_uuid < start_from:
-                logging.info(f"⏭️ Skipping vplankoppelingen for {asset_uuid}")
-                continue
-
-            logging.info(f"🔄 Updating vplankoppelingen for {asset_uuid}")
-            vplan_info = self.eminfra_client.get_vplannen_by_asset_uuid(asset_uuid)
-            koppelingen_to_add = [
-                {
-                    "asset_key": asset_uuid,
-                    "vplankoppeling_uuid": v['uuid'],
-                    "vplan_uuid": v['vplanRef']['uuid'],
-                    "vplan_nummer": v['vplanRef']['nummer'],
-                    "inDienstDatum": v.get('inDienstDatum'),
-                    "uitDienstDatum": v.get('uitDienstDatum'),
-                    "commentaar": v.get('commentaar'),
-                }
-                for v in vplan_info
-            ]
-
-            if koppelingen_to_add:
-                db.aql.execute(
-                    """
-                    FOR koppeling IN @koppelingen
-                      UPSERT { _key: koppeling.vplankoppeling_uuid }
-                      INSERT {
-                        _key: koppeling.vplankoppeling_uuid,
-                        asset_key: koppeling.asset_key,
-                        vplankoppeling_uuid: koppeling.vplankoppeling_uuid,
-                        vplan_uuid: koppeling.vplan_uuid,
-                        vplan_nummer: koppeling.vplan_nummer,
-                        inDienstDatum: koppeling.inDienstDatum,
-                        uitDienstDatum: koppeling.uitDienstDatum,
-                        commentaar: koppeling.commentaar
-                      }
-                      UPDATE {}
-                      IN vplankoppelingen
-                    """,
-                    bind_vars={"koppelingen": koppelingen_to_add},
-                )
-
-            self._update_progress(db, "fill_vplankoppelingen", asset_uuid)
-
-        logging.info("✅ No more data for vplankoppelingen. Marking as filled.")
-        self._mark_filled(db, "fill_vplankoppelingen")
 
     def fill_aansluitingrefs(self, start_from, db, params):
         """Placeholder: nothing to do yet."""
