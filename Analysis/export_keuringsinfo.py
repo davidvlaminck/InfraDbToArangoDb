@@ -362,27 +362,36 @@ def _is_not_included(record: KeuringsRecord) -> bool:
 
 
 def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date, validity_period: int) -> str:
-    """Return pivot category for this record.
+    """Return the pivot category label for this record.
 
-    Robust rules (improved): normalize resultaat_keuring and match with substrings so
-    variants such as 'niet-conform met inbreuken' or 'niet-conform (met inbreuken)'
-    are handled correctly.
+    The label is based on the record's latest keuring date (datum_laatste_keuring)
+    relative to the cutoff date, combined with a normalized interpretation of
+    resultaat_keuring.
+
+    Normalization of resultaat_keuring:
+    - Stripped and lower-cased.
+    - If the value is 'niet gekend' or exactly 'geen keuring', it is treated as
+      no usable result (falls through to 'geen keuring').
+    - _is_not_conform() recognises phrases like 'niet-conform', 'niet conform',
+      'inbreuk', 'inbreuken', or any 'niet' + 'conform' combination.
+    - _is_conform() is True when 'conform' is present but the result is not
+      non-conform (so 'niet-conform' is never misclassified as conform).
+    - _has_opmerking() recognises 'opmerking' or 'opmerk'.
 
     Rules:
-    - If no keuringsdatum: 'geen keuring'
-    - If cutoff_date_minus_validity_period < keuringsdatum <= cutoff:
-        - If resultaat indicates conform (or conform met opmerkingen): 'conform, X-X+1 jaar'
-        - If resultaat indicates niet-conform: 'niet conform, X-X+1 jaar'
-        - Else: 'geen keuring'
-    - If keuringsdatum <= cutoff:
-        - If resultaat indicates conform (or conform met opmerkingen): 'conform, > X+1 jaar'
-        - If resultaat indicates niet-conform: 'niet conform, > X+1 jaar'
-        - Else: 'geen keuring'
-    - If keuringsdatum > cutoff:
-        - conform: 'conform, < X jaar'
-        - conform met opmerkingen: 'conform met opmerkingen, < X jaar'
-        - niet-conform: 'niet-conform met inbreuken, < X jaar'
-        - Else: 'geen keuring'
+    - If datum_laatste_keuring is missing/unparseable: 'geen keuring'
+    - If datum_laatste_keuring <= cutoff (keuring is in the past relative to cutoff):
+        - Result indicates non-conform: 'vervallen keuring, inbreuken (niet conform) (>X j)'
+        - Result indicates conform with opmerkingen: 'vervallen keuring, conform met opmerkingen (>X j)'
+        - Result indicates conform: 'vervallen keuring, conform (>X j)'
+        - Otherwise: 'geen keuring'
+    - If datum_laatste_keuring > cutoff (keuring is in the future relative to cutoff):
+        - Result indicates non-conform: 'inbreuken (niet-conform) (<X j)'
+        - Result indicates conform with opmerkingen: 'conform met opmerkingen (<X j)'
+        - Result indicates conform: 'conform (<X j)'
+        - Otherwise: 'geen keuring'
+
+    Here X is the supplied validity_period (in years).
     """
     cutoff_date_minus_validity_period = cutoff - dt.timedelta(days=365)
 
@@ -417,36 +426,25 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date, validity_perio
     if r_norm and ('niet gekend' in r_norm or r_norm == 'geen keuring'):
         r_norm = None
 
-    if cutoff >= d > cutoff_date_minus_validity_period:
-        if r_norm:
-            if _is_not_conform(r_norm):
-                return f'niet conform, {validity_period}-{validity_period+1} jaar'
-            if _is_conform(r_norm):
-                # conform or conform met opmerkingen
-                if _has_opmerking(r_norm):
-                    return f'conform, {validity_period}-{validity_period+1} jaar'
-                return f'conform, {validity_period}-{validity_period+1} jaar'
-        return 'geen keuring'
-
     if d <= cutoff:
         if r_norm:
             if _is_not_conform(r_norm):
-                return f'niet conform, > {validity_period+1} jaar'
+                return f'vervallen keuring, inbreuken (niet conform) (>{validity_period} j)'
             if _is_conform(r_norm):
                 # conform or conform met opmerkingen
                 if _has_opmerking(r_norm):
-                    return f'conform, > {validity_period+1} jaar'
-                return f'conform, > {validity_period+1} jaar'
+                    return f'vervallen keuring, conform met opmerkingen (>{validity_period} j)'
+                return f'vervallen keuring, conform (>{validity_period} j)'
         return 'geen keuring'
 
     # d > cutoff
     if r_norm:
         if _is_not_conform(r_norm):
-            return f'niet-conform met inbreuken, < {validity_period} jaar'
+            return f'inbreuken (niet-conform) (<{validity_period} j)'
         if _has_opmerking(r_norm):
-            return f'conform met opmerkingen, < {validity_period} jaar'
+            return f'conform met opmerkingen (<{validity_period} j)'
         if _is_conform(r_norm):
-            return f'conform, < {validity_period} jaar'
+            return f'conform (<{validity_period} j)'
     return 'geen keuring'
 
 
@@ -503,14 +501,13 @@ def _build_pivot(
 
     # Fixed column order as requested
     result_cols = [
-        f"conform, < {validity_period} jaar",
-        f"conform met opmerkingen, < {validity_period} jaar",
-        f"niet-conform met inbreuken, < {validity_period} jaar",
-        f"conform, {validity_period}-{validity_period+1} jaar",
-        f"niet conform, {validity_period}-{validity_period+1} jaar",
-        f"conform, > {validity_period+1} jaar",
-        f"niet conform, > {validity_period+1} jaar",
-        "geen keuring",
+        f'conform (<{validity_period} j)',
+        f'conform met opmerkingen (<{validity_period} j)',
+        f'inbreuken (niet-conform) (<{validity_period} j)',
+        f'vervallen keuring, conform (>{validity_period} j)',
+        f'vervallen keuring, conform met opmerkingen (>{validity_period} j)',
+        f'vervallen keuring, inbreuken (niet conform) (>{validity_period} j)',
+        'geen keuring',
     ]
     # Ensure all columns are present in all groups
     for c in counters.values():
