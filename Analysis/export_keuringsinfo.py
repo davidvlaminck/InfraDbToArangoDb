@@ -361,7 +361,7 @@ def _is_not_included(record: KeuringsRecord) -> bool:
     return False
 
 
-def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
+def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date, validity_period: int) -> str:
     """Return pivot category for this record.
 
     Robust rules (improved): normalize resultaat_keuring and match with substrings so
@@ -370,21 +370,21 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
 
     Rules:
     - If no keuringsdatum: 'geen keuring'
-    - If cutoff_date_minus_one_year < keuringsdatum <= cutoff:
-        - If resultaat indicates conform (or conform met opmerkingen): 'vervallen keuring (laatste jaar), conform'
-        - If resultaat indicates niet-conform: 'vervallen keuring (laatste jaar), niet conform'
+    - If cutoff_date_minus_validity_period < keuringsdatum <= cutoff:
+        - If resultaat indicates conform (or conform met opmerkingen): 'conform, X-X+1 jaar'
+        - If resultaat indicates niet-conform: 'niet conform, X-X+1 jaar'
         - Else: 'geen keuring'
     - If keuringsdatum <= cutoff:
-        - If resultaat indicates conform (or conform met opmerkingen): 'vervallen keuring (> 1 jaar), conform'
-        - If resultaat indicates niet-conform: 'vervallen keuring (> 1 jaar), niet conform'
+        - If resultaat indicates conform (or conform met opmerkingen): 'conform, > X+1 jaar'
+        - If resultaat indicates niet-conform: 'niet conform, > X+1 jaar'
         - Else: 'geen keuring'
     - If keuringsdatum > cutoff:
-        - conform: 'conform'
-        - conform met opmerkingen: 'conform met opmerkingen'
-        - niet-conform: 'niet-conform met inbreuken'
+        - conform: 'conform, < X jaar'
+        - conform met opmerkingen: 'conform met opmerkingen, < X jaar'
+        - niet-conform: 'niet-conform met inbreuken, < X jaar'
         - Else: 'geen keuring'
     """
-    cutoff_date_minus_one_year = cutoff - dt.timedelta(days=365)
+    cutoff_date_minus_validity_period = cutoff - dt.timedelta(days=365)
 
     d = _parse_iso_date(record.datum_laatste_keuring)
     r = record.resultaat_keuring
@@ -417,36 +417,36 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date) -> str:
     if r_norm and ('niet gekend' in r_norm or r_norm == 'geen keuring'):
         r_norm = None
 
-    if cutoff >= d > cutoff_date_minus_one_year:
+    if cutoff >= d > cutoff_date_minus_validity_period:
         if r_norm:
             if _is_not_conform(r_norm):
-                return 'vervallen keuring (laatste jaar), niet conform'
+                return f'niet conform, {validity_period}-{validity_period+1} jaar'
             if _is_conform(r_norm):
                 # conform or conform met opmerkingen
                 if _has_opmerking(r_norm):
-                    return 'vervallen keuring (laatste jaar), conform'
-                return 'vervallen keuring (laatste jaar), conform'
+                    return f'conform, {validity_period}-{validity_period+1} jaar'
+                return f'conform, {validity_period}-{validity_period+1} jaar'
         return 'geen keuring'
 
     if d <= cutoff:
         if r_norm:
             if _is_not_conform(r_norm):
-                return 'vervallen keuring (> 1 jaar), niet conform'
+                return f'niet conform, > {validity_period+1} jaar'
             if _is_conform(r_norm):
                 # conform or conform met opmerkingen
                 if _has_opmerking(r_norm):
-                    return 'vervallen keuring (> 1 jaar), conform'
-                return 'vervallen keuring (> 1 jaar), conform'
+                    return f'conform, > {validity_period+1} jaar'
+                return f'conform, > {validity_period+1} jaar'
         return 'geen keuring'
 
     # d > cutoff
     if r_norm:
         if _is_not_conform(r_norm):
-            return 'niet-conform met inbreuken'
+            return f'niet-conform met inbreuken, < {validity_period} jaar'
         if _has_opmerking(r_norm):
-            return 'conform met opmerkingen'
+            return f'conform met opmerkingen, < {validity_period} jaar'
         if _is_conform(r_norm):
-            return 'conform'
+            return f'conform, < {validity_period} jaar'
     return 'geen keuring'
 
 
@@ -486,6 +486,7 @@ def _build_pivot(
     records: Iterable[KeuringsRecord],
     *,
     cutoff: dt.date,
+    validity_period: int,
     include_not_meegenomen: bool = False,
 ) -> tuple[list[str], dict[str, Counter[str]]]:
     """Build pivot data with fixed column order and new categories."""
@@ -495,20 +496,20 @@ def _build_pivot(
     for r in records:
         if _is_not_included(r) and (not include_not_meegenomen):
             continue
-        res = _pivot_result_key(r, cutoff=cutoff)
+        res = _pivot_result_key(r, cutoff=cutoff, validity_period=validity_period)
         grp = _pivot_group_name(r)
         counters[grp][res] += 1
         all_results.add(res)
 
     # Fixed column order as requested
     result_cols = [
-        "conform",
-        "conform met opmerkingen",
-        "niet-conform met inbreuken",
-        "vervallen keuring (laatste jaar), conform",
-        "vervallen keuring (laatste jaar), niet conform",
-        "vervallen keuring (> 1 jaar), conform",
-        "vervallen keuring (> 1 jaar), niet conform",
+        f"conform, < {validity_period} jaar",
+        f"conform met opmerkingen, < {validity_period} jaar",
+        f"niet-conform met inbreuken, < {validity_period} jaar",
+        f"conform, {validity_period}-{validity_period+1} jaar",
+        f"niet conform, {validity_period}-{validity_period+1} jaar",
+        f"conform, > {validity_period+1} jaar",
+        f"niet conform, > {validity_period+1} jaar",
         "geen keuring",
     ]
     # Ensure all columns are present in all groups
@@ -524,6 +525,7 @@ def _write_pivot_sheet(
     sheet_name: str,
     records: list[KeuringsRecord],
     cutoff: dt.date,
+    validity_period: int,
     include_not_meegenomen: bool,
 ) -> None:
     """Create/overwrite a Pivot sheet."""
@@ -536,6 +538,7 @@ def _write_pivot_sheet(
     cols, counters = _build_pivot(
         records,
         cutoff=cutoff,
+        validity_period=validity_period,
         include_not_meegenomen=include_not_meegenomen,
     )
 
@@ -568,7 +571,7 @@ def _write_pivot_sheet(
     sh.append(total_row)
 
 
-def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_date:datetime.date) -> None:
+def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_date:datetime.date, validity_period: int) -> None:
     from openpyxl import Workbook
     from openpyxl.utils import get_column_letter
     import json
@@ -592,6 +595,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
         sheet_name=PIVOT_ALL_SHEET,
         records=records_list,
         cutoff=cutoff,
+        validity_period=validity_period,
         include_not_meegenomen=True,
     )
     _write_pivot_sheet(
@@ -599,6 +603,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
         sheet_name=PIVOT_SHEET,
         records=records_list,
         cutoff=cutoff,
+        validity_period=validity_period,
         include_not_meegenomen=False,
     )
 
@@ -746,7 +751,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
 
         resolved_name = _resolved_toezichtgroep(r)
         # compute pivot category using same cutoff as pivot sheets
-        pivot_cat = _pivot_result_key(r, cutoff=cutoff)
+        pivot_cat = _pivot_result_key(r, cutoff=cutoff, validity_period=validity_period)
 
         # prefer the server-side computed actief_bestekken list if present
         actief_bestek = None
@@ -841,7 +846,7 @@ def main() -> int:
         limit=args.limit,
     )
 
-    export_to_excel(records, args.out, cutoff_date=dt.date(2021,1,1))
+    export_to_excel(records, args.out, cutoff_date=dt.date(2021, 1, 1), validity_period=5)
     print(f"Wrote {len(records)} rows to {args.out}")
     return 0
 

@@ -38,7 +38,8 @@ from API.APIEnums import Environment
 # SETTINGS_PATH = Path("/home/davidlinux/Documenten/AWV/resources/settings_SyncToArangoDB.json")
 SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
 ENV = Environment.PRD
-CUTOFF_DATE = dt.date.today() - dt.timedelta(days=5*365)
+VALIDITY_PERIOD_YEARS = 5
+CUTOFF_DATE = dt.date.today() - dt.timedelta(days=VALIDITY_PERIOD_YEARS*365)
 
 # Default to Laagspanningsbord which is the typical target for the export.
 ASSET_SHORT_URI = "onderdeel#Laagspanningsbord"
@@ -112,7 +113,7 @@ def main() -> int:
             }
         )
 
-    export_to_excel(records, OUT_PATH, cutoff_date=dt.date(2021,1,1))
+    export_to_excel(records, OUT_PATH, cutoff_date=CUTOFF_DATE, validity_period=VALIDITY_PERIOD_YEARS)
     print(f"Wrote {len(records)} rows to {OUT_PATH}")
     return 0
 
