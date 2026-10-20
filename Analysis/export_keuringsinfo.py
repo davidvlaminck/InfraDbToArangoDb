@@ -638,17 +638,17 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
     # - Pivot (incl Niet meegenomen): includes them
     cutoff = cutoff_date
     _write_pivot_sheet(
-        wb, sheet_name=PIVOT_RESULTAAT_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
-        include_not_meegenomen=True, mode='result')
-    _write_pivot_sheet(
-        wb, sheet_name=PIVOT_RESULTAAT_ALL_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
-        include_not_meegenomen=False, mode='result')
-    _write_pivot_sheet(
-        wb, sheet_name=PIVOT_ACTIES_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
+        wb, sheet_name=PIVOT_ACTIES_ALL_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
         include_not_meegenomen=True, mode='actions')
     _write_pivot_sheet(
-        wb, sheet_name=PIVOT_ACTIES_ALL_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
+        wb, sheet_name=PIVOT_ACTIES_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
         include_not_meegenomen=False, mode='actions')
+    _write_pivot_sheet(
+        wb, sheet_name=PIVOT_RESULTAAT_ALL_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
+        include_not_meegenomen=True, mode='result')
+    _write_pivot_sheet(
+        wb, sheet_name=PIVOT_RESULTAAT_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
+        include_not_meegenomen=False, mode='result')
 
     sheet_names = [*sorted(TARGET_SHEETS), "Andere", EXCLUDED_SHEET]
     sheets = {name: wb.create_sheet(title=name) for name in sheet_names}
