@@ -82,9 +82,9 @@ AGENT_TO_SHEET: dict[str, str] = {
 
 EXCLUDED_SHEET = "Niet meegenomen"
 PIVOT_RESULTAAT_SHEET = "Pivot (resultaat)"
-PIVOT_RESULTAAT_ALL_SHEET = "Pivot (resultaat, incl. niet-meegenomen)"
+PIVOT_RESULTAAT_ALL_SHEET = "Pivot (resultaat, alles)"
 PIVOT_ACTIES_SHEET = "Pivot (acties)"
-PIVOT_ACTIES_ALL_SHEET = "Pivot (acties, incl. niet-meegenomen)"
+PIVOT_ACTIES_ALL_SHEET = "Pivot (acties, alles)"
 
 @dataclass(frozen=True)
 class KeuringsRecord:
