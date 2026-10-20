@@ -12,7 +12,7 @@ from Analysis.export_keuringsinfo import KeuringsRecord, _is_not_included, _shee
 
 
 def test_build_aql_simple_signature_and_no_pairing():
-    q = build_aql(asset_short_uri="x")
+    q = build_aql()
     # no legacy pairing logic remains
     assert "FOR lsdeel, e IN OUTBOUND" not in q
     assert "pairs_parent" not in q
@@ -22,10 +22,10 @@ def test_build_aql_simple_signature_and_no_pairing():
 
 
 def test_limit_clause_is_optional():
-    q1 = build_aql(asset_short_uri="x")
+    q1 = build_aql()
     assert "LIMIT @limit" not in q1
 
-    q2 = build_aql(asset_short_uri="x", limit=10)
+    q2 = build_aql()
     assert "LIMIT @limit" in q2
 
 
@@ -34,7 +34,7 @@ def test_tov_has_own_sheet():
 
 
 def test_aql_includes_isActief_and_toestand_columns():
-    q = build_aql(asset_short_uri="x")
+    q = build_aql()
     assert '"isActief": a.AIMDBStatus_isActief' in q or '"isActief": a.AIMDBStatus_isActief' in q
     assert '"toestand": a.toestand' in q or '"toestand": a.toestand' in q
 

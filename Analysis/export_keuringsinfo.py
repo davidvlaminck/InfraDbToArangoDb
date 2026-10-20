@@ -27,9 +27,10 @@ import argparse
 import datetime
 import datetime as dt
 from collections import Counter, defaultdict
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from API.APIEnums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
@@ -80,9 +81,10 @@ AGENT_TO_SHEET: dict[str, str] = {
 }
 
 EXCLUDED_SHEET = "Niet meegenomen"
-PIVOT_SHEET = "Pivot"
-PIVOT_ALL_SHEET = "Pivot (incl Niet meegenomen)"
-
+PIVOT_RESULTAAT_SHEET = "Pivot (resultaat)"
+PIVOT_RESULTAAT_ALL_SHEET = "Pivot (resultaat, incl. niet-meegenomen)"
+PIVOT_ACTIES_SHEET = "Pivot (acties)"
+PIVOT_ACTIES_ALL_SHEET = "Pivot (acties, incl. niet-meegenomen)"
 
 @dataclass(frozen=True)
 class KeuringsRecord:
@@ -159,7 +161,7 @@ def _load_technique_map(tree_structures_path: Path) -> dict[str, str]:
         if not tree_structures_path.exists():
             return mapping
         data = json.loads(tree_structures_path.read_text(encoding="utf-8"))
-    except Exception:
+    except Exception:  # noqa: BLE001
         return mapping
 
     # tree_structures.json can be a list or an object map
@@ -178,11 +180,7 @@ def _load_technique_map(tree_structures_path: Path) -> dict[str, str]:
     return mapping
 
 
-def build_aql(
-    asset_short_uri: str,
-    *,
-    limit: int | None = None,
-) -> str:
+def build_aql() -> str:
     """Build AQL to emit one row per asset of the given asset_short_uri.
 
     Simplified: we no longer consider LS + LSDeel pairing. The report only
@@ -273,7 +271,7 @@ def fetch_records(
     max_runtime_seconds: int = 300,
     limit: int | None = None,
 ) -> list[KeuringsRecord]:
-    aql = build_aql(asset_short_uri=asset_short_uri)
+    aql = build_aql()
     bind_vars: dict[str, Any] = {
         "asset_short_uri": asset_short_uri,
     }
@@ -393,8 +391,6 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date, validity_perio
 
     Here X is the supplied validity_period (in years).
     """
-    cutoff_date_minus_validity_period = cutoff - dt.timedelta(days=365)
-
     d = _parse_iso_date(record.datum_laatste_keuring)
     r = record.resultaat_keuring
     r_norm = r.strip().lower() if r else None
@@ -409,9 +405,7 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date, validity_perio
             return True
         if 'niet' in s and 'conform' in s:
             return True
-        if 'inbreuk' in s or 'inbreuken' in s:
-            return True
-        return False
+        return bool('inbreuk' in s or 'inbreuken' in s)
 
     def _is_conform(s: str) -> bool:
         # ensure we don't misclassify 'niet-conform' as 'conform'
@@ -448,6 +442,46 @@ def _pivot_result_key(record: KeuringsRecord, *, cutoff: dt.date, validity_perio
     return 'geen keuring'
 
 
+def _pivot_actions_key(record: KeuringsRecord) -> str:
+    """Return the pivot actions category label for this record."""
+    def _has(v: str | None) -> bool:
+        if v is None:
+            return False
+        s = str(v).strip()
+        return s != ""
+
+    has_naam = _has(getattr(record, "naam_keuringsverslag", None))
+    has_datum = _has(getattr(record, "datum_laatste_keuring", None))
+    has_res = _has(getattr(record, "resultaat_keuring", None))
+
+    all_three = has_naam and has_datum and has_res
+    if all_three:
+        return "geen actie"
+
+    # toevoegen keuringsverslag: naam missing, datum and resultaat available
+    if (not has_naam) and has_datum and has_res:
+        return "toevoegen keuringsverslag"
+
+    # controleer installatie: all three missing
+    if (not has_naam) and (not has_datum) and (not has_res):
+        return "controleer installatie"
+
+    # extraheer keuringsinfo: naam available and at least one of datum/resultaat missing
+    if has_naam and (not has_datum) or (not has_res):
+        return "extraheer keuringsinfo"
+
+    # Fallbacks to cover edge cases
+    if (not has_naam) and has_datum and has_res:
+        return "toevoegen keuringsverslag"
+    if has_naam and (not has_datum) or (not has_res):
+        return "extraheer keuringsinfo"
+    if (not has_naam) and (not has_datum) and (not has_res):
+        return "controleer installatie"
+    if all_three:
+        return "geen actie"
+    return "controleer installatie"
+
+
 def _pivot_group_name(record: KeuringsRecord) -> str:
     """Map any record to one of the target groups or 'Andere'.
 
@@ -474,9 +508,9 @@ def _resolved_toezichtgroep(record: KeuringsRecord) -> str | None:
     if record.toezichtgroep and str(record.toezichtgroep).strip().upper() != "UNKNOWN":
         return record.toezichtgroep
     if getattr(record, 'toezichtgroep_agent_name', None):
-        return getattr(record, 'toezichtgroep_agent_name')
+        return record.toezichtgroep_agent_name
     if getattr(record, 'toezichter_agent_name', None):
-        return getattr(record, 'toezichter_agent_name')
+        return record.toezichter_agent_name
     return None
 
 
@@ -486,29 +520,42 @@ def _build_pivot(
     cutoff: dt.date,
     validity_period: int,
     include_not_meegenomen: bool = False,
+    mode: str = "result", # "result" | "actions"
 ) -> tuple[list[str], dict[str, Counter[str]]]:
     """Build pivot data with fixed column order and new categories."""
+    global result_cols
     counters: dict[str, Counter[str]] = defaultdict(Counter)
     all_results: set[str] = set()
 
     for r in records:
         if _is_not_included(r) and (not include_not_meegenomen):
             continue
-        res = _pivot_result_key(r, cutoff=cutoff, validity_period=validity_period)
+        if mode == "actions":
+            res = _pivot_actions_key(r)
+            result_cols = [
+                "geen actie",
+                "toevoegen keuringsverslag",
+                "controleer installatie",
+                "extraheer keuringsinfo",
+            ]
+        elif mode == "result":
+            res = _pivot_result_key(r, cutoff=cutoff, validity_period=validity_period)
+            # Fixed column order as requested
+            result_cols = [
+                f"conform (<{validity_period} j)",
+                f"conform met opmerkingen (<{validity_period} j)",
+                f"inbreuken (niet-conform) (<{validity_period} j)",
+                f"vervallen keuring, conform (>{validity_period} j)",
+                f"vervallen keuring, conform met opmerkingen (>{validity_period} j)",
+                f"vervallen keuring, inbreuken (niet conform) (>{validity_period} j)",
+                "geen keuring",
+            ]
+        else:
+            raise ValueError(f'unknonw mode: {mode}')
         grp = _pivot_group_name(r)
         counters[grp][res] += 1
         all_results.add(res)
 
-    # Fixed column order as requested
-    result_cols = [
-        f'conform (<{validity_period} j)',
-        f'conform met opmerkingen (<{validity_period} j)',
-        f'inbreuken (niet-conform) (<{validity_period} j)',
-        f'vervallen keuring, conform (>{validity_period} j)',
-        f'vervallen keuring, conform met opmerkingen (>{validity_period} j)',
-        f'vervallen keuring, inbreuken (niet conform) (>{validity_period} j)',
-        'geen keuring',
-    ]
     # Ensure all columns are present in all groups
     for c in counters.values():
         for col in result_cols:
@@ -524,6 +571,7 @@ def _write_pivot_sheet(
     cutoff: dt.date,
     validity_period: int,
     include_not_meegenomen: bool,
+    mode: str = "result",
 ) -> None:
     """Create/overwrite a Pivot sheet."""
 
@@ -537,6 +585,7 @@ def _write_pivot_sheet(
         cutoff=cutoff,
         validity_period=validity_period,
         include_not_meegenomen=include_not_meegenomen,
+        mode=mode,
     )
 
     header: list[Any] = ["toezichtgroep", *cols, "Totaal"]
@@ -569,9 +618,10 @@ def _write_pivot_sheet(
 
 
 def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_date:datetime.date, validity_period: int) -> None:
+    import json
+
     from openpyxl import Workbook
     from openpyxl.utils import get_column_letter
-    import json
 
     # records may be a large iterable; avoid forcing it into a list here.
     # However other code relied on multiple passes, so we'll consume into a list
@@ -583,26 +633,22 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
     default = wb.active
     wb.remove(default)
 
-    # Two pivots:
+    # Four pivots:
     # - Pivot: excludes Niet meegenomen
     # - Pivot (incl Niet meegenomen): includes them
     cutoff = cutoff_date
     _write_pivot_sheet(
-        wb,
-        sheet_name=PIVOT_ALL_SHEET,
-        records=records_list,
-        cutoff=cutoff,
-        validity_period=validity_period,
-        include_not_meegenomen=True,
-    )
+        wb, sheet_name=PIVOT_RESULTAAT_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
+        include_not_meegenomen=True, mode='result')
     _write_pivot_sheet(
-        wb,
-        sheet_name=PIVOT_SHEET,
-        records=records_list,
-        cutoff=cutoff,
-        validity_period=validity_period,
-        include_not_meegenomen=False,
-    )
+        wb, sheet_name=PIVOT_RESULTAAT_ALL_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
+        include_not_meegenomen=False, mode='result')
+    _write_pivot_sheet(
+        wb, sheet_name=PIVOT_ACTIES_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
+        include_not_meegenomen=True, mode='actions')
+    _write_pivot_sheet(
+        wb, sheet_name=PIVOT_ACTIES_ALL_SHEET, records=records_list, cutoff=cutoff, validity_period=validity_period,
+        include_not_meegenomen=False, mode='actions')
 
     sheet_names = [*sorted(TARGET_SHEETS), "Andere", EXCLUDED_SHEET]
     sheets = {name: wb.create_sheet(title=name) for name in sheet_names}
@@ -621,7 +667,8 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
         "naam_keuringsverslag",
         "datum_laatste_keuring",
         "resultaat_keuring",
-        "pivot_categorie",
+        "pivot_resultaat_categorie",
+        "pivot_acties_categorie",
         "longitude",
         "latitude",
     ]
@@ -646,7 +693,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
                     vals = o.get("migrated_from_uuids") or []
                     if key and isinstance(vals, list):
                         migration_map[str(key)] = [str(v) for v in vals if v]
-    except Exception:
+    except Exception:  # noqa: BLE001
         # if migration file malformed or unreadable, proceed without migration mapping
         migration_map = {}
 
@@ -709,16 +756,11 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
         # map techniek by migrated LSDeel uuid (from migration map) first,
         # then by lsb_uuid, then fallback to the asset uuid
         techniek = ""
-        lsdeel_cell_value = ""
         lsdeel_for_mapping = None
-        try:
-            mig_vals = migration_map.get(str(r.uuid))
-            if mig_vals:
-                # cell will contain comma-joined list; mapping prefers first value
-                lsdeel_cell_value = ",".join(mig_vals)
-                lsdeel_for_mapping = mig_vals[0]
-        except Exception:
-            lsdeel_cell_value = ""
+        mig_vals = migration_map.get(str(r.uuid))
+        if mig_vals:
+            # cell will contain comma-joined list; mapping prefers first value
+            lsdeel_for_mapping = mig_vals[0]
 
         if lsdeel_for_mapping:
             techniek = techniek_map.get(lsdeel_for_mapping, "")
@@ -748,7 +790,8 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
 
         resolved_name = _resolved_toezichtgroep(r)
         # compute pivot category using same cutoff as pivot sheets
-        pivot_cat = _pivot_result_key(r, cutoff=cutoff, validity_period=validity_period)
+        pivot_result_cat = _pivot_result_key(r, cutoff=cutoff, validity_period=validity_period)
+        pivot_action_cat = _pivot_actions_key(r)
 
         # prefer the server-side computed actief_bestekken list if present
         actief_bestek = None
@@ -773,7 +816,8 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
             _sanitize(r.naam_keuringsverslag),
             _sanitize(r.datum_laatste_keuring),
             _sanitize(r.resultaat_keuring),
-            _sanitize(pivot_cat),
+            _sanitize(pivot_result_cat),
+            _sanitize(pivot_action_cat),
             _sanitize(r.longitude),
             _sanitize(r.latitude),
         ]
@@ -797,8 +841,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
                 if v is None:
                     continue
                 s = str(v)
-                if len(s) > max_len:
-                    max_len = len(s)
+                max_len = max(max_len, len(s))
 
             width = min(max(min_width, max_len + padding), max_width)
             col_letter = get_column_letter(first.column)
