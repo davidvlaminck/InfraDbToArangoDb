@@ -246,7 +246,7 @@ def build_aql() -> str:
         + '    "schadebeheerder_agent_key": (schadebeheerder_agent != null ? schadebeheerder_agent._key : null),\n'
         + '    "schadebeheerder_agent_uuid": (schadebeheerder_agent != null ? schadebeheerder_agent.uuid : null),\n'
         + '    "schadebeheerder_agent_name": (schadebeheerder_agent != null && schadebeheerder_agent.purl != null && schadebeheerder_agent.purl.Agent_naam != null ? schadebeheerder_agent.purl.Agent_naam : (schadebeheerder_agent != null ? schadebeheerder_agent.naam : null)),\n'
-        + '    "type": @asset_short_uri == "lgc:onderdeel#Laagspanningsbord" ? "Laagspanningsbord" : @asset_short_uri,\n\n'
+        + '    "type": @asset_short_uri == "onderdeel#Laagspanningsbord" ? "Laagspanningsbord" : @asset_short_uri,\n\n'
         + '    "uuid": a._key,\n'
         + '    "naam": a.AIMNaamObject_naam,\n'
         + '    "naampad": a.NaampadObject_naampad,\n\n'
