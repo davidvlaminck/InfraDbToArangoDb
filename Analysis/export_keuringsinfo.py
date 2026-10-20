@@ -459,7 +459,7 @@ def _pivot_actions_key(record: KeuringsRecord) -> str:
         return "geen actie"
 
     # toevoegen keuringsverslag: naam missing, datum and resultaat available
-    if (not has_naam) and has_datum and has_res:
+    if (not has_naam) and has_datum or has_res:
         return "toevoegen keuringsverslag"
 
     # controleer installatie: all three missing
@@ -470,15 +470,7 @@ def _pivot_actions_key(record: KeuringsRecord) -> str:
     if has_naam and (not has_datum) or (not has_res):
         return "extraheer keuringsinfo"
 
-    # Fallbacks to cover edge cases
-    if (not has_naam) and has_datum and has_res:
-        return "toevoegen keuringsverslag"
-    if has_naam and (not has_datum) or (not has_res):
-        return "extraheer keuringsinfo"
-    if (not has_naam) and (not has_datum) and (not has_res):
-        return "controleer installatie"
-    if all_three:
-        return "geen actie"
+    # Fallback to cover edge cases
     return "controleer installatie"
 
 
