@@ -342,12 +342,12 @@ def _is_not_included(record: KeuringsRecord) -> bool:
     if record.uuid in {'651ee842-7785-4a79-b4b6-b6c10c028df0','e622f112-2cc0-47eb-82a3-7d79cc941d6c'}:
         return True
     if record.toezichtgroep:
-        if record.toezichtgroep in {'ABBAMelda test', 'De Werkvennootschap', 'EMT_KUNST_O', 'EMT_KUNST_W',
-                                    'EMT_WHG', 'EMT_WHM', 'EMT_WHW', 'LANTIS', 'PPS_DIABOLO', 'Stad Antwerpen',
-                                    'Vlaamse Belastingdienst', 'VMM-WATER', 'W&Z'}:
+        if record.toezichtgroep in {'ABBAMelda test', 'ANPR Extenen', 'ANPR Externen', 'De Werkvennootschap',
+                                    'EMT_KUNST_O', 'EMT_KUNST_W', 'EMT_WHG', 'EMT_WHM', 'EMT_WHW', 'LANTIS',
+                                    'PPS_DIABOLO', 'Stad Antwerpen', 'Vlaamse Belastingdienst', 'VMM-WATER', 'W&Z'}:
             return True
-        if record.toezichtgroep == 'ANPR Extenen':
-            return record.schadebeheerder_agent_name == 'District Gent 411'
+        if record.toezichtgroep == 'ANPR Externen':
+            return True
         if record.toezichtgroep == 'UNKNOWN':
             if record.actief_bestekken and 'HVV.089' in record.actief_bestekken:
                 print('found records with bestek "HVV.089"')
