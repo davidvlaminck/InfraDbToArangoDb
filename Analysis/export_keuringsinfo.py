@@ -845,7 +845,7 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
                     # Escape double quotes for Excel formula safety
                     uuid_str_escaped = uuid_str.replace('"', '""')
                     uuid_cell.hyperlink = f"{EMINFRA_HYPERLINK_BASE}{uuid_str_escaped}"
-                    uuid_cell.font = Font(color="056C1", underline="single")
+                    uuid_cell.font = Font(color="0563C1", underline="single")
         except Exception:
             pass # Do not fail export if hyperlink assignment fails
 
