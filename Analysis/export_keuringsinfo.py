@@ -29,6 +29,7 @@ import datetime as dt
 from collections import Counter, defaultdict
 from collections.abc import Iterable
 from dataclasses import dataclass
+from openpyxl.styles import Font
 from pathlib import Path
 from typing import Any
 
@@ -85,6 +86,7 @@ PIVOT_RESULTAAT_SHEET = "Pivot (resultaat)"
 PIVOT_RESULTAAT_ALL_SHEET = "Pivot (resultaat, alles)"
 PIVOT_ACTIES_SHEET = "Pivot (acties)"
 PIVOT_ACTIES_ALL_SHEET = "Pivot (acties, alles)"
+EMINFRA_HYPERLINK_BASE = "https://apps.mow.vlaanderen.be/eminfra/assets/"
 
 @dataclass(frozen=True)
 class KeuringsRecord:
@@ -612,6 +614,20 @@ def _write_pivot_sheet(
     sh.append(total_row)
 
 
+def _get_uuid_column_index(headers: list):
+    # Locate the column index for uuid / assetId.identificator (case-insensitive)
+    uuid_col_1based = None
+    for i, h in enumerate(headers):
+        if isinstance(h, str):
+            hl = h.strip().lower()
+            if hl == "uuid" or hl == "assetid.identificator":
+                uuid_col_1based = i + 1
+                break
+    if uuid_col_1based is None:
+        uuid_col_1based = 1  # fallback
+    return uuid_col_1based
+
+
 def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_date:datetime.date, validity_period: int) -> None:
     import json
 
@@ -670,6 +686,8 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
 
     for sh in sheets.values():
         sh.append(headers)
+
+    uuid_col = _get_uuid_column_index(headers)
 
     # load technique mapping (lsdeel_uuid -> label) from tree_structures.json
     tree_structures_file = Path(__file__).parent / "TreeAnalysis" / "output" / "tree_structures.json"
@@ -817,6 +835,20 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
             _sanitize(r.latitude),
         ]
         sh.append(row_values)
+
+        try:
+            if uuid_col is not None:
+                uuid_cell = sh.cell(row=sh.max_row, column=uuid_col)
+                uuid_val = row_values[uuid_col - 1]
+                if uuid_val is not None and str(uuid_val).strip() != "":
+                    uuid_str = str(uuid_val)
+                    # Escape double quotes for Excel formula safety
+                    uuid_str_escaped = uuid_str.replace('"', '""')
+                    uuid_cell.hyperlink = f"{EMINFRA_HYPERLINK_BASE}{uuid_str_escaped}"
+                    uuid_cell.font = Font(color="0563C1", underline="single")
+        except Exception:
+            pass # Do not fail export if hyperlink assignment fails
+
 
     def _autofit_sheet_columns(ws: Any, *, min_width: int = 10, max_width: int = 80, padding: int = 2) -> None:
         """Auto-adjust column widths based on cell value length."""
