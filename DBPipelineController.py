@@ -18,9 +18,9 @@ from InitialFillStep import InitialFillStep
 
 class DBPipelineController:
     """Manages the linear DB pipeline from initial fill to final syncing process."""
-    def __init__(self, settings_path: Path, auth_type=AuthType.JWT, env=Environment.PRD):
+    def __init__(self, settings_path: Path, auth_type=AuthType.JWT, env=Environment.PRD, cookie: str | None = None):
         self.settings = self.load_settings(settings_path)
-        factory, eminfra_client, emson_client = self.settings_to_clients(auth_type=auth_type, env=env)
+        factory, eminfra_client, emson_client = self.settings_to_clients(auth_type=auth_type, env=env, cookie=cookie)
 
         self.factory = factory
         self.eminfra_client = eminfra_client
@@ -38,13 +38,13 @@ class DBPipelineController:
             [ResourceEnum.assetrelaties, ResourceEnum.assets, ResourceEnum.agents, ResourceEnum.betrokkenerelaties,]
         ]
 
-    def settings_to_clients(self, auth_type, env) -> tuple[ArangoDBConnectionFactory, EMInfraClient, EMSONClient]:
+    def settings_to_clients(self, auth_type, env, cookie: str | None = None) -> tuple[ArangoDBConnectionFactory, EMInfraClient, EMSONClient]:
         # Environment.value is a string like 'prd' (historically this used to be a 1-tuple).
         env_key = env.value[0] if isinstance(env.value, tuple) else env.value
         db_settings = self.settings['databases'][str(env_key)]
 
-        eminfra_client = EMInfraClient(env=env, auth_type=auth_type, settings=self.settings)
-        emson_client = EMSONClient(env=env, auth_type=auth_type, settings=self.settings)
+        eminfra_client = EMInfraClient(env=env, auth_type=auth_type, settings=self.settings, cookie=cookie)
+        emson_client = EMSONClient(env=env, auth_type=auth_type, settings=self.settings, cookie=cookie)
 
         db_name = db_settings['database']
         username = db_settings['user']
