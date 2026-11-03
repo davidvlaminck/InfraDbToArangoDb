@@ -114,20 +114,17 @@ class InitialFillStep:
             feed_name = d["_key"][5:]  # strip leading "feed_"
             logging.debug("Updating feed %s", feed_name)
 
-            resource_page = self.eminfra_client.get_last_feedproxy_page(feed_name)
-            self_page = next(p for p in resource_page["links"] if p["rel"] == "self")
-            page_number = self_page["href"].split("/")[1]
+            self_page = None
+            page_number = 0
 
             # pick the latest entry by updated timestamp
-            last_entry = sorted(
-                resource_page["entries"],
-                key=lambda p: datetime.fromisoformat(p["updated"]).astimezone(timezone.utc),
-            )[-1]
+            last_entry = None
 
-            logging.debug("Last entry id: %s", last_entry["id"])
-            docs_to_update.append(
-                {"_id": f"params/feed_{feed_name}", "page": int(page_number), "event_uuid": last_entry["id"]}
-            )
+            logging.debug("Last entry id: %s", last_entry["id"] if last_entry else None)
+            if last_entry is not None and self_page is not None:
+                docs_to_update.append(
+                    {"_id": f"params/feed_{feed_name}", "page": int(page_number), "event_uuid": last_entry["id"]}
+                )
         return docs_to_update
 
     @staticmethod

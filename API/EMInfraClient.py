@@ -21,10 +21,6 @@ class EMInfraClient:
         self.requester = RequesterFactory.create_requester(auth_type=auth_type, env=env, settings=settings, cookie=cookie)
         self.requester.first_part_url += 'eminfra/'
 
-    def get_last_feedproxy_page(self, feed_name: str) -> dict[str, Any]:
-        url = f"feedproxy/feed/{feed_name}"
-        return self.requester.get(url).json()
-
     def get_feedproxy_page(self, feed_name: str, page_num: int, page_size: int = 1) -> dict[str, Any]:
         url = f"feedproxy/feed/{feed_name}/{page_num}/{page_size}"
         return self.requester.get(url).json()
