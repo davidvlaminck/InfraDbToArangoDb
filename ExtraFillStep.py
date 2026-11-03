@@ -16,7 +16,6 @@ class ExtraFillStep:
 
     # resources that can be executed by this step (in order)
     RESOURCES_TO_FILL = [
-        'assettypes',
         'aansluitingrefs',
         'aansluitingen',
         # derived edge collections
@@ -34,7 +33,6 @@ class ExtraFillStep:
 
         # Map resource names to their fill functions
         self._fill_functions: dict[str, Callable[[Optional[str], object, object], None]] = {
-            'assettypes': self.fill_assettypes,
             'aansluitingrefs': self.fill_aansluitingrefs,
             'aansluitingen': self.fill_aansluitingen,
             'voedt_relaties': self.fill_voedt_relaties,
@@ -89,37 +87,6 @@ class ExtraFillStep:
     def _mark_filled(self, db, params_key: str) -> None:
         params = db.collection('params')
         params.insert({'_key': params_key, 'from': None, 'fill': False}, overwrite=True)
-
-    def fill_assettypes(self, start_from, db, params):
-        """Update `assettypes` docs with boolean flags.
-
-        For each assettype uuid we call EMInfra to see if it has these kenmerken:
-        - Elektrisch aansluitpunt
-
-        Progress is stored as the last processed assettype uuid.
-        """
-        query = "FOR ast IN assettypes RETURN ast.uuid"
-        uuids_sorted = sorted(db.aql.execute(query))
-
-        for ast_uuid in uuids_sorted:
-            if start_from and ast_uuid < start_from:
-                logging.info(f"⏭️ Skipping {ast_uuid}")
-                continue
-
-            ast_info = self.eminfra_client.get_kenmerktypes_by_asettype_uuid(ast_uuid)
-            logging.info(f"🔄 Updating {ast_uuid}")
-
-            ean_kenmerk = next((k for k in ast_info if k['kenmerkType']['naam'] == 'Elektrisch aansluitpunt'), None)
-
-            db.aql.execute(
-                "UPDATE @key WITH { aansluitpunt_kenmerk: @aansluitpunt_kenmerk } IN assettypes",
-                bind_vars={"key": ast_uuid[:8], "aansluitpunt_kenmerk": ean_kenmerk is not None},
-            )
-
-            self._update_progress(db, "fill_assettypes", ast_uuid)
-
-        logging.info("✅ No more data for assettypes. Marking as filled.")
-        self._mark_filled(db, "fill_assettypes")
 
     def fill_aansluitingrefs(self, start_from, db, params):
         """Placeholder: nothing to do yet."""

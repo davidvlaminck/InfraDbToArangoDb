@@ -25,6 +25,10 @@ class EMInfraClient:
         url = f"feedproxy/feed/{feed_name}/{page_num}/{page_size}"
         return self.requester.get(url).json()
 
+    def get_asset_by_uuid(self, asset_uuid: str):
+        url = f"core/api/otl/assets/{asset_uuid}"
+        return self.requester.get(url).json()
+
     def get_resource_page(self, resource: str, page_size: int, start_from: Optional[int]):
         """Offset-based paging for core/api/<resource>."""
         if not start_from:
@@ -39,10 +43,6 @@ class EMInfraClient:
                 break
             else:
                 yield start_from, json_dict['data']
-
-    def get_kenmerktypes_by_asettype_uuid(self, assettype_uuid: str) -> list[dict[str, Any]]:
-        url = f"core/api/assettypes/{assettype_uuid}/kenmerktypes"
-        return self.requester.get(url).json()['data']
 
     def get_identity_resource_page(self, resource: str, page_size: int, start_from: Optional[int]):
         """Offset-based paging for identiteit/api/<resource>."""
