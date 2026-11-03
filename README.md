@@ -69,3 +69,5 @@ curl -u root:yourpassword \
 This model represents the structure of the data stored in the Arango DB database. It includes collections for assets, as well as edges to represent relationships between these entities.
 The red lines (and box) represent edge collections, whereas the white boxes represent document collections.
 ![Datamodel](datamodel.png)
+
+Zie **`DBMODEL.md`** voor een volledige, tekstuele beschrijving van alle collecties, velden, indexen, grafen en pipeline-fases.
