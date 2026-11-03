@@ -33,6 +33,11 @@ from openpyxl.styles import Font
 from pathlib import Path
 from typing import Any
 
+import json
+
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+
 from API.APIEnums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 
@@ -629,11 +634,6 @@ def _get_uuid_column_index(headers: list):
 
 
 def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_date:datetime.date, validity_period: int) -> None:
-    import json
-
-    from openpyxl import Workbook
-    from openpyxl.utils import get_column_letter
-
     # records may be a large iterable; avoid forcing it into a list here.
     # However other code relied on multiple passes, so we'll consume into a list
     # only if it's not already a list/tuple. Keep existing behavior but be defensive
@@ -880,6 +880,29 @@ def export_to_excel(records: Iterable[KeuringsRecord], out_path: Path, cutoff_da
 
     wb.save(out_path)
 
+def _autofit_sheet_columns(ws: Any, *, min_width: int = 10, max_width: int = 80, padding: int = 2) -> None:
+    """Auto-adjust column widths based on cell value length."""
+
+    ws.freeze_panes = "A2"  # keep header row visible
+
+    # compute widths
+    for col_cells in ws.columns:
+        # col_cells can include merged cells etc; guard for missing column index
+        first = next(iter(col_cells), None)
+        if first is None or getattr(first, "column", None) is None:
+            continue
+
+        max_len = 0
+        for cell in col_cells:
+            v = cell.value
+            if v is None:
+                continue
+            s = str(v)
+            max_len = max(max_len, len(s))
+
+        width = min(max(min_width, max_len + padding), max_width)
+        col_letter = get_column_letter(first.column)
+        ws.column_dimensions[col_letter].width = width
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Export keuringsinfo naar Excel")
