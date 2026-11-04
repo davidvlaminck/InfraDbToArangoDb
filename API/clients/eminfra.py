@@ -1,4 +1,4 @@
 """EMInfra client."""
-from API.clients.eminfra.EMInfraClient import EMInfraClient
+from utils.eminfra_client import EMInfraClient
 
 __all__ = ['EMInfraClient']
