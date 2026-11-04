@@ -4,7 +4,7 @@ from pathlib import Path
 import datetime
 from zoneinfo import ZoneInfo
 
-from API.clients.eminfra.EMInfraClient import EMInfraClient
+from utils.eminfra_client import EMInfraClient
 from API.clients.emson import EMSONClient
 from API.auth.enums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
@@ -43,8 +43,8 @@ class DBPipelineController:
         env_key = env.value[0] if isinstance(env.value, tuple) else env.value
         db_settings = self.settings['databases'][str(env_key)]
 
-        eminfra_client = EMInfraClient(env=env, auth_type=auth_type, settings=self.settings, cookie=cookie)
-        emson_client = EMSONClient(env=env, auth_type=auth_type, settings=self.settings, cookie=cookie)
+        eminfra_client = EMInfraClient(env=env, auth_type=auth_type, cookie=cookie)
+        emson_client = EMSONClient(env=env, auth_type=auth_type, cookie=cookie)
 
         db_name = db_settings['database']
         username = db_settings['user']

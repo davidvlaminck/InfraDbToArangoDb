@@ -2,7 +2,7 @@ import logging
 from typing import Callable, Optional
 import requests
 
-from API.clients.eminfra.EMInfraClient import EMInfraClient
+from utils.eminfra_client import EMInfraClient
 
 
 class ExtraFillStep:

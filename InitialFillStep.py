@@ -11,7 +11,8 @@ from shapely import wkt
 from shapely.geometry import mapping
 from shapely.ops import transform
 
-from API.clients.eminfra.EMInfraClient import EMInfraClient
+from utils.eminfra_client import EMInfraClient
+from API.clients.eminfra.paging import offset_page_generator_get
 from API.clients.emson import EMSONClient
 from Enums import ResourceEnum, colorama_table
 
@@ -365,11 +366,9 @@ class InitialFillStep:
         if resource in {ResourceEnum.agents.value, ResourceEnum.betrokkenerelaties.value}:
             # these require cursor-based iteration with contactInfo expansion
             return self.eminfra_client.get_resource_by_cursor(resource, sf, page_size, expansion_strings=["contactInfo"])
-        if resource in {ResourceEnum.toezichtgroepen.value, ResourceEnum.identiteiten.value}:
-            return self.eminfra_client.get_identity_resource_page(resource, page_size, sf)
-        if resource == ResourceEnum.bestekken.value:
-            return self.eminfra_client.get_resource_page("bestekrefs", page_size, sf)
-        return self.eminfra_client.get_resource_page(resource, page_size, sf)
+        base = "identiteit" if resource in {ResourceEnum.toezichtgroepen.value, ResourceEnum.identiteiten.value} else "core"
+        res = "bestekrefs" if resource == ResourceEnum.bestekken.value else resource
+        return offset_page_generator_get(self.eminfra_client.requester, base, res, page_size, sf)
 
     # -----------------------
     # Data insertion and transformations
