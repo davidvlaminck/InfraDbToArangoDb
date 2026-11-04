@@ -1,4 +1,4 @@
-from API.EMInfraDomain import ExpressionDTO, TermDTO
+from API.clients.eminfra.EMInfraDomain import ExpressionDTO, TermDTO
 from utils.date_helpers import format_datetime
 
 

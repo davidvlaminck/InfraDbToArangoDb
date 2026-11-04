@@ -5,7 +5,7 @@ from typing import Any
 
 import pytest
 
-from API.APIEnums import AuthType, Environment
+from API.auth.enums import AuthType, Environment
 from DBPipelineController import DBPipelineController
 from InitialFillStep import InitialFillStep
 

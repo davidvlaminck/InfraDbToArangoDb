@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from API.APIEnums import Environment, AuthType
+from API.auth.enums import Environment, AuthType
 from DBPipelineController import DBPipelineController
 
 logging.basicConfig(

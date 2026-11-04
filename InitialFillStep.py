@@ -11,8 +11,8 @@ from shapely import wkt
 from shapely.geometry import mapping
 from shapely.ops import transform
 
-from API.EMInfraClient import EMInfraClient
-from API.EMSONClient import EMSONClient
+from API.clients.eminfra.EMInfraClient import EMInfraClient
+from API.clients.emson import EMSONClient
 from Enums import ResourceEnum, colorama_table
 
 

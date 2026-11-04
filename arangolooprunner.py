@@ -9,7 +9,7 @@ from pathlib import Path
 
 from utils.pipeline_state import enqueue_sqlite_job
 
-from API.APIEnums import Environment, AuthType
+from API.auth.enums import Environment, AuthType
 from DBPipelineController import DBPipelineController
 
 PARAMS_COLLECTION_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'params')

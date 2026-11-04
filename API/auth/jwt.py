@@ -13,7 +13,8 @@ from random import choice
 
 from requests import Response
 
-from API.AbstractRequester import AbstractRequester
+from API.auth.abstract_requester import AbstractRequester
+from API.auth.settings import find_settings_file, resolve_settings_path
 
 
 class JWTRequester(AbstractRequester):
@@ -21,7 +22,9 @@ class JWTRequester(AbstractRequester):
         if 'cryptography' not in sys.modules:
             raise ModuleNotFoundError('Needs module cryptography to work. Please install it with "pip install pyjwt cryptography"')
 
-        self.private_key_path: Path = private_key_path
+        # Resolve path relative to settings file if it's relative
+        settings_path = find_settings_file()
+        self.private_key_path: Path = resolve_settings_path(str(private_key_path), settings_path)
         self.client_id: str = client_id
         self.first_part_url: str = first_part_url
 
@@ -36,6 +39,7 @@ class JWTRequester(AbstractRequester):
 
     def post(self, url='', **kwargs) -> Response:
         kwargs = self.modify_kwargs_for_bearer_token(kwargs)
+        kwargs = self.modify_kwargs_for_files(kwargs)
         return super().post(url=url, **kwargs)
 
     def put(self, url='', **kwargs) -> Response:
@@ -94,7 +98,7 @@ class JWTRequester(AbstractRequester):
 
         with open(self.private_key_path) as private_key:
             private_key_json = json.load(private_key)
-            key = jwt_algo.RSAAlgorithm.from_jwk(private_key_json)
+            key = jwt_algo.RSAAlgorithm.from_jwk(json.dumps(private_key_json))
             token = encode(payload=payload, key=key, algorithm='RS256')
 
         return token
@@ -121,3 +125,11 @@ class JWTRequester(AbstractRequester):
         response_json = response.json()
 
         return response_json['access_token'], response_json['expires_in']
+
+    def modify_kwargs_for_files(self, kwargs):
+        """
+        If the argument "files" is available, remove Content-Type from headers.
+        """
+        if 'files' in kwargs and 'headers' in kwargs:
+            kwargs['headers'].pop('Content-Type', None)
+        return kwargs

@@ -4,9 +4,9 @@ from pathlib import Path
 import datetime
 from zoneinfo import ZoneInfo
 
-from API.EMInfraClient import EMInfraClient
-from API.EMSONClient import EMSONClient
-from API.APIEnums import AuthType, Environment
+from API.clients.eminfra.EMInfraClient import EMInfraClient
+from API.clients.emson import EMSONClient
+from API.auth.enums import AuthType, Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 from CreateDBStep import CreateDBStep
 from CreateIndicesStep import CreateIndicesStep

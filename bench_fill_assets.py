@@ -34,9 +34,9 @@ from typing import Any, Dict, Optional
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
 
-from API.APIEnums import AuthType, Environment
-from API.EMInfraClient import EMInfraClient
-from API.EMSONClient import EMSONClient
+from API.auth.enums import AuthType, Environment
+from API.clients.eminfra.EMInfraClient import EMInfraClient
+from API.clients.emson import EMSONClient
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 from CreateDBStep import CreateDBStep
 from Enums import DBStep, ResourceEnum
