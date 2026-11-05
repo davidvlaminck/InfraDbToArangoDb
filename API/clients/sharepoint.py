@@ -22,11 +22,7 @@ import requests
 
 from API.auth.settings_loader import load_settings
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
 
 class SharepointClient:
@@ -45,41 +41,77 @@ class SharepointClient:
         app (ConfidentialClientApplication): MSAL application instance
     """
 
+    def _load_settings_fallback(
+        self,
+        client_id: str | None,
+        tenant_id: str | None,
+        site_url: str | None,
+        client_secret: str | None,
+    ) -> tuple[str | None, str | None, str | None, str | None]:
+        if all([client_id, tenant_id, site_url]) and client_secret is not None:
+            return client_id, tenant_id, site_url, client_secret
+        try:
+            from API.auth.settings import load_settings
+
+            settings = load_settings("settings_sharepoint.json")
+            client_id = client_id or settings.get("client_id")
+            tenant_id = tenant_id or settings.get("tenant_id")
+            site_url = site_url or settings.get("site_url")
+            client_secret = client_secret or settings.get("secret") or settings.get("client_secret")
+        except Exception:
+            pass
+        return client_id, tenant_id, site_url, client_secret
+
+    def _init_msal_app(self, client_id: str, authority: str, client_secret: str | None, use_client_credentials: bool):
+        if use_client_credentials:
+            if not client_secret:
+                raise ValueError("client_secret is required for client credentials flow")
+            return msal.ConfidentialClientApplication(
+                client_id,
+                authority=authority,
+                client_credential=client_secret,
+            )
+        return msal.PublicClientApplication(
+            client_id,
+            authority=authority,
+        )
+
+    def _parse_site_urls(self, site_url: str):
+        parts = site_url.split("/sites/")
+        if len(parts) <= 1:
+            return site_url, None
+        path_parts = parts[1].split("/")
+        if len(path_parts) > 1:
+            return f"{parts[0]}/sites/{path_parts[0]}", parts[1]
+        return site_url, None
+
     def __init__(
         self,
-        client_id: str = None,
-        tenant_id: str = None,
-        site_url: str = None,
-        client_secret: str = None,
-        scopes: list = None,
-        token_file: Path = None,
+        client_id: str | None = None,
+        tenant_id: str | None = None,
+        site_url: str | None = None,
+        client_secret: str | None = None,
+        scopes: list | None = None,
+        token_file: Path | None = None,
         use_client_credentials: bool = True,
-        settings_path: Path = None,
+        settings_path: Path | None = None,
         authenticator=None,
         **kwargs,
     ):
         """
         Initialize the SharePoint client.
         """
-        # Try to load from settings if not all params provided
-        if not all([client_id, tenant_id, site_url]) or client_secret is None:
-            try:
-                from API.auth.settings import load_settings
-                settings = load_settings("settings_sharepoint.json")
-                client_id = client_id or settings.get("client_id")
-                tenant_id = tenant_id or settings.get("tenant_id")
-                site_url = site_url or settings.get("site_url")
-                client_secret = client_secret or settings.get("secret") or settings.get("client_secret")
-            except Exception:
-                pass  # Fall through to validation
-        
+        client_id, tenant_id, site_url, client_secret = self._load_settings_fallback(
+            client_id, tenant_id, site_url, client_secret
+        )
+
         if not site_url:
             raise ValueError("site_url is required for SharepointClient operations")
 
         self.client_id = client_id
         self.tenant_id = tenant_id
         self.client_secret = client_secret
-        self.site_url = site_url.rstrip('/')
+        self.site_url = site_url.rstrip("/")
         self.scopes = scopes or ["https://graph.microsoft.com/.default"]
         self.token_file = Path(token_file) if token_file else None
         self.use_client_credentials = use_client_credentials
@@ -88,35 +120,9 @@ class SharepointClient:
             raise ValueError("tenant_id is required for SharepointClient operations")
         authority = f"https://login.microsoftonline.com/{self.tenant_id}"
 
-        if use_client_credentials:
-            if not client_secret:
-                raise ValueError("client_secret is required for client credentials flow")
-            self.app = msal.ConfidentialClientApplication(
-                self.client_id,
-                authority=authority,
-                client_credential=self.client_secret,
-            )
-        else:
-            self.app = msal.PublicClientApplication(
-                self.client_id,
-                authority=authority,
-            )
-        # Extract the parent site URL (up to /sites/<site_name>)
-        # The site_url might be a subsite, but we need the parent site for Graph API access
-        parts = self.site_url.split("/sites/")
-        if len(parts) > 1:
-            # Reconstruct parent site: https://hostname/sites/<first_path_segment>
-            path_parts = parts[1].split("/")
-            if len(path_parts) > 1:
-                # This is a subsite, use the parent site
-                self.parent_site_url = f"{parts[0]}/sites/{path_parts[0]}"
-                self.subsite_path = parts[1]  # Full path after /sites/
-            else:
-                self.parent_site_url = self.site_url
-                self.subsite_path = None
-        else:
-            self.parent_site_url = self.site_url
-            self.subsite_path = None
+        self.app = self._init_msal_app(self.client_id, authority, self.client_secret, use_client_credentials)
+        self.parent_site_url, self.subsite_path = self._parse_site_urls(self.site_url)
+
 
     def get_access_token(self) -> str:
         """Get an access token using client credentials flow."""
@@ -135,7 +141,7 @@ class SharepointClient:
     def _get_site_id(self) -> str:
         """
         Get the site ID from the parent site URL.
-        
+
         The Graph API expects the site path in the format:
         hostname:/sites/path
         """
@@ -158,33 +164,28 @@ class SharepointClient:
 
         if resp.status_code == 200:
             items = resp.json().get("value", [])
-            print("📂 Document libraries in SharePoint site:")
             for item in items:
-                print(f"- {item.get('name', '(default)')} (id: {item['id']})")
+                pass
         else:
-            print(f"Fout {resp.status_code}: {resp.text}")
+            pass
 
     def list_library_items(self, document_library_id: str):
         """List files/folders in a specific document library."""
         items = list(self._list_children("root", document_library_id))
-        print(f"📂 Items in document library {document_library_id}:")
         for item in items:
             soort = "Map" if "folder" in item else "Bestand"
-            print(f"- {item['name']} ({soort})")
 
-    def list_root_items(self, document_library_id: str = None):
+    def list_root_items(self, document_library_id: str | None = None):
         """
         List files/folders in the root of the SharePoint site.
-        
+
         Args:
             document_library_id: Optional document library ID. If not provided, lists items from all document libraries.
         """
         if document_library_id:
             items = list(self._list_children("root", document_library_id))
-            print("📂 Items in SharePoint root:")
             for item in items:
                 soort = "Map" if "folder" in item else "Bestand"
-                print(f"- {item['name']} ({soort})")
         else:
             # List all document libraries and their contents
             site_id = self._get_site_id()
@@ -196,13 +197,11 @@ class SharepointClient:
                 for library in libraries:
                     library_name = library.get("name", "(default)")
                     library_id = library.get("id")
-                    print(f"\n📂 Document Library: {library_name}")
                     items = list(self._list_children("root", library_id))
                     for item in items:
                         soort = "Map" if "folder" in item else "Bestand"
-                        print(f"  - {item['name']} ({soort})")
             else:
-                print(f"Fout {resp.status_code}: {resp.text}")
+                pass
 
     def get_document_library_by_name(self, library_name: str) -> dict:
         """
@@ -232,7 +231,7 @@ class SharepointClient:
         self,
         parent_id: str,
         folder_name: str,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
     ) -> dict:
         """
         Find an existing folder by name under a parent, or create it if missing.
@@ -283,7 +282,7 @@ class SharepointClient:
     def _get_or_create_folder_path(
         self,
         folder_path: str,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
     ) -> dict:
         """
         Resolve a nested folder path, creating missing parent folders.
@@ -326,7 +325,7 @@ class SharepointClient:
     def _list_children(
         self,
         parent_id: str,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
         page_size: int = 200,
     ):
         """
@@ -370,7 +369,7 @@ class SharepointClient:
         self,
         parent_id: str,
         name: str,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
     ) -> dict | None:
         """
         Locate a single child item (file or folder) by name within a parent folder.
@@ -396,11 +395,7 @@ class SharepointClient:
 
         Matches: '_tmp_' suffix, '~$' lock prefix, '.lock' suffix.
         """
-        return (
-            "_tmp_" in filename
-            or filename.startswith("~$")
-            or filename.endswith(".lock")
-        )
+        return "_tmp_" in filename or filename.startswith("~$") or filename.endswith(".lock")
 
     def _should_skip(self, name: str) -> bool:
         """
@@ -429,15 +424,26 @@ class SharepointClient:
         Matches 'overzicht' (case-insensitive) or bucket pattern 'NNNN-NNNN'.
         """
         import re
+
         return name.lower() == "overzicht" or bool(re.match(r"^\d{4}-\d{4}$", name))
 
     # ---------- Retry & Error Handling ----------
 
+    def _is_http_retryable(self, resp) -> bool:
+        try:
+            status = resp.status_code
+            if status in {408, 429} or 500 <= status < 600:
+                return True
+            text = resp.text.lower()
+            if any(kw in text for kw in ("rate limit", "quota", "throttle", "too many requests")):
+                return True
+        except Exception:
+            pass
+        return False
+
     def _is_retryable_library_error(self, exc: Exception) -> bool:
         """
         Classify an exception as transient/retryable.
-
-        Retryable: timeouts, connection errors, HTTP 408/429/5xx, rate-limit/quota keywords.
         """
         import requests.exceptions as req_exc
 
@@ -446,24 +452,15 @@ class SharepointClient:
 
         if isinstance(exc, req_exc.HTTPError):
             resp = getattr(exc, "response", None)
-            if resp is not None:
-                status = resp.status_code
-                if status in {408, 429} or 500 <= status < 600:
-                    return True
-                # Check for rate-limit/quota keywords in response
-                try:
-                    text = resp.text.lower()
-                    if any(kw in text for kw in ("rate limit", "quota", "throttle", "too many requests")):
-                        return True
-                except Exception:
-                    pass
+            if resp is not None and self._is_http_retryable(resp):
+                return True
 
-        # Check exception message for rate-limit keywords
         msg = str(exc).lower()
         if any(kw in msg for kw in ("rate limit", "quota", "throttle", "too many requests")):
             return True
 
         return False
+
 
     def _retry_on_library_error(self, func, *args, **kwargs):
         """
@@ -484,8 +481,10 @@ class SharepointClient:
             except Exception as exc:
                 if attempt == max_retries or not self._is_retryable_library_error(exc):
                     raise
-                delay = min(base_delay * (2 ** attempt) + random.uniform(0, 1), max_delay)
-                logging.warning(f"Retryable error (attempt {attempt + 1}/{max_retries}): {exc}. Waiting {delay:.1f}s...")
+                delay = min(base_delay * (2**attempt) + random.uniform(0, 1), max_delay)
+                logging.warning(
+                    f"Retryable error (attempt {attempt + 1}/{max_retries}): {exc}. Waiting {delay:.1f}s..."
+                )
                 time.sleep(delay)
 
     # ---------- Download (SharePoint → Local Mirror) ----------
@@ -505,6 +504,7 @@ class SharepointClient:
                 continue
             if item.is_dir():
                 import shutil
+
                 shutil.rmtree(item)
             else:
                 item.unlink()
@@ -513,7 +513,7 @@ class SharepointClient:
         self,
         item_id: str,
         local_path: Path,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
         chunk_size: int = 8192,
     ) -> None:
         """
@@ -544,69 +544,59 @@ class SharepointClient:
 
         self._retry_on_library_error(_do_download)
 
+    def _should_skip_remote_item(self, name: str, is_root: bool, apply_root_filter: bool) -> bool:
+        if not name:
+            return True
+        if self._is_temporary_workbook(name):
+            logging.debug(f"Skipping temporary workbook: {name}")
+            return True
+        if not self._is_safe_name(name):
+            logging.debug(f"Skipping unsafe name: {name}")
+            return True
+        if is_root and apply_root_filter and not self._is_expected_root_folder_name(name):
+            logging.debug(f"Skipping unexpected root folder: {name}")
+            return True
+        if self._should_skip(name):
+            logging.debug(f"Skipping control folder: {name}")
+            return True
+        return False
+
     def _download_tree(
         self,
         parent_id: str,
         local_folder: Path,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
         is_root: bool = True,
         apply_root_filter: bool = False,
     ) -> None:
         """
         Recursively download a folder tree and mirror all files into a local directory.
-
-        Args:
-            parent_id: Remote parent folder/item ID (or 'root')
-            local_folder: Local directory to mirror into
-            document_library_id: Document library ID. If not provided, uses the default.
-            is_root: Whether this is the root call (applies root-level filters if apply_root_filter=True)
-            apply_root_filter: If True, apply the expected root folder name filter (for structured sync)
         """
         if document_library_id is None:
             document_library_id = self._get_default_document_library_id()
 
         for item in self._list_children(parent_id, document_library_id):
             name = item.get("name", "")
-            if not name:
-                continue
-
-            # Skip temporary/lock workbooks
-            if self._is_temporary_workbook(name):
-                logging.debug(f"Skipping temporary workbook: {name}")
-                continue
-
-            # Skip unsafe names
-            if not self._is_safe_name(name):
-                logging.debug(f"Skipping unsafe name: {name}")
-                continue
-
-            # At root level, apply expected folder name filter only if requested
-            if is_root and apply_root_filter and not self._is_expected_root_folder_name(name):
-                logging.debug(f"Skipping unexpected root folder: {name}")
-                continue
-
-            # Skip control folders
-            if self._should_skip(name):
-                logging.debug(f"Skipping control folder: {name}")
+            if self._should_skip_remote_item(name, is_root, apply_root_filter):
                 continue
 
             local_item_path = local_folder / name
 
             if "folder" in item:
-                # Create the directory for this folder (even if empty)
                 local_item_path.mkdir(parents=True, exist_ok=True)
-                # Recurse into subfolder
-                self._download_tree(item["id"], local_item_path, document_library_id, is_root=False, apply_root_filter=apply_root_filter)
+                self._download_tree(
+                    item["id"], local_item_path, document_library_id, is_root=False, apply_root_filter=apply_root_filter
+                )
             elif "file" in item:
-                # Download file
                 logging.info(f"Downloading: {local_item_path}")
                 self._download_file(item["id"], local_item_path, document_library_id)
+
 
     def sync_library_to_local(
         self,
         remote_folder_path: str,
         local_folder: str | Path,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
     ) -> bool:
         """
         Public download mirror: resolve/ensure a remote folder path,
@@ -645,7 +635,7 @@ class SharepointClient:
 
     # ---------- Deletion ----------
 
-    def _delete_library_item_recursive(self, item_id: str, document_library_id: str = None) -> None:
+    def _delete_library_item_recursive(self, item_id: str, document_library_id: str | None = None) -> None:
         """
         Delete an item and, if it is a folder, delete all its contents first.
 
@@ -687,7 +677,7 @@ class SharepointClient:
         self,
         local_path: Path,
         parent_id: str,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
     ) -> dict:
         """
         Create a new file or update an existing one in a target folder,
@@ -735,7 +725,12 @@ class SharepointClient:
 
         def _do_upload():
             with open(local_path, "rb") as f:
-                if method == "PUT" and "items/" in upload_url and "/content" in upload_url and ":" not in upload_url.split("items/")[1].split("/")[0]:
+                if (
+                    method == "PUT"
+                    and "items/" in upload_url
+                    and "/content" in upload_url
+                    and ":" not in upload_url.split("items/")[1].split("/")[0]
+                ):
                     # Updating existing file by ID
                     resp = requests.put(upload_url, headers=headers, data=f)
                 else:
@@ -752,7 +747,7 @@ class SharepointClient:
         self,
         local_path: Path,
         parent_id: str,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
     ) -> dict:
         """
         Upload or update a single file with retries, building a fresh upload session per attempt.
@@ -766,28 +761,63 @@ class SharepointClient:
             The uploaded/updated item dict.
         """
         return self._retry_on_library_error(
-            self._upload_or_update_file_once,
-            local_path, parent_id, document_library_id
+            self._upload_or_update_file_once, local_path, parent_id, document_library_id
         )
+
+    def _should_skip_local_item(self, name: str) -> bool:
+        """Return True if local item should be skipped."""
+        return self._should_skip(name) or self._is_temporary_workbook(name) or not self._is_safe_name(name)
+
+    def _sync_local_file_to_remote(
+        self,
+        local_file: Path,
+        parent_id: str,
+        remote_items: dict,
+        document_library_id: str | None,
+    ) -> tuple[int, int]:
+        """Sync a single local file to remote. Returns (uploaded_delta, updated_delta)."""
+        name = local_file.name
+        remote_item = remote_items.get(name)
+        try:
+            self._upload_or_update_file(local_file, parent_id, document_library_id)
+            if remote_item and "file" in remote_item:
+                logging.info(f"Updated: {name}")
+                return 0, 1
+            logging.info(f"Uploaded: {name}")
+            return 1, 0
+        except Exception as exc:
+            logging.error(f"Failed to upload {name}: {exc}")
+            raise
+
+    def _delete_remote_only_items(
+        self,
+        remote_items: dict,
+        local_names: set,
+        document_library_id: str | None,
+    ) -> int:
+        """Delete remote items not present locally. Returns error count."""
+        errors = 0
+        for name, remote_item in remote_items.items():
+            if name in local_names or self._should_skip(name):
+                continue
+            try:
+                logging.info(f"Deleting remote-only item: {name}")
+                self._delete_library_item_recursive(remote_item["id"], document_library_id)
+            except Exception as exc:
+                errors += 1
+                logging.error(f"Failed to delete remote item {name}: {exc}")
+        return errors
 
     def _sync_local_dir_to_library(
         self,
         local_folder: Path,
         parent_id: str,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
     ) -> tuple[int, int, int]:
         """
         Recursively sync a local directory tree to a remote folder:
         create missing folders, upload new files, update changed files,
         and delete remote-only files/folders that no longer exist locally.
-
-        Args:
-            local_folder: Local directory to sync
-            parent_id: Remote parent folder ID (or 'root')
-            document_library_id: Document library ID. If not provided, uses the default.
-
-        Returns:
-            Tuple of (uploaded_count, updated_count, errors_count)
         """
         if document_library_id is None:
             document_library_id = self._get_default_document_library_id()
@@ -799,58 +829,40 @@ class SharepointClient:
         updated = 0
         errors = 0
 
-        # Get existing remote items
         remote_items = {item["name"]: item for item in self._list_children(parent_id, document_library_id)}
         local_names = set()
 
-        # Process local files and folders
         for local_item in local_folder.iterdir():
             name = local_item.name
             local_names.add(name)
 
-            if self._should_skip(name) or self._is_temporary_workbook(name) or not self._is_safe_name(name):
+            if self._should_skip_local_item(name):
                 logging.debug(f"Skipping local item: {name}")
                 continue
 
             if local_item.is_dir():
-                # Get or create remote folder
                 remote_folder = self._get_or_create_folder(parent_id, name, document_library_id)
-                # Recurse
                 u, up, e = self._sync_local_dir_to_library(local_item, remote_folder["id"], document_library_id)
                 uploaded += u
                 updated += up
                 errors += e
             elif local_item.is_file():
-                remote_item = remote_items.get(name)
                 try:
-                    result = self._upload_or_update_file(local_item, parent_id, document_library_id)
-                    if remote_item and "file" in remote_item:
-                        updated += 1
-                        logging.info(f"Updated: {name}")
-                    else:
-                        uploaded += 1
-                        logging.info(f"Uploaded: {name}")
-                except Exception as exc:
+                    u, up = self._sync_local_file_to_remote(local_item, parent_id, remote_items, document_library_id)
+                    uploaded += u
+                    updated += up
+                except Exception:
                     errors += 1
-                    logging.error(f"Failed to upload {name}: {exc}")
 
-        # Delete remote-only items that no longer exist locally
-        for name, remote_item in remote_items.items():
-            if name not in local_names and not self._should_skip(name):
-                try:
-                    logging.info(f"Deleting remote-only item: {name}")
-                    self._delete_library_item_recursive(remote_item["id"], document_library_id)
-                except Exception as exc:
-                    errors += 1
-                    logging.error(f"Failed to delete remote item {name}: {exc}")
-
+        errors += self._delete_remote_only_items(remote_items, local_names, document_library_id)
         return uploaded, updated, errors
+
 
     def sync_local_to_library(
         self,
         local_folder: str | Path,
         remote_folder_path: str,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
     ) -> bool:
         """
         Public upload mirror: authenticate, ensure remote folder path,
@@ -888,7 +900,7 @@ class SharepointClient:
     def upload_folder_to_library(
         self,
         local_folder: str | Path,
-        document_library_id: str = None,
+        document_library_id: str | None = None,
         extensions: tuple = (".xlsx",),
     ) -> bool:
         """
@@ -973,70 +985,60 @@ class SharepointClient:
 
         return expected
 
-    def validate_local_mirror(self, local_folder: Path) -> tuple[bool, str]:
-        """
-        Validate local mirror layout.
-
-        Checks that the local mirror contains at minimum:
-        - An 'Overzicht' folder (case-insensitive, created if missing)
-        - An 'Overzicht/[RSA] Overzicht rapporten.xlsx' workbook
-        - A 'logs' folder (created if missing)
-        - All expected bucket folders (created if missing)
-        - At least one bucket folder
-
-        Args:
-            local_folder: Local mirror root folder
-
-        Returns:
-            Tuple of (is_valid, reason)
-        """
-        local_path = Path(local_folder)
-
-        # Ensure Overzicht folder exists
-        overzicht_dir = None
+    def _ensure_overzicht(self, local_path: Path) -> Path:
+        overview_dir = None
         for item in local_path.iterdir():
             if item.is_dir() and item.name.lower() == "overzicht":
-                overzicht_dir = item
+                overview_dir = item
                 break
-
-        if overzicht_dir is None:
-            overzicht_dir = local_path / "Overzicht"
-            overzicht_dir.mkdir(parents=True, exist_ok=True)
+        if overview_dir is None:
+            overview_dir = local_path / "Overzicht"
+            overview_dir.mkdir(parents=True, exist_ok=True)
             logging.info("Created missing 'Overzicht' folder")
+        return overview_dir
 
-        # Check for Overzicht workbook
-        workbook_found = False
-        for item in overzicht_dir.iterdir():
+    def _has_overzicht_workbook(self, overview_dir: Path) -> bool:
+        for item in overview_dir.iterdir():
             if item.is_file() and "overzicht" in item.name.lower() and "rapport" in item.name.lower():
-                workbook_found = True
-                break
+                return True
+        return False
 
-        if not workbook_found:
-            return False, "Missing '[RSA] Overzicht rapporten.xlsx' in Overzicht folder"
-
-        # Ensure logs folder exists
+    def _ensure_logs_folder(self, local_path: Path) -> None:
         logs_dir = local_path / "logs"
         if not logs_dir.exists():
             logs_dir.mkdir(parents=True, exist_ok=True)
             logging.info("Created missing 'logs' folder")
 
-        # Discover and ensure expected bucket folders
+    def _ensure_bucket_folders(self, local_path: Path) -> tuple[bool, str]:
         expected_buckets = self._discover_expected_buckets(local_path)
         if not expected_buckets:
             return False, "No expected buckets found (no Report#### files in Reports/ or ArchivedReports/)"
-
         for bucket in expected_buckets:
             bucket_dir = local_path / bucket
             if not bucket_dir.exists():
                 bucket_dir.mkdir(parents=True, exist_ok=True)
                 logging.info(f"Created missing bucket folder: {bucket}")
-
-        # Verify at least one bucket folder exists
         existing_buckets = [b for b in expected_buckets if (local_path / b).exists()]
         if not existing_buckets:
             return False, "No bucket folders present in local mirror"
+        return True, ""
 
+    def validate_local_mirror(self, local_folder: Path) -> tuple[bool, str]:
+        """
+        Validate local mirror layout.
+        """
+        local_path = Path(local_folder)
+
+        overview_dir = self._ensure_overzicht(local_path)
+        if not self._has_overzicht_workbook(overview_dir):
+            return False, "Missing '[RSA] Overzicht rapporten.xlsx' in Overzicht folder"
+
+        self._ensure_logs_folder(local_path)
+        ok, reason = self._ensure_bucket_folders(local_path)
+        if not ok:
+            return False, reason
         return True, "Local mirror layout is valid"
+
 
     # ---------- Run Log Management ----------
 
@@ -1113,8 +1115,8 @@ class SharepointClient:
         cls,
         client_id: str,
         tenant_id: str,
-        scopes: list = None,
-        token_file: Path = None,
+        scopes: list | None = None,
+        token_file: Path | None = None,
     ) -> "SharepointClient":
         """
         Perform interactive browser login and persist token for future sessions.
@@ -1147,9 +1149,7 @@ class SharepointClient:
             authority=authority,
         )
 
-        result = app.acquire_token_interactive(
-            scopes=scopes or ["https://graph.microsoft.com/.default"]
-        )
+        result = app.acquire_token_interactive(scopes=scopes or ["https://graph.microsoft.com/.default"])
         if "access_token" not in result:
             raise RuntimeError(f"Login fout: {result.get('error_description')}")
 
@@ -1160,7 +1160,7 @@ class SharepointClient:
 
         return result["access_token"]
 
-    def first_login(self, token_file: Path = None) -> str:
+    def first_login(self, token_file: Path | None = None) -> str:
         """
         Perform interactive login via browser and persist token for future sessions.
 
@@ -1183,7 +1183,7 @@ class SharepointClient:
             token_file=token_file,
         )
 
-    def _load_credentials(self, token_file: Path = None) -> dict:
+    def _load_credentials(self, token_file: Path | None = None) -> dict:
         """
         Load stored credential/token, detect expiry, and refresh automatically using refresh token.
 
@@ -1231,10 +1231,7 @@ class SharepointClient:
             authority=authority,
         )
 
-        refreshed = app.acquire_token_by_refresh_token(
-            token_data.get("refresh_token"),
-            self.scopes
-        )
+        refreshed = app.acquire_token_by_refresh_token(token_data.get("refresh_token"), self.scopes)
 
         if "access_token" in refreshed:
             refreshed["expires_at"] = time.time() + refreshed.get("expires_in", 3600)
@@ -1244,7 +1241,7 @@ class SharepointClient:
             logging.warning(f"Kon token niet verversen: {refreshed.get('error_description')}")
             return {}
 
-    def _build_service(self, token_file: Path = None) -> requests.Session:
+    def _build_service(self, token_file: Path | None = None) -> requests.Session:
         """
         Construct an authenticated Microsoft Graph API HTTP session from persisted token.
 
@@ -1262,20 +1259,24 @@ class SharepointClient:
             raise RuntimeError("Geen geldige token beschikbaar. Eerst inloggen met first_login().")
 
         session = requests.Session()
-        session.headers.update({
-            "Authorization": f"Bearer {token_data['access_token']}",
-            "Content-Type": "application/json",
-        })
+        session.headers.update(
+            {
+                "Authorization": f"Bearer {token_data['access_token']}",
+                "Content-Type": "application/json",
+            }
+        )
         return session
 
 
 # ---------- Microsoft Graph Uploader Abstraction ----------
+
 
 @dataclass
 class GraphUploadTarget:
     """
     Holds a document library ID and folder path identifying a SharePoint/OneDrive destination.
     """
+
     document_library_id: str
     folder_path: str
 
@@ -1310,9 +1311,7 @@ class MsGraphUploader:
 
         # Resolve folder path
         if target.folder_path and target.folder_path.strip("/"):
-            remote_folder = self.client._get_or_create_folder_path(
-                target.folder_path, target.document_library_id
-            )
+            remote_folder = self.client._get_or_create_folder_path(target.folder_path, target.document_library_id)
             parent_id = remote_folder["id"]
         else:
             parent_id = "root"
@@ -1321,6 +1320,7 @@ class MsGraphUploader:
 
 
 # ---------- Cross-Module Compatibility ----------
+
 
 def report_bucket_name(report_number: int) -> str:
     """
@@ -1364,6 +1364,7 @@ def report_sharepoint_url(
 
 
 # ---------- Pipeline State Integration ----------
+
 
 class DailyLibrarySyncGate:
     """
@@ -1427,9 +1428,7 @@ class DailyLibrarySyncGate:
             try:
                 with sqlite3.connect(self.db_path) as conn:
                     conn.row_factory = sqlite3.Row
-                    row = conn.execute(
-                        "SELECT status FROM pipeline_state WHERE phase = 'sharepoint_upload'"
-                    ).fetchone()
+                    row = conn.execute("SELECT status FROM pipeline_state WHERE phase = 'sharepoint_upload'").fetchone()
                     if row and row["status"] == "completed":
                         return True
                     if row and row["status"] == "failed":
@@ -1491,15 +1490,13 @@ def upload_after_run(
 
 # ---------- CLI Interface ----------
 
-def _main():
-    """Command-line interface for SharepointClient."""
+
+def _build_arg_parser() -> "argparse.ArgumentParser":
     import argparse
-    import sys
 
     parser = argparse.ArgumentParser(description="SharePoint CLI")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    # Common arguments
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--client-id", required=True, help="Azure AD client ID")
     common.add_argument("--tenant-id", required=True, help="Azure AD tenant ID")
@@ -1507,83 +1504,81 @@ def _main():
     common.add_argument("--document-library-id", help="Document library ID (optional, uses default)")
     common.add_argument("--token-file", default="sharepoint_token.json", help="Token file path")
 
-    # login command
     login_parser = subparsers.add_parser("login", parents=[common], help="Perform interactive login and persist token")
     login_parser.add_argument("--client-secret", help="Client secret (optional for device code flow)")
 
-    # sync-down command
     sync_down_parser = subparsers.add_parser("sync-down", parents=[common], help="Mirror SharePoint folder to local folder")
     sync_down_parser.add_argument("--remote-path", default="", help="Remote folder path (empty = entire library)")
     sync_down_parser.add_argument("--local-folder", required=True, help="Local folder to mirror into")
 
-    # sync-up command
     sync_up_parser = subparsers.add_parser("sync-up", parents=[common], help="Mirror local folder to SharePoint folder")
     sync_up_parser.add_argument("--local-folder", required=True, help="Local folder to sync")
     sync_up_parser.add_argument("--remote-path", required=True, help="Remote folder path")
 
-    # upload command
     upload_parser = subparsers.add_parser("upload", parents=[common], help="Legacy top-level file upload")
     upload_parser.add_argument("--local-folder", required=True, help="Local folder containing files")
     upload_parser.add_argument("--extensions", default=".xlsx", help="Comma-separated extensions (e.g., .xlsx,.pdf)")
 
-    args = parser.parse_args()
+    return parser
 
-    # Build client
+
+def _create_client_for_args(args):
     if args.command == "login":
-        # For login, we don't need site_url or client_secret for device code
-        client = SharepointClient(
+        return SharepointClient(
             client_id=args.client_id,
             tenant_id=args.tenant_id,
-            client_secret=args.client_secret or "",
+            client_secret=getattr(args, "client_secret", None) or "",
             site_url=args.site_url,
         )
-    else:
-        client = SharepointClient(
-            client_id=args.client_id,
-            tenant_id=args.tenant_id,
-            client_secret="",  # Will use token file
-            site_url=args.site_url,
-            use_client_credentials=False,
-            token_file=args.token_file,
-        )
+    return SharepointClient(
+        client_id=args.client_id,
+        tenant_id=args.tenant_id,
+        client_secret="",
+        site_url=args.site_url,
+        use_client_credentials=False,
+        token_file=args.token_file,
+    )
 
+
+def _run_command(client, args) -> int:
+    if args.command == "login":
+        client.first_login(args.token_file)
+        return 0
+    if args.command == "sync-down":
+        success = client.sync_library_to_local(
+            args.remote_path,
+            args.local_folder,
+            args.document_library_id,
+        )
+        return 0 if success else 1
+    if args.command == "sync-up":
+        success = client.sync_local_to_library(
+            args.local_folder,
+            args.remote_path,
+            args.document_library_id,
+        )
+        return 0 if success else 1
+    if args.command == "upload":
+        extensions = tuple(e.strip() for e in args.extensions.split(","))
+        success = client.upload_folder_to_library(
+            args.local_folder,
+            args.document_library_id,
+            extensions,
+        )
+        return 0 if success else 1
+    return 1
+
+
+def _main():
+    """Command-line interface for SharepointClient."""
+    parser = _build_arg_parser()
+    args = parser.parse_args()
+    client = _create_client_for_args(args)
     try:
-        if args.command == "login":
-            token = client.first_login(args.token_file)
-            print(f"Login successful. Token saved to {args.token_file}")
-            return 0
-
-        elif args.command == "sync-down":
-            success = client.sync_library_to_local(
-                args.remote_path,
-                args.local_folder,
-                args.document_library_id,
-            )
-            print("Sync-down completed successfully" if success else "Sync-down failed")
-            return 0 if success else 1
-
-        elif args.command == "sync-up":
-            success = client.sync_local_to_library(
-                args.local_folder,
-                args.remote_path,
-                args.document_library_id,
-            )
-            print("Sync-up completed successfully" if success else "Sync-up failed")
-            return 0 if success else 1
-
-        elif args.command == "upload":
-            extensions = tuple(e.strip() for e in args.extensions.split(","))
-            success = client.upload_folder_to_library(
-                args.local_folder,
-                args.document_library_id,
-                extensions,
-            )
-            print("Upload completed successfully" if success else "Upload failed")
-            return 0 if success else 1
-
-    except Exception as exc:
-        print(f"Error: {exc}", file=sys.stderr)
+        return _run_command(client, args)
+    except Exception:
         return 1
+
 
 
 if __name__ == "__main__":
@@ -1605,15 +1600,11 @@ if __name__ == "__main__":
         site_url=settings["sharepoint"]["site_url"],
     )
 
-    print("=== Test access ===")
     try:
         token = client.get_access_token()
-        print(f"Token length: {len(token)}")
     except Exception as e:
-        print(f"Token error: {e}")
+        pass
 
-    print("\n=== List document libraries ===")
     client.list_document_libraries()
 
-    print("\n=== List root items (default document library) ===")
     client.list_root_items()
