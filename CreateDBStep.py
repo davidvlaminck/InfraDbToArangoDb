@@ -14,10 +14,10 @@ class CreateDBStep:
         # Define required collections
         doc_collections = [
             "params", "assets", "assettypes", "relatietypes", "agents", "toezichtgroepen", "identiteiten",
-            "beheerders", "bestekken", "aansluitingrefs"
+            "beheerders", "bestekken"
         ]
         edge_collections = [
-            "assetrelaties", "betrokkenerelaties", "bestekkoppelingen", "aansluitingen",
+            "assetrelaties", "betrokkenerelaties", "bestekkoppelingen",
             # Derived edge collections
             "voedt_relaties", "sturing_relaties", "bevestiging_relaties", "hoortbij_relaties"
         ]
