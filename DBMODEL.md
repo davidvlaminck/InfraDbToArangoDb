@@ -265,6 +265,7 @@ Indexen: `_from, rol` (persistent), `_to, rol` (persistent)
 |`_key`|str|`uuid4()` (willekeurig)|
 |`_from`|str|`assets/<_key>`|
 |`_to`|str|`bestekken/<bestekId[:8]>`|
+|`order`|int|0-based positie in `bs.Bestek_bestekkoppeling` (bronvolgorde)|
 |`DtcBestekkoppeling_bestekId`|dict|Identificator|
 |`DtcBestekkoppeling_status`|str|Status URI|
 |`status`|str|Afgeleid: laatste segment van `status` URI|

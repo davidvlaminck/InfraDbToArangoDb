@@ -734,17 +734,19 @@ class InitialFillStep:
         """Convert bestekkoppelingen on the asset into edge documents.
 
         Important: we do not normalise here. `obj['bs']` is already recursively normalised.
+        The original order in `bs.Bestek_bestekkoppeling` is recorded in `order` (0-based).
         """
         bestek_koppelingen = obj.get("bs", {}).get("Bestek_bestekkoppeling")
         if not bestek_koppelingen:
             return
 
-        for koppeling in bestek_koppelingen:
+        for order, koppeling in enumerate(bestek_koppelingen):
             koppeling["_from"] = "assets/" + obj["_key"]
             koppeling["_to"] = "bestekken/" + koppeling["DtcBestekkoppeling_bestekId"].get(
                 "DtcIdentificator_identificator"
             )[:8]
             koppeling["_key"] = str(uuid.uuid4())
+            koppeling["order"] = order
 
             # Keep legacy behavior: store last URI segment (or None)
             status_uri = koppeling.get("status")
