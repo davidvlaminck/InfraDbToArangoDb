@@ -60,8 +60,10 @@ if _repo_root not in sys.path:
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
+SETTINGS_PATH = Path(__file__).parent.parent.parent / "config" / "settings_arangodb.json"
+with open(SETTINGS_PATH) as f:
+    config = json.load(f)
 
-SETTINGS_PATH = Path("C:/resources/settings_SyncToArangoDB.json")
 ENV = Environment.PRD
 DEBUG_LIMIT: int | None = None  # e.g. 500 for a quick test run
 MAX_RUNTIME_SECONDS = 600
