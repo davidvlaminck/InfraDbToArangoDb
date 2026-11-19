@@ -351,6 +351,8 @@ def _is_not_included(record: KeuringsRecord) -> bool:
                                     'EMT_KUNST_O', 'EMT_KUNST_W', 'EMT_WHG', 'EMT_WHM', 'EMT_WHW', 'LANTIS',
                                     'PPS_DIABOLO', 'Stad Antwerpen', 'Vlaamse Belastingdienst', 'VMM-WATER', 'W&Z'}:
             return True
+        if record.toezichtgroep == 'EMT_TELE' and not record.toezichter_agent_key:
+            return True
         if record.toezichtgroep == 'ANPR Externen':
             return True
         if record.toezichtgroep == 'UNKNOWN':
