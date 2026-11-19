@@ -50,7 +50,7 @@ from Analysis.export_keuringsinfo import (  # noqa: E402
     _sheet_name,
     fetch_records,
 )
-from API.APIEnums import Environment  # noqa: E402
+from API.auth.enums import Environment
 
 # Ensure repository root is on sys.path so imports work when run directly in PyCharm.
 _repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
