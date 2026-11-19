@@ -38,7 +38,7 @@ import json
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
-from API.APIEnums import AuthType, Environment
+from API.auth.enums import Environment
 from ArangoDBConnectionFactory import ArangoDBConnectionFactory
 
 TARGET_SHEETS = {"V&W-WL", "V&W-WA", "V&W-WO", "V&W-WW", "V&W-WVB", "Afdeling Tunnelorganisatie", "EMT_BMI", "EMT_TELE"}
@@ -137,7 +137,7 @@ def _load_settings(path: Path) -> dict[str, Any]:
 
 
 def _create_db_from_settings(settings: dict[str, Any], env: Environment) -> Any:
-    db_settings = settings["databases"][str(env.value)]
+    db_settings = settings["databases"][str(env.name).lower()]
     factory = ArangoDBConnectionFactory(
         db_name=db_settings["database"],
         username=db_settings["user"],
@@ -347,11 +347,11 @@ def _is_not_included(record: KeuringsRecord) -> bool:
     if record.uuid in {'651ee842-7785-4a79-b4b6-b6c10c028df0','e622f112-2cc0-47eb-82a3-7d79cc941d6c'}:
         return True
     if record.toezichtgroep:
-        if record.toezichtgroep in {'ABBAMelda test', 'ANPR Extenen', 'ANPR Externen', 'De Werkvennootschap',
+        if record.toezichtgroep in {'ABBAMelda test', 'ANPR Externen', 'De Werkvennootschap',
                                     'EMT_KUNST_O', 'EMT_KUNST_W', 'EMT_WHG', 'EMT_WHM', 'EMT_WHW', 'LANTIS',
                                     'PPS_DIABOLO', 'Stad Antwerpen', 'Vlaamse Belastingdienst', 'VMM-WATER', 'W&Z'}:
             return True
-        if record.toezichtgroep == 'ANPR Externen':
+        if record.toezichtgroep == 'EMT_TELE' and not record.toezichter_agent_key:
             return True
         if record.toezichtgroep == 'UNKNOWN':
             if record.actief_bestekken and 'HVV.089' in record.actief_bestekken:
@@ -908,7 +908,6 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Export keuringsinfo naar Excel")
     parser.add_argument("--settings", type=Path, required=True)
     parser.add_argument("--env", type=str, default="PRD", choices=[e.name for e in Environment])
-    parser.add_argument("--auth", type=str, default="JWT", choices=[a.name for a in AuthType])
     parser.add_argument(
         "--out",
         type=Path,
