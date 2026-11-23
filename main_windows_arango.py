@@ -14,8 +14,9 @@ if __name__ == '__main__':
     settings_path = Path(__file__).parent.parent / 'config' / 'settings_arangodb.json'
 
     # 🚀 Connect to ArangoDB using DBPipelineController
-    controller = DBPipelineController(settings_path=settings_path, auth_type=AuthType.JWT, env=Environment.PRD)
+    controller = DBPipelineController(settings_path=settings_path, auth_type=AuthType.COOKIE, env=Environment.PRD, cookie='a50eacfd42e4449ea75a74d9b52533b5')
     try:
         controller.run()
     finally:
         controller.close()
+        
