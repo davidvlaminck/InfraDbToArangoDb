@@ -749,7 +749,7 @@ class InitialFillStep:
             koppeling["volgnummer"] = volgnummer
 
             # Keep legacy behavior: store last URI segment (or None)
-            status_uri = koppeling.get("status")
+            status_uri = koppeling.get("DtcBestekkoppeling_status")
             koppeling["status"] = status_uri.split("/")[-1] if status_uri else None
 
             kopp_batch.append(koppeling)
