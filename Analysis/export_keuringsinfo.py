@@ -233,7 +233,7 @@ def build_aql() -> str:
         + "  // derive active bestek identifiers (eDeltaDossiernummer) from embedded bs.bestekkoppeling -> DOCUMENT(_to)\n"
         + "  LET actief_bestek_list = (\n"
         + "    FOR bk IN (a.bs != null ? (a.bs.Bestek_bestekkoppeling) : [])\n"
-        + "      FILTER bk.DtcBestekkoppeling_status != null && CONTAINS(bk.DtcBestekkoppeling_status, '/actief')\n"
+        + "      FILTER bk.status != null && bk.status == 'actief'\n"
         + "      LET bestekdoc = DOCUMENT(bk._to)\n"
         + "      FILTER bestekdoc != null\n"
         + "      RETURN bestekdoc.eDeltaDossiernummer\n"
