@@ -12,8 +12,18 @@ LET rootNames = (
 
 LET uniqueRootNames = UNIQUE(rootNames)
 
+LET activeParents = (
+    FOR a IN assets
+        FILTER a.AIMDBStatus_isActief == true
+           AND HAS(a, "naampad_parent")
+        RETURN a.naampad_parent
+)
+
+LET rootsWithActiveChild = UNIQUE(activeParents)
+
 FOR rootName IN uniqueRootNames
     LET assetKey = CONCAT("instal_", SUBSTITUTE(rootName, "/", "_"))
+    LET isActief = rootName IN rootsWithActiveChild
     UPSERT { _key: assetKey }
     INSERT {
         _key: assetKey,
@@ -21,9 +31,9 @@ FOR rootName IN uniqueRootNames
         "@type": "https://lgc.data.wegenenverkeer.be/ns/installatie#Instal",
         NaampadObject_naampad: rootName,
         naampad_parts: [rootName],
-        AIMDBStatus_isActief: true
+        AIMDBStatus_isActief: isActief
     }
-    UPDATE {} IN assets
+    UPDATE { AIMDBStatus_isActief: isActief } IN assets
     OPTIONS { ignoreErrors: true }
 
 RETURN COUNT(uniqueRootNames)
