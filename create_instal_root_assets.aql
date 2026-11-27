@@ -1,0 +1,29 @@
+/*
+ * Create root assets (Instal) for each unique root name found in assets.naampad_parts.
+ * The root name is the first element of the naampad_parts array.
+ * These assets represent the top-level installations in the tree hierarchy.
+ */
+
+LET rootNames = (
+    FOR a IN assets
+        FILTER HAS(a, "naampad_parts") AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootNames = UNIQUE(rootNames)
+
+FOR rootName IN uniqueRootNames
+    LET assetKey = CONCAT("instal_", SUBSTITUTE(rootName, "/", "_"))
+    UPSERT { _key: assetKey }
+    INSERT {
+        _key: assetKey,
+        AIMObject_typeURI: "https://lgc.data.wegenenverkeer.be/ns/installatie#Instal",
+        "@type": "https://lgc.data.wegenenverkeer.be/ns/installatie#Instal",
+        NaampadObject_naampad: rootName,
+        naampad_parts: [rootName],
+        AIMDBStatus_isActief: true
+    }
+    UPDATE {} IN assets
+    OPTIONS { ignoreErrors: true }
+
+RETURN COUNT(uniqueRootNames)

@@ -86,7 +86,7 @@ class DBPipelineController:
                     logging.info("[4] Applying constraints...")
                     self._run_constraints()
                 elif current_step == DBStep.SYNC:
-                    logging.info("[5] Synchronising...")
+                    logging.info("[5] Creating root installation assets (Instal)...")
                     self._run_syncing()
                 elif current_step == DBStep.STOP:
                     logging.info("[6] Stopping...")
@@ -155,8 +155,31 @@ class DBPipelineController:
         set_db_step(self.pipeline_connection, step=DBStep.SYNC)
 
     def _run_syncing(self):
-        logging.debug("Since the database is filling fast, skip the final syncing step for now.")
+        logging.info("[5] Adding additional assets/attributes, for example root elements")
+        db = self.factory.create_connection()
+        self._add_additional_content(db)
         set_db_step(self.pipeline_connection, step=DBStep.STOP)
+
+    def _add_additional_content(self, db):
+        self._create_instal_root_assets(db)
+
+    def _create_instal_root_assets(self, db):
+        """Create root installation assets for each unique root name in naampad_parts."""
+        aql_path = Path(__file__).parent / "create_instal_root_assets.aql"
+        if not aql_path.exists():
+            logging.error(f"AQL file not found: {aql_path}")
+            return
+
+        with open(aql_path, 'r') as f:
+            aql = f.read()
+
+        try:
+            result = list(db.aql.execute(aql))
+            count = result[0] if result else 0
+            logging.info(f"✅ Created/updated {count} root installation assets (Instal)")
+        except Exception as e:
+            logging.error(f"Failed to create root installation assets: {e}")
+            raise
 
     def test_connection(self):
         try:
