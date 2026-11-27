@@ -1,0 +1,19 @@
+/*
+ * Update root installation assets (Instal) with technieken attribute.
+ * All root assets get an empty technieken array.
+ * Assets with "TUNNEL" in their NaampadObject_naampad get "Tunnel" appended to technieken.
+ */
+
+LET instalAssets = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://lgc.data.wegenenverkeer.be/ns/installatie#Instal"
+        RETURN a
+)
+
+FOR a IN instalAssets
+    LET hasTunnel = LIKE(a.NaampadObject_naampad, "%TUNNEL%", true)
+    LET technieken = hasTunnel ? ["Tunnel"] : []
+    UPDATE a WITH { technieken: technieken } IN assets
+    OPTIONS { ignoreErrors: true }
+
+RETURN COUNT(instalAssets)

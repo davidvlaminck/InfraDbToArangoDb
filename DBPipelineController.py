@@ -162,6 +162,7 @@ class DBPipelineController:
 
     def _add_additional_content(self, db):
         self._create_instal_root_assets(db)
+        self._update_instal_root_technieken(db)
 
     def _create_instal_root_assets(self, db):
         """Create root installation assets for each unique root name in naampad_parts."""
@@ -179,6 +180,24 @@ class DBPipelineController:
             logging.info(f"✅ Created/updated {count} root installation assets (Instal)")
         except Exception as e:
             logging.error(f"Failed to create root installation assets: {e}")
+            raise
+
+    def _update_instal_root_technieken(self, db):
+        """Update root installation assets with technieken attribute based on name."""
+        aql_path = Path(__file__).parent / "update_instal_root_technieken.aql"
+        if not aql_path.exists():
+            logging.error(f"AQL file not found: {aql_path}")
+            return
+
+        with open(aql_path, 'r') as f:
+            aql = f.read()
+
+        try:
+            result = list(db.aql.execute(aql))
+            count = result[0] if result else 0
+            logging.info(f"✅ Updated technieken for {count} root installation assets")
+        except Exception as e:
+            logging.error(f"Failed to update technieken for root installation assets: {e}")
             raise
 
     def test_connection(self):

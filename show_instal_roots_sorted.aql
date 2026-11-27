@@ -1,0 +1,15 @@
+/*
+ * Show all root installation assets (Instal) sorted by technieken.
+ * Assets with non-empty technieken array appear first.
+ */
+
+FOR a IN assets
+    FILTER a["@type"] == "https://lgc.data.wegenenverkeer.be/ns/installatie#Instal"
+    LET hasTechnieken = LENGTH(a.technieken) > 0
+    SORT hasTechnieken DESC, a.NaampadObject_naampad
+    RETURN {
+        _key: a._key,
+        naampad: a.NaampadObject_naampad,
+        technieken: a.technieken,
+        isActief: a.AIMDBStatus_isActief
+    }
