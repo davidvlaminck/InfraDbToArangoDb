@@ -1,5 +1,7 @@
 /*
  * Update root installation assets (Instal) with technieken attribute.
+ * Optimized: Uses assettype_key for index-friendly filtering.
+ * Single scan collects all root names by type, then splits into sets.
  * All root assets get an empty technieken array.
  * Assets with "TUNNEL" in their NaampadObject_naampad get "Tunnel" appended.
  * Assets with a DNBHoogspanning asset in their tree get "HS" appended.
@@ -23,125 +25,142 @@ LET instalAssets = (
         RETURN a
 )
 
-LET rootsWithHS = (
+/* Asset type keys for index-friendly filtering */
+LET typeKeys = {
+    HS: "8e9307e2",                    // DNBHoogspanning
+    WV: "6ea11739",                    // WegverlichtingGroep
+    VVOP: "9e557bed",                  // VerlichteOversteekplaatsGroep
+    VL: "5f4ee74b",                    // VRIBuiteninstallatie
+    SNC: "217ba1cb",                   // Flitsgroep
+    ASW: "8a818177",                   // Asweger
+    Z30: "4afb0d67",                   // DynBordZ30
+    MIV: "7f59b64e",                   // MIVModule
+    DynBord: "fcc947c6",               // DynBordGroep
+    POS: "855812a3",                   // Pompstation
+    METEO: "ae45eec9",                 // Meteostation
+    ZBP: "7a175f2f",                   // Zoutbijlaadplaats
+    ANPRCamera: "a322f135",            // ANPRCamera
+    Camera: "3f98f53a"                 // Camera
+}
+
+/* Single scan: collect (rootName, typeKey) pairs for all relevant types */
+LET rootsByType = (
     FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#DNBHoogspanning"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+        FILTER HAS(a, "naampad_parts") AND LENGTH(a.naampad_parts) > 0
+        FILTER HAS(a, "assettype_key")
+        FILTER a.assettype_key IN [
+            typeKeys.HS, typeKeys.WV, typeKeys.VVOP, typeKeys.VL,
+            typeKeys.SNC, typeKeys.ASW, typeKeys.Z30, typeKeys.MIV,
+            typeKeys.DynBord, typeKeys.POS, typeKeys.METEO, typeKeys.ZBP
+        ]
+        RETURN { root: a.naampad_parts[0], typeKey: a.assettype_key }
 )
 
-LET uniqueRootsWithHS = UNIQUE(rootsWithHS)
-
-LET rootsWithWV = (
-    FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#WegverlichtingGroep"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+/* Split into sets for O(1) lookup */
+LET uniqueRootsWithHS = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.HS
+        RETURN r.root
 )
 
-LET uniqueRootsWithWV = UNIQUE(rootsWithWV)
-
-LET rootsWithVVOP = (
-    FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#VerlichteOversteekplaatsGroep"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+LET uniqueRootsWithWV = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.WV
+        RETURN r.root
 )
 
-LET uniqueRootsWithVVOP = UNIQUE(rootsWithVVOP)
-
-LET rootsWithVL = (
-    FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#VRIBuiteninstallatie"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+LET uniqueRootsWithVVOP = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.VVOP
+        RETURN r.root
 )
 
-LET uniqueRootsWithVL = UNIQUE(rootsWithVL)
-
-LET rootsWithSNC = (
-    FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Flitsgroep"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+LET uniqueRootsWithVL = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.VL
+        RETURN r.root
 )
 
-LET uniqueRootsWithSNC = UNIQUE(rootsWithSNC)
-
-LET rootsWithASW = (
-    FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Asweger"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+LET uniqueRootsWithSNC = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.SNC
+        RETURN r.root
 )
 
-LET uniqueRootsWithASW = UNIQUE(rootsWithASW)
-
-LET rootsWithZ30 = (
-    FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#DynBordZ30"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+LET uniqueRootsWithASW = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.ASW
+        RETURN r.root
 )
 
-LET uniqueRootsWithZ30 = UNIQUE(rootsWithZ30)
-
-LET rootsWithMIV = (
-    FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#MIVModule"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+LET uniqueRootsWithZ30 = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.Z30
+        RETURN r.root
 )
 
-LET uniqueRootsWithMIV = UNIQUE(rootsWithMIV)
-
-LET rootsWithDynBord = (
-    FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#DynBordGroep"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+LET uniqueRootsWithMIV = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.MIV
+        RETURN r.root
 )
 
-LET uniqueRootsWithDynBord = UNIQUE(rootsWithDynBord)
-
-LET rootsWithPOS = (
-    FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Pompstation"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+LET uniqueRootsWithDynBord = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.DynBord
+        RETURN r.root
 )
 
-LET uniqueRootsWithPOS = UNIQUE(rootsWithPOS)
-
-LET rootsWithMETEO = (
-    FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Meteostation"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+LET uniqueRootsWithPOS = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.POS
+        RETURN r.root
 )
 
-LET uniqueRootsWithMETEO = UNIQUE(rootsWithMETEO)
-
-LET rootsWithZBP = (
-    FOR a IN assets
-        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Zoutbijlaadplaats"
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
+LET uniqueRootsWithMETEO = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.METEO
+        RETURN r.root
 )
 
-LET uniqueRootsWithZBP = UNIQUE(rootsWithZBP)
+LET uniqueRootsWithZBP = UNIQUE(
+    FOR r IN rootsByType
+        FILTER r.typeKey == typeKeys.ZBP
+        RETURN r.root
+)
+
+/* ANPR branch 1: ANPRCamera by type key */
+LET anprBranch1 = (
+    FOR a IN assets
+        FILTER HAS(a, "naampad_parts") AND LENGTH(a.naampad_parts) > 0
+        FILTER HAS(a, "assettype_key") AND a.assettype_key == typeKeys.ANPRCamera
+        RETURN a.naampad_parts[0]
+)
+/* ANPR branch 2: naampad contains .ANPR */
+LET anprBranch2 = (
+    FOR a IN assets
+        FILTER HAS(a, "naampad_parts") AND LENGTH(a.naampad_parts) > 0
+        FILTER HAS(a, "NaampadObject_naampad")
+        AND LIKE(a.NaampadObject_naampad, "%.ANPR%", true)
+        RETURN a.naampad_parts[0]
+)
+/* ANPR branch 3: Camera with anpr beeldverwerking */
+LET anprBranch3 = (
+    FOR a IN assets
+        FILTER HAS(a, "naampad_parts") AND LENGTH(a.naampad_parts) > 0
+        FILTER HAS(a, "assettype_key") AND a.assettype_key == typeKeys.Camera
+        FILTER HAS(a, "Camera_beeldverwerkingsinstelling")
+        AND LENGTH(a.Camera_beeldverwerkingsinstelling) > 0
+        FILTER LENGTH(
+            FOR b IN a.Camera_beeldverwerkingsinstelling
+                FILTER b.DtcCameraBeeldverwerking_typeBeeldverwerking LIKE "%anpr"
+                LIMIT 1
+                RETURN 1
+        ) > 0
+        RETURN a.naampad_parts[0]
+)
+LET rootsWithANPR = UNION(anprBranch1, anprBranch2, anprBranch3)
+LET uniqueRootsWithANPR = UNIQUE(rootsWithANPR)
 
 FOR a IN instalAssets
     LET hasTunnel = LIKE(a.NaampadObject_naampad, "%TUNNEL%", true)
@@ -154,6 +173,7 @@ FOR a IN instalAssets
     LET hasZ30 = a.NaampadObject_naampad IN uniqueRootsWithZ30
     LET hasMIV = a.NaampadObject_naampad IN uniqueRootsWithMIV
     LET hasDynBord = a.NaampadObject_naampad IN uniqueRootsWithDynBord
+    LET hasANPR = a.NaampadObject_naampad IN uniqueRootsWithANPR
     LET hasPOS = a.NaampadObject_naampad IN uniqueRootsWithPOS
     LET hasMETEO = a.NaampadObject_naampad IN uniqueRootsWithMETEO
     LET hasZBP = a.NaampadObject_naampad IN uniqueRootsWithZBP
@@ -189,7 +209,7 @@ FOR a IN instalAssets
         APPEND(
             APPEND(
                 APPEND(
-                    [],
+                    hasANPR ? ["ANPR"] : [],
                     hasPOS ? ["POS"] : []
                 ),
                 hasMETEO ? ["METEO"] : []
