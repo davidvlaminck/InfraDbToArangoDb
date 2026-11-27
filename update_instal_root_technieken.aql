@@ -113,31 +113,6 @@ LET rootsWithDynBord = (
 
 LET uniqueRootsWithDynBord = UNIQUE(rootsWithDynBord)
 
-LET rootsWithANPR = (
-    FOR a IN assets
-        FILTER (
-            a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#ANPRCamera"
-        ) OR (
-            a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
-            AND HAS(a, "Camera_beeldverwerkingsinstelling")
-            AND LENGTH(a.Camera_beeldverwerkingsinstelling) > 0
-            AND LENGTH(
-                FOR b IN a.Camera_beeldverwerkingsinstelling
-                    FILTER b.DtcCameraBeeldverwerking_typeBeeldverwerking LIKE "%anpr"
-                    LIMIT 1
-                    RETURN 1
-            ) > 0
-        ) OR (
-            HAS(a, "NaampadObject_naampad")
-            AND LIKE(a.NaampadObject_naampad, "%.ANPR%", true)
-        )
-           AND HAS(a, "naampad_parts")
-           AND LENGTH(a.naampad_parts) > 0
-        RETURN a.naampad_parts[0]
-)
-
-LET uniqueRootsWithANPR = UNIQUE(rootsWithANPR)
-
 LET rootsWithPOS = (
     FOR a IN assets
         FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Pompstation"
@@ -179,7 +154,6 @@ FOR a IN instalAssets
     LET hasZ30 = a.NaampadObject_naampad IN uniqueRootsWithZ30
     LET hasMIV = a.NaampadObject_naampad IN uniqueRootsWithMIV
     LET hasDynBord = a.NaampadObject_naampad IN uniqueRootsWithDynBord
-    LET hasANPR = a.NaampadObject_naampad IN uniqueRootsWithANPR
     LET hasPOS = a.NaampadObject_naampad IN uniqueRootsWithPOS
     LET hasMETEO = a.NaampadObject_naampad IN uniqueRootsWithMETEO
     LET hasZBP = a.NaampadObject_naampad IN uniqueRootsWithZBP
@@ -215,7 +189,7 @@ FOR a IN instalAssets
         APPEND(
             APPEND(
                 APPEND(
-                    hasANPR ? ["ANPR"] : [],
+                    [],
                     hasPOS ? ["POS"] : []
                 ),
                 hasMETEO ? ["METEO"] : []
