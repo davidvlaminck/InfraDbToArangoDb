@@ -1,7 +1,20 @@
 /*
  * Update root installation assets (Instal) with technieken attribute.
  * All root assets get an empty technieken array.
- * Assets with "TUNNEL" in their NaampadObject_naampad get "Tunnel" appended to technieken.
+ * Assets with "TUNNEL" in their NaampadObject_naampad get "Tunnel" appended.
+ * Assets with a DNBHoogspanning asset in their tree get "HS" appended.
+ * Assets with a WegverlichtingGroep asset in their tree get "WV" appended.
+ * Assets with a VerlichteOversteekplaatsGroep asset in their tree get "VVOP" appended.
+ * Assets with a VRIBuiteninstallatie asset in their tree get "VL" appended.
+ * Assets with a Flitsgroep asset in their tree get "SNC" appended.
+ * Assets with a Asweger asset in their tree get "ASW" appended.
+ * Assets with a DynBordZ30 asset in their tree get "Z30" appended.
+ * Assets with a MIVModule asset in their tree get "MIV" appended.
+ * Assets with a DynBordGroep asset in their tree get "DynBord" appended.
+ * Assets with an ANPR camera in their tree get "ANPR" appended.
+ * Assets with a Pompstation asset in their tree get "POS" appended.
+ * Assets with a Meteostation asset in their tree get "METEO" appended.
+ * Assets with a Zoutbijlaadplaats asset in their tree get "ZBP" appended.
  */
 
 LET instalAssets = (
@@ -10,10 +23,205 @@ LET instalAssets = (
         RETURN a
 )
 
+LET rootsWithHS = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#DNBHoogspanning"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithHS = UNIQUE(rootsWithHS)
+
+LET rootsWithWV = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#WegverlichtingGroep"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithWV = UNIQUE(rootsWithWV)
+
+LET rootsWithVVOP = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#VerlichteOversteekplaatsGroep"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithVVOP = UNIQUE(rootsWithVVOP)
+
+LET rootsWithVL = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#VRIBuiteninstallatie"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithVL = UNIQUE(rootsWithVL)
+
+LET rootsWithSNC = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Flitsgroep"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithSNC = UNIQUE(rootsWithSNC)
+
+LET rootsWithASW = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Asweger"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithASW = UNIQUE(rootsWithASW)
+
+LET rootsWithZ30 = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#DynBordZ30"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithZ30 = UNIQUE(rootsWithZ30)
+
+LET rootsWithMIV = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#MIVModule"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithMIV = UNIQUE(rootsWithMIV)
+
+LET rootsWithDynBord = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#DynBordGroep"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithDynBord = UNIQUE(rootsWithDynBord)
+
+LET rootsWithANPR = (
+    FOR a IN assets
+        FILTER (
+            a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#ANPRCamera"
+        ) OR (
+            a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/onderdeel#Camera"
+            AND HAS(a, "Camera_beeldverwerkingsinstelling")
+            AND LENGTH(a.Camera_beeldverwerkingsinstelling) > 0
+            AND LENGTH(
+                FOR b IN a.Camera_beeldverwerkingsinstelling
+                    FILTER b.DtcCameraBeeldverwerking_typeBeeldverwerking LIKE "%anpr"
+                    LIMIT 1
+                    RETURN 1
+            ) > 0
+        ) OR (
+            HAS(a, "NaampadObject_naampad")
+            AND LIKE(a.NaampadObject_naampad, "%.ANPR%", true)
+        )
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithANPR = UNIQUE(rootsWithANPR)
+
+LET rootsWithPOS = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Pompstation"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithPOS = UNIQUE(rootsWithPOS)
+
+LET rootsWithMETEO = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Meteostation"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithMETEO = UNIQUE(rootsWithMETEO)
+
+LET rootsWithZBP = (
+    FOR a IN assets
+        FILTER a["@type"] == "https://wegenenverkeer.data.vlaanderen.be/ns/installatie#Zoutbijlaadplaats"
+           AND HAS(a, "naampad_parts")
+           AND LENGTH(a.naampad_parts) > 0
+        RETURN a.naampad_parts[0]
+)
+
+LET uniqueRootsWithZBP = UNIQUE(rootsWithZBP)
+
 FOR a IN instalAssets
     LET hasTunnel = LIKE(a.NaampadObject_naampad, "%TUNNEL%", true)
-    LET technieken = hasTunnel ? ["Tunnel"] : []
+    LET hasHS = a.NaampadObject_naampad IN uniqueRootsWithHS
+    LET hasWV = a.NaampadObject_naampad IN uniqueRootsWithWV
+    LET hasVVOP = a.NaampadObject_naampad IN uniqueRootsWithVVOP
+    LET hasVL = a.NaampadObject_naampad IN uniqueRootsWithVL
+    LET hasSNC = a.NaampadObject_naampad IN uniqueRootsWithSNC
+    LET hasASW = a.NaampadObject_naampad IN uniqueRootsWithASW
+    LET hasZ30 = a.NaampadObject_naampad IN uniqueRootsWithZ30
+    LET hasMIV = a.NaampadObject_naampad IN uniqueRootsWithMIV
+    LET hasDynBord = a.NaampadObject_naampad IN uniqueRootsWithDynBord
+    LET hasANPR = a.NaampadObject_naampad IN uniqueRootsWithANPR
+    LET hasPOS = a.NaampadObject_naampad IN uniqueRootsWithPOS
+    LET hasMETEO = a.NaampadObject_naampad IN uniqueRootsWithMETEO
+    LET hasZBP = a.NaampadObject_naampad IN uniqueRootsWithZBP
+    LET technieken = APPEND(
+        APPEND(
+            APPEND(
+                APPEND(
+                    APPEND(
+                        APPEND(
+                            APPEND(
+                                APPEND(
+                                    APPEND(
+                                        APPEND(
+                                            hasTunnel ? ["Tunnel"] : [],
+                                            hasHS ? ["HS"] : []
+                                        ),
+                                        hasWV ? ["WV"] : []
+                                    ),
+                                    hasVVOP ? ["VVOP"] : []
+                                ),
+                                hasVL ? ["VL"] : []
+                            ),
+                            hasSNC ? ["SNC"] : []
+                        ),
+                        hasASW ? ["ASW"] : []
+                    ),
+                    hasZ30 ? ["Z30"] : []
+                ),
+                hasMIV ? ["MIV"] : []
+            ),
+            hasDynBord ? ["DynBord"] : []
+        ),
+        APPEND(
+            APPEND(
+                APPEND(
+                    hasANPR ? ["ANPR"] : [],
+                    hasPOS ? ["POS"] : []
+                ),
+                hasMETEO ? ["METEO"] : []
+            ),
+            hasZBP ? ["ZBP"] : []
+        )
+    )
     UPDATE a WITH { technieken: technieken } IN assets
     OPTIONS { ignoreErrors: true }
-
-RETURN COUNT(instalAssets)

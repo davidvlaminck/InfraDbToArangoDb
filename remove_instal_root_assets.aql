@@ -1,11 +1,4 @@
-/*
- * Remove root assets (Instal) that were created by create_instal_root_assets.aql.
- * These assets have @type = "https://lgc.data.wegenenverkeer.be/ns/installatie#Instal"
- */
-
 FOR a IN assets
     FILTER a["@type"] == "https://lgc.data.wegenenverkeer.be/ns/installatie#Instal"
     REMOVE a IN assets
     OPTIONS { ignoreErrors: true }
-
-RETURN COUNT(1)

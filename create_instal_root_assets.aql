@@ -1,9 +1,3 @@
-/*
- * Create root assets (Instal) for each unique root name found in assets.naampad_parts.
- * The root name is the first element of the naampad_parts array.
- * These assets represent the top-level installations in the tree hierarchy.
- */
-
 LET rootNames = (
     FOR a IN assets
         FILTER HAS(a, "naampad_parts") AND LENGTH(a.naampad_parts) > 0
